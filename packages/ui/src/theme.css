@@ -1,0 +1,53 @@
+/*
+ * Caixa Forte — design tokens v1.1 (docs/G_DESIGN_SYSTEM_MINIMALISTA.md §2).
+ * STATUS: sementes PROPOSTAS. A direção (vinho + creme + rosé) está aprovada (D-013),
+ * os HEX exatos e fontes ainda dependem de homologação (R-002, R-004, P-006).
+ * Regra: componentes usam SOMENTE estes tokens — nunca HEX solto.
+ * Mudança de paleta/tipografia exige entrada no Decision Log.
+ */
+@theme {
+  /* Paleta base */
+  --color-plum-950: #321927;
+  --color-wine-700: #693548;
+  --color-cream-50: #faf7f3;
+  --color-sand-100: #f3eae4;
+  --color-blush-200: #ebd7cf;
+  --color-champagne-500: #c39b83;
+  --color-ink: #30232b;
+  --color-muted: #655b60;
+  --color-success: #277253;
+  --color-warning: #996317;
+  --color-danger: #b23c50;
+
+  /* Semânticos (preferir estes nos componentes) */
+  --color-cf-bg: var(--color-cream-50);
+  --color-cf-surface: #ffffff;
+  --color-cf-surface-muted: var(--color-sand-100);
+  --color-cf-sidebar: var(--color-plum-950);
+  --color-cf-primary: var(--color-wine-700);
+  --color-cf-accent: var(--color-champagne-500);
+  --color-cf-text: var(--color-ink);
+  --color-cf-text-secondary: var(--color-muted);
+  --color-cf-border: #e5d9d2;
+  --color-cf-focus: var(--color-wine-700);
+
+  /* Tipografia: serifada só em títulos editoriais; sans em UI/números/labels */
+  --font-editorial: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-sans: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Composição */
+  --radius-card: 16px;
+  --spacing-sidebar: 236px;
+  --spacing-content-max: 1180px;
+}
+
+@layer base {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

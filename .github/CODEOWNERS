@@ -1,0 +1,10 @@
+# Revisão técnica obrigatória (Luiggi). Ajuste quando houver mais revisores.
+*                       @luiggji
+
+# Áreas de alto risco — revisão reforçada (pagamentos, acesso, banco, CI).
+/apps/api/src/modules/billing/     @luiggji
+/apps/api/src/modules/identity/    @luiggji
+/apps/api/src/modules/ticketing/   @luiggji
+/apps/api/src/modules/checkin/     @luiggji
+/supabase/                         @luiggji
+/.github/                          @luiggji

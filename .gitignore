@@ -1,0 +1,38 @@
+# dependências
+node_modules/
+.pnpm-store/
+
+# builds
+dist/
+.next/
+out/
+coverage/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# ambiente e segredos — NUNCA versionar
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# supabase local
+supabase/.branches/
+supabase/.temp/
+
+# testes e2e
+playwright-report/
+test-results/
+
+# sistema / editores
+.DS_Store
+Thumbs.db
+*.log
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Claude Code (config pessoal local)
+.claude/settings.local.json

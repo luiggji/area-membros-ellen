@@ -1,0 +1,37 @@
+name: Bug
+description: Defeito encontrado (severidade ≠ prioridade de requisito).
+title: '[BUG] '
+labels: ['type:bug', 'status:backlog']
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severidade (docs/F_QA_TEST_STRATEGY.md §2)
+      options:
+        - 'P0 — crítico: segurança, receita, integridade, indisponibilidade (bloqueia release)'
+        - 'P1 — alto: fluxo relevante quebrado (bloqueia se afeta P0 sem workaround)'
+        - 'P2 — baixo: localizado, com contorno'
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Ambiente / build SHA / navegador
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Esperado × observado
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidências (sem dados reais, tokens ou PII)

@@ -1,0 +1,11 @@
+packages:
+  - apps/*
+  - packages/*
+
+engineStrict: true
+
+# Somente pacotes auditados podem rodar scripts de instalação (supply chain).
+allowBuilds:
+  unrs-resolver: true
+  # usa binário pré-compilado; script de build desnecessário
+  '@parcel/watcher': false

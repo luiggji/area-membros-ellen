@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@import '@caixa-forte/ui/theme.css';
+
+/* Classes usadas dentro do pacote de UI também precisam ser geradas. */
+@source '../../../../packages/ui/src';
+
+@layer base {
+  html {
+    background-color: var(--color-cf-bg);
+    color: var(--color-cf-text);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cf-focus);
+    outline-offset: 2px;
+  }
+}

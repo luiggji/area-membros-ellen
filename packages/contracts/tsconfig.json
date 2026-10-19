@@ -1,0 +1,8 @@
+{
+  "extends": "@caixa-forte/config/tsconfig/library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": ["src", "test"]
+}

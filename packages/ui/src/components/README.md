@@ -1,0 +1,3 @@
+Componentes editoriais (CF-020/CF-022): `MemberShell`, `MinimalSidebar`, `EditorialHero`, `JourneyFocusCard`,
+`CourseCard`, `SmallEventCard`, `CommunityGatewayCard`, `EmptyState`, `ErrorState`, `Skeleton`...
+Serão criados nas Issues próprias, seguindo `docs/G_DESIGN_SYSTEM_MINIMALISTA.md`.

@@ -1,0 +1,61 @@
+name: Tarefa / Feature (CF-###)
+description: Item do backlog pronto para desenvolvimento (Definition of Ready).
+title: '[CF-___] '
+labels: ['type:feature', 'status:backlog']
+body:
+  - type: input
+    id: cf
+    attributes:
+      label: CF-ID
+      placeholder: CF-020
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade do requisito
+      options: ['P0 — essencial ao MVP', 'P1 — próxima versão', 'P2 — evolução']
+    validations:
+      required: true
+  - type: input
+    id: epic
+    attributes:
+      label: Épico / Marco
+      placeholder: EPIC-01 / M1
+  - type: textarea
+    id: story
+    attributes:
+      label: Objetivo / User story
+      placeholder: Como [papel], quero [resultado], para [benefício].
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Escopo incluído e FORA de escopo
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceite (Given / When / Then)
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Permissões / RLS / dados
+      placeholder: Quem pode o quê; tabelas com PII; regras de servidor.
+  - type: textarea
+    id: tests
+    attributes:
+      label: Testes esperados (QA-### quando houver)
+  - type: input
+    id: deps
+    attributes:
+      label: Dependências (CF-IDs) e decisões pendentes (P-###)
+  - type: textarea
+    id: ui
+    attributes:
+      label: Referência de UI (se aplicável)
+      placeholder: Seção do doc G, estados, breakpoints.

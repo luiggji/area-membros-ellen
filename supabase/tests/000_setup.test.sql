@@ -23,19 +23,35 @@ begin
 end;
 $$;
 
+-- Id do usuário fictício. security definer: quem já está como authenticated não lê auth.users.
+create or replace function tests.user_id(identifier text)
+returns uuid
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $
+declare
+  found uuid;
+begin
+  select id into found from auth.users where email = identifier || '@teste.local';
+  if found is null then
+    raise exception 'usuário de teste % não existe', identifier;
+  end if;
+  return found;
+end;
+$;
+
 -- Passa a agir como o usuário (role authenticated + claims do JWT), como o PostgREST faria.
+-- Precisa ser security invoker: o Postgres não deixa trocar de role dentro de security definer.
 create or replace function tests.authenticate_as(identifier text)
 returns void
 language plpgsql
 set search_path = ''
-as $$
+as $
 declare
-  user_id uuid;
+  user_id uuid := tests.user_id(identifier);
 begin
-  select id into user_id from auth.users where email = identifier || '@teste.local';
-  if user_id is null then
-    raise exception 'usuário de teste % não existe', identifier;
-  end if;
   perform set_config('role', 'authenticated', true);
   perform set_config(
     'request.jwt.claims',

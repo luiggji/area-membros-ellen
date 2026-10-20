@@ -21,10 +21,6 @@ create policy "titular edita os próprios" on public.rls_exemplo
 
 select ok(tests.create_user('ana') is not null, 'cria a usuária A (fictícia)');
 select ok(tests.create_user('bruno') is not null, 'cria o usuário B (fictício)');
--- Guarda o id de A antes de trocar de papel (authenticated não lê auth.users).
-select set_config(
-  'tests.ana_id', (select id::text from auth.users where email = 'ana@teste.local'), true
-);
 
 -- A cria um registro.
 select tests.authenticate_as('ana');

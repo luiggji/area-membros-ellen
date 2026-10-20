@@ -11,6 +11,7 @@ Rodam no job `database` do CI (`supabase test db`), em Postgres local efêmero e
 ## Helpers
 
 - `tests.create_user('ana')` cria um usuário fictício `ana@teste.local` no Auth local e devolve o id.
+- `tests.user_id('ana')` devolve o id de um usuário fictício (útil para tentar agir em nome de outro).
 - `tests.authenticate_as('ana')` passa a agir como ela (role `authenticated` + JWT), como o PostgREST faria.
 - `tests.authenticate_as_anon()` age como visitante sem login.
 - `tests.as_service()` volta ao superusuário para preparar ou conferir dados fora da RLS.

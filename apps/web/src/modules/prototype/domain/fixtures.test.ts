@@ -1,26 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  adminNav,
-  exampleCourses,
-  findSection,
-  HOME_LIMITS,
-  moreNav,
-  parseHomeVariant,
-  primaryNav,
-} from './fixtures';
+import { adminNav, exampleCourses, findSection, HOME_LIMITS, parseHomeVariant } from './fixtures';
 
 describe('protótipo — regras do doc G', () => {
-  it('primeiro nível da navegação tem no máximo 6 destinos', () => {
-    expect(primaryNav.length).toBeLessThanOrEqual(6);
-  });
-
   it('home não passa de 3 cursos em destaque', () => {
     expect(exampleCourses.length).toBeLessThanOrEqual(HOME_LIMITS.courses);
   });
 
-  it('cada destino aponta o item do backlog que entrega a tela real', () => {
-    for (const item of [...primaryNav, ...moreNav, ...adminNav]) {
+  it('cada área da equipe aponta o item do backlog que entrega a tela real', () => {
+    for (const item of adminNav) {
       expect(item.deliveredBy).toMatch(/^CF-\d{3}$/);
     }
   });

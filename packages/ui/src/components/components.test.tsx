@@ -69,6 +69,17 @@ describe('AppShell', () => {
     expect(markup).toMatch(/<header[^>]*><span>topo<\/span><\/header>/);
   });
 
+  it('só reserva espaço no rodapé quando há barra inferior mobile', () => {
+    expect(shell()).not.toContain('max-lg:pb-28');
+    const markup = html(
+      <AppShell sidebar="s" topbar="t" bottomBar={<nav>barra</nav>}>
+        x
+      </AppShell>,
+    );
+    expect(markup).toContain('max-lg:pb-28');
+    expect(markup).toContain('<div class="lg:hidden"><nav>barra</nav></div>');
+  });
+
   it('limita a largura de leitura e libera largura no painel da equipe', () => {
     expect(shell()).toContain('max-w-(--spacing-content-max)');
     expect(shell('wide')).toContain('max-w-(--spacing-admin-max)');

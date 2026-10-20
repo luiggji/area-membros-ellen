@@ -1,12 +1,13 @@
 import { AppShell, Button } from '@caixa-forte/ui';
-import { Bell, Search } from 'lucide-react';
+import { Bell, Menu, Search } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { MemberShell } from '@/modules/navigation/presentation/member-shell';
+import { NavDrawer } from '@/modules/navigation/presentation/nav-drawer';
 import { BrandMark } from '@/shared/ui/brand-mark';
 
-import { MobileNav } from './mobile-nav';
-import { hrefFor, NavLinks, PROTOTYPE_BASE, TEAM_PROTOTYPE_HREF, TeamNavLinks } from './nav-links';
+import { PROTOTYPE_BASE, TEAM_PROTOTYPE_HREF, TeamNavLinks } from './nav-links';
 
 /** Faixa fixa que impede o protótipo de ser confundido com a plataforma real. */
 function PrototypeNotice() {
@@ -71,27 +72,17 @@ function UnavailableIconButton({
   );
 }
 
-function Topbar({ home, nav, greeting }: { home: string; nav: ReactNode; greeting: ReactNode }) {
+/** Busca, avisos e saudação: indisponíveis no protótipo, com motivo (doc G §5). */
+function TopbarActions({ greeting }: { greeting: ReactNode }) {
   return (
     <>
-      <div className="flex items-center gap-2 lg:hidden">
-        <MobileNav>
-          <BrandMark variant="sidebar" className="px-2" />
-          {nav}
-        </MobileNav>
-        <Link href={home}>
-          <BrandMark variant="compact" />
-        </Link>
-      </div>
-      <div className="ms-auto flex items-center gap-1 sm:gap-3">
-        <UnavailableIconButton label="Buscar">
-          <Search aria-hidden className="size-5" strokeWidth={1.6} />
-        </UnavailableIconButton>
-        <UnavailableIconButton label="Avisos" className="max-sm:hidden">
-          <Bell aria-hidden className="size-5" strokeWidth={1.6} />
-        </UnavailableIconButton>
-        {greeting}
-      </div>
+      <UnavailableIconButton label="Buscar">
+        <Search aria-hidden className="size-5" strokeWidth={1.6} />
+      </UnavailableIconButton>
+      <UnavailableIconButton label="Avisos" className="max-sm:hidden">
+        <Bell aria-hidden className="size-5" strokeWidth={1.6} />
+      </UnavailableIconButton>
+      {greeting}
     </>
   );
 }
@@ -105,34 +96,16 @@ function SidebarBrand({ href, label }: { href: string; label: string }) {
   );
 }
 
-/** Área do membro: sidebar com até 6 destinos + "Mais" e largura de leitura. */
-export function PrototypeShell({
-  activeSlug,
-  children,
-}: {
-  activeSlug: string;
-  children: ReactNode;
-}) {
-  const nav = <NavLinks activeSlug={activeSlug} />;
+/** Área do membro com o shell definitivo (CF-021) apontando para as rotas do protótipo. */
+export function PrototypeShell({ children }: { children: ReactNode }) {
   return (
-    <AppShell
+    <MemberShell
+      base={PROTOTYPE_BASE}
       banner={<PrototypeNotice />}
-      sidebar={
-        <>
-          <SidebarBrand href={hrefFor('')} label="Início" />
-          {nav}
-        </>
-      }
-      topbar={
-        <Topbar
-          home={hrefFor('')}
-          nav={nav}
-          greeting={<Greeting initial="M" name="Olá, Membro" />}
-        />
-      }
+      topbarEnd={<TopbarActions greeting={<Greeting initial="M" name="Olá, Membro" />} />}
     >
       {children}
-    </AppShell>
+    </MemberShell>
   );
 }
 
@@ -154,11 +127,28 @@ export function TeamPrototypeShell({ children }: { children: ReactNode }) {
         </>
       }
       topbar={
-        <Topbar
-          home={TEAM_PROTOTYPE_HREF}
-          nav={<TeamNavLinks />}
-          greeting={<Greeting initial="E" name="Equipe" />}
-        />
+        <>
+          <div className="flex items-center gap-2 lg:hidden">
+            <NavDrawer
+              triggerClassName="grid size-11 place-items-center rounded-full text-cf-sidebar hover:bg-cf-surface-muted"
+              trigger={
+                <>
+                  <Menu aria-hidden className="size-6" strokeWidth={1.6} />
+                  <span className="sr-only">Abrir menu</span>
+                </>
+              }
+            >
+              <BrandMark variant="sidebar" className="px-2" />
+              <TeamNavLinks />
+            </NavDrawer>
+            <Link href={TEAM_PROTOTYPE_HREF}>
+              <BrandMark variant="compact" />
+            </Link>
+          </div>
+          <div className="ms-auto flex items-center gap-1 sm:gap-3">
+            <TopbarActions greeting={<Greeting initial="E" name="Equipe" />} />
+          </div>
+        </>
       }
     >
       {children}

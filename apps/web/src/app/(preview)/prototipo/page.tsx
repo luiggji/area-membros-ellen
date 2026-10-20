@@ -15,7 +15,7 @@ export default async function PrototypeHomePage({
 }) {
   const variant = parseHomeVariant((await searchParams).estado);
   return (
-    <PrototypeShell activeSlug="">
+    <PrototypeShell>
       <div className="flex flex-col gap-10 sm:gap-12">
         <EditorialHero />
         <JourneyFocusCard variant={variant} />

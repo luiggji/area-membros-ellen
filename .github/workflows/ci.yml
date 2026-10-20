@@ -122,3 +122,38 @@ jobs:
             --config p/typescript --config p/nodejs --config p/nextjs \
             --config p/secrets --config p/owasp-top-ten \
             --exclude docs --exclude supabase/config.toml
+
+  # CF-016: o banco sobe do zero só com as migrations versionadas, em Postgres local do
+  # Supabase dentro do runner. Sem projeto cloud e sem nenhuma chave (P-014 em aberto).
+  database:
+    name: database
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Regras das migrations (nome, destrutivas, RLS)
+        run: |
+          node --test .github/scripts/check-migrations.test.mjs
+          node .github/scripts/check-migrations.mjs
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.120.0
+      - name: Sobe o Postgres local e aplica as migrations do zero
+        run: supabase db start
+      - name: Reaplica tudo do zero com seeds (prova de repetibilidade)
+        run: supabase db reset --local
+      - name: Lint do schema (funções e SQL)
+        run: supabase db lint --local --level error --fail-on error
+      - name: Testes pgTAP (supabase/tests)
+        run: supabase test db
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "### Banco (CF-016)"
+            echo "Migrations aplicadas do zero em Postgres local:"
+            for file in supabase/migrations/*.sql; do echo "- \`$(basename "$file")\`"; done
+          } >> "$GITHUB_STEP_SUMMARY"

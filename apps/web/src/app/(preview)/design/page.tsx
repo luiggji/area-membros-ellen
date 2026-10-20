@@ -14,6 +14,11 @@ import {
   SpacingSample,
   TypographySample,
 } from '@/modules/design-system/presentation/foundations';
+import {
+  CompactCardsSample,
+  CourseStatesSample,
+  JourneyStatesSample,
+} from '@/modules/design-system/presentation/editorial';
 import { PreviewHeader } from '@/shared/ui/preview-header';
 
 export const metadata: Metadata = { title: 'Design system · Caixa Forte' };
@@ -101,6 +106,30 @@ export default function DesignPage() {
           description="Borda fina ou sombra suave, nunca as duas intensas. Sem microcards nem badges concorrentes."
         >
           <CardsSample />
+        </Section>
+
+        <Section
+          id="jornada"
+          title="Card da jornada"
+          description="Um único CTA por estado. A barra de progresso só existe quando há dado real do membro."
+        >
+          <JourneyStatesSample />
+        </Section>
+
+        <Section
+          id="cursos-editoriais"
+          title="Cards de curso"
+          description="Grade 3/2/1. Título, resumo de até 2 linhas e estado verdadeiro; capas reais chegam com o CMS."
+        >
+          <CourseStatesSample />
+        </Section>
+
+        <Section
+          id="compactos"
+          title="Cartões compactos"
+          description="No máximo dois na home: próximo encontro e comunidade."
+        >
+          <CompactCardsSample />
         </Section>
 
         <Section

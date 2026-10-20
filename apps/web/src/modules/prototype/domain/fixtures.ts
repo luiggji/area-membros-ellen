@@ -35,36 +35,38 @@ export interface ExampleCourse {
   slug: string;
   title: string;
   summary: string;
-  icon: 'play' | 'users' | 'chart';
+  status: 'disponivel' | 'programado';
+  icon: 'diamond' | 'spark' | 'pen';
 }
 
-/** Títulos da referência aprovada, usados só como exemplo de composição. */
+/** Títulos e resumos da prévia do Brand System V2, só como exemplo de composição. */
 export const exampleCourses: readonly ExampleCourse[] = [
   {
     slug: 'comece-aqui',
     title: 'Comece Aqui',
-    summary: 'Entenda o método, a plataforma e dê o primeiro passo.',
-    icon: 'play',
+    summary: 'Por onde começar sua jornada estratégica.',
+    status: 'disponivel',
+    icon: 'diamond',
   },
   {
     slug: 'primeiros-clientes',
     title: 'Primeiros Clientes',
-    summary: 'Estratégias práticas para atrair e conquistar os primeiros clientes.',
-    icon: 'users',
+    summary: 'Posicionamento e oportunidades profissionais.',
+    status: 'disponivel',
+    icon: 'spark',
   },
   {
     slug: 'atendimento-e-conversao',
     title: 'Atendimento e Conversão',
-    summary: 'Do primeiro contato ao fechamento, com segurança e estratégia.',
-    icon: 'chart',
+    summary: 'Do primeiro contato à proposta de honorários.',
+    status: 'programado',
+    icon: 'pen',
   },
 ];
 
 export const exampleJourney = {
   title: 'Da Técnica à Liberdade',
-  summary: 'Construa uma advocacia estratégica e com propósito.',
-  completedModules: 3,
-  totalModules: 8,
+  summary: 'Seu caminho para uma advocacia mais estratégica.',
 } as const;
 
 /** Limites de densidade da home (doc G §4.1): 1 hero + 1 jornada + ≤ 3 cursos + ≤ 2 auxiliares. */

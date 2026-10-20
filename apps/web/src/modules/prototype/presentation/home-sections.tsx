@@ -1,4 +1,4 @@
-import { cn } from '@caixa-forte/ui';
+import { buttonClasses, cn } from '@caixa-forte/ui';
 import { ArrowRight, ChartNoAxesColumn, Coffee, Flag, ImageIcon, Play, Users } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -44,10 +44,7 @@ function PhotoPlaceholder({ label, className }: { label: string; className?: str
 
 function PrimaryCta({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link
-      href={href}
-      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-cf-primary px-7 text-sm font-medium text-cf-surface transition-colors duration-200 hover:bg-cf-sidebar"
-    >
+    <Link href={href} className={buttonClasses({ className: 'px-7' })}>
       {children}
       <ArrowRight aria-hidden className="size-4" strokeWidth={1.8} />
     </Link>

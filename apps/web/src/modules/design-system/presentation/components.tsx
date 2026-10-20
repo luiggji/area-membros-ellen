@@ -1,10 +1,11 @@
-import { AlertTriangle, ArrowRight, Inbox, Lock } from 'lucide-react';
+import { Button, buttonClasses, Card, Skeleton } from '@caixa-forte/ui';
+import { AlertTriangle, ArrowRight, Inbox, Lock, PanelLeft, PanelTop } from 'lucide-react';
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 /**
- * Padrões de componente propostos para a v1.1. São amostras visuais para homologação: os
- * componentes reutilizáveis de verdade nascem em `packages/ui` com CF-020/CF-022 e os estados de
- * tela com CF-157.
+ * Amostras renderizadas com os componentes reais de `@caixa-forte/ui` (CF-020). Os componentes
+ * editoriais da home chegam com CF-022 e os estados de tela padrão com CF-157.
  */
 
 function Labeled({ label, children }: { label: string; children: ReactNode }) {
@@ -18,77 +19,58 @@ function Labeled({ label, children }: { label: string; children: ReactNode }) {
 
 export function ButtonsSample() {
   return (
-    <div className="flex flex-wrap items-start gap-8 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 sm:p-8">
-      <Labeled label="Primário · uma ação principal por seção">
-        <button
-          type="button"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-cf-primary px-7 text-sm font-medium text-cf-surface hover:bg-cf-sidebar"
-        >
+    <Card className="flex flex-wrap items-start gap-8 sm:p-8">
+      <Labeled label="primary · uma ação principal por seção">
+        <Button>
           Continuar <ArrowRight aria-hidden className="size-4" />
-        </button>
+        </Button>
       </Labeled>
-      <Labeled label="Secundário · contorno">
-        <button
-          type="button"
-          className="inline-flex min-h-11 items-center rounded-full border border-cf-primary px-6 text-sm font-medium text-cf-primary hover:bg-cf-surface-muted"
-        >
-          Ver detalhes
-        </button>
+      <Labeled label="secondary · contorno">
+        <Button variant="secondary">Ver detalhes</Button>
       </Labeled>
-      <Labeled label="Link de navegação">
-        <a
-          href="#botoes"
-          className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-cf-primary hover:text-cf-sidebar"
-        >
+      <Labeled label="link · navegação (buttonClasses no Link)">
+        <Link href="#botoes" className={buttonClasses({ variant: 'link' })}>
           Ver todos <ArrowRight aria-hidden className="size-4" />
-        </a>
+        </Link>
       </Labeled>
-      <Labeled label="Desabilitado · sempre com motivo visível">
-        <div className="flex flex-col gap-1">
-          <button
-            type="button"
-            disabled
-            aria-describedby="motivo-desabilitado"
-            className="inline-flex min-h-11 items-center rounded-full bg-cf-surface-muted px-7 text-sm font-medium text-cf-text-secondary disabled:cursor-not-allowed"
-          >
-            Quero participar
-          </button>
-          <span id="motivo-desabilitado" className="text-xs text-cf-text-secondary">
-            Vagas esgotadas
-          </span>
-        </div>
+      <Labeled label="disabledReason · sempre com motivo visível">
+        <Button disabled disabledReason="Vagas esgotadas">
+          Quero participar
+        </Button>
       </Labeled>
       <Labeled label="Foco por teclado (Tab)">
-        <span className="inline-flex min-h-11 items-center rounded-full bg-cf-primary px-7 text-sm font-medium text-cf-surface outline-2 outline-offset-2 outline-cf-focus">
+        <span
+          className={buttonClasses({ className: 'outline-2 outline-offset-2 outline-cf-focus' })}
+        >
           Foco visível
         </span>
       </Labeled>
-    </div>
+    </Card>
   );
 }
 
 export function CardsSample() {
   return (
     <div className="grid gap-5 md:grid-cols-3">
-      <article className="flex flex-col gap-2 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6">
-        <span className="text-xs text-cf-text-secondary">cf-surface + borda</span>
+      <Card as="article" className="flex flex-col gap-2">
+        <span className="text-xs text-cf-text-secondary">tone=&quot;surface&quot;</span>
         <h3 className="font-editorial text-xl font-semibold text-cf-sidebar">Card de leitura</h3>
         <p className="text-sm text-cf-text-secondary">
           Cursos, posts e listas. Borda fina, sem sombra.
         </p>
-      </article>
-      <article className="flex flex-col gap-2 rounded-(--radius-card) border border-cf-border bg-cf-surface-muted p-6">
-        <span className="text-xs text-cf-text-secondary">cf-surface-muted</span>
+      </Card>
+      <Card as="article" tone="muted" className="flex flex-col gap-2">
+        <span className="text-xs text-cf-text-secondary">tone=&quot;muted&quot;</span>
         <h3 className="font-editorial text-xl font-semibold text-cf-sidebar">Card de destaque</h3>
         <p className="text-sm text-cf-text-secondary">Jornada e cards auxiliares da home.</p>
-      </article>
-      <article className="flex flex-col gap-2 rounded-(--radius-card) bg-cf-sidebar p-6 text-cream-50">
-        <span className="text-xs text-cream-50/70">cf-sidebar · uso raro</span>
+      </Card>
+      <Card as="article" tone="deep" className="flex flex-col gap-2">
+        <span className="text-xs text-cream-50/70">tone=&quot;deep&quot; · uso raro</span>
         <h3 className="font-editorial text-xl font-semibold">Superfície profunda</h3>
         <p className="text-sm text-cream-50/80">
           Só sidebar e pontos de marca — nunca a tela inteira.
         </p>
-      </article>
+      </Card>
     </div>
   );
 }
@@ -103,11 +85,11 @@ function StatePanel({
   icon: ReactNode;
   title: string;
   text: string;
-  action?: string;
+  action: string;
   tone?: 'neutral' | 'danger';
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 text-center">
+    <Card className="flex flex-col items-center gap-3 text-center">
       <span
         aria-hidden
         className={
@@ -120,27 +102,20 @@ function StatePanel({
       </span>
       <h3 className="font-medium text-cf-text">{title}</h3>
       <p className="text-sm text-cf-text-secondary">{text}</p>
-      {action && (
-        <span className="inline-flex min-h-11 items-center rounded-full border border-cf-primary px-5 text-sm font-medium text-cf-primary">
-          {action}
-        </span>
-      )}
-    </div>
+      <span className={buttonClasses({ variant: 'secondary', className: 'px-5' })}>{action}</span>
+    </Card>
   );
 }
 
 export function StatesSample() {
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      <div
-        aria-hidden
-        className="flex flex-col gap-3 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6"
-      >
-        <span className="text-xs text-cf-text-secondary">Carregando</span>
-        <div className="h-24 animate-pulse rounded-xl bg-cf-surface-muted" />
-        <div className="h-4 w-3/4 animate-pulse rounded bg-cf-surface-muted" />
-        <div className="h-4 w-1/2 animate-pulse rounded bg-cf-surface-muted" />
-      </div>
+      <Card className="flex flex-col gap-3">
+        <span className="text-xs text-cf-text-secondary">Carregando · Skeleton</span>
+        <Skeleton className="h-24" />
+        <Skeleton className="h-4 w-3/4 rounded" />
+        <Skeleton className="h-4 w-1/2 rounded" />
+      </Card>
       <StatePanel
         icon={<Inbox className="size-5" />}
         title="Nada por aqui ainda"
@@ -161,5 +136,45 @@ export function StatesSample() {
         action="Ver planos"
       />
     </div>
+  );
+}
+
+const layouts = [
+  {
+    name: 'AppShell · membro',
+    text: 'Sidebar vinho com até 6 destinos + Mais, topbar discreta, conteúdo até 1180px.',
+    href: '/prototipo',
+    icon: PanelLeft,
+  },
+  {
+    name: 'AppShell width="wide" · equipe',
+    text: 'Mesmo esqueleto com navegação do painel e até 1440px para tabelas e filtros.',
+    href: '/prototipo/equipe',
+    icon: PanelLeft,
+  },
+  {
+    name: 'PublicShell · público',
+    text: 'Sem sidebar: cabeçalho com a marca, conteúdo e rodapé. Landing, planos e eventos.',
+    href: '/',
+    icon: PanelTop,
+  },
+];
+
+export function LayoutsSample() {
+  return (
+    <ul className="grid gap-5 md:grid-cols-3">
+      {layouts.map((layout) => (
+        <Card as="li" key={layout.href} className="flex flex-col items-start gap-3">
+          <layout.icon aria-hidden className="size-6 text-cf-primary" strokeWidth={1.4} />
+          <h3 className="font-medium text-cf-text">
+            <code>{layout.name}</code>
+          </h3>
+          <p className="text-sm text-cf-text-secondary">{layout.text}</p>
+          <Link href={layout.href} className={buttonClasses({ variant: 'link' })}>
+            Abrir {layout.href} <ArrowRight aria-hidden className="size-4" />
+          </Link>
+        </Card>
+      ))}
+    </ul>
   );
 }

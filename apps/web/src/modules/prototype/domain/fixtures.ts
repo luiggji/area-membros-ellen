@@ -15,7 +15,13 @@ export type NavIcon =
   | 'live'
   | 'vault'
   | 'planning'
-  | 'help';
+  | 'help'
+  | 'overview'
+  | 'events'
+  | 'checkin'
+  | 'content'
+  | 'moderation'
+  | 'reports';
 
 export interface NavItem {
   slug: string;
@@ -42,6 +48,19 @@ export const moreNav: readonly NavItem[] = [
   { slug: 'cofre', label: 'Cofre de Materiais', icon: 'vault', deliveredBy: 'CF-085' },
   { slug: 'planejamento', label: 'Meu Planejamento', icon: 'planning', deliveredBy: 'CF-103' },
   { slug: 'ajuda', label: 'Ajuda', icon: 'help', deliveredBy: 'CF-107' },
+];
+
+/**
+ * Painel da equipe (doc G §4.9): navegação própria, sem o limite de densidade da home.
+ * Os papéis (owner/comercial) e o bloqueio das rotas chegam com CF-032 e CF-034.
+ */
+export const adminNav: readonly NavItem[] = [
+  { slug: '', label: 'Visão geral', icon: 'overview', deliveredBy: 'CF-105' },
+  { slug: 'eventos', label: 'Eventos e lotes', icon: 'events', deliveredBy: 'CF-061' },
+  { slug: 'checkin', label: 'Check-in', icon: 'checkin', deliveredBy: 'CF-068' },
+  { slug: 'conteudo', label: 'Conteúdo', icon: 'content', deliveredBy: 'CF-081' },
+  { slug: 'moderacao', label: 'Moderação', icon: 'moderation', deliveredBy: 'CF-095' },
+  { slug: 'relatorios', label: 'Relatórios', icon: 'reports', deliveredBy: 'CF-106' },
 ];
 
 export function findSection(slug: string): NavItem | undefined {

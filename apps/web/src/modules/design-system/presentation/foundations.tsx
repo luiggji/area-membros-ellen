@@ -151,7 +151,7 @@ export function TypographySample() {
     <div className="grid gap-8 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 sm:p-8 lg:grid-cols-2">
       <div className="flex flex-col gap-4">
         <p className="text-xs text-cf-text-secondary">
-          Editorial — Cormorant Garamond (proposta, R-004) · só títulos de destaque
+          Editorial — Cormorant Garamond (proposta, R-004, OFL no repo) · só títulos de destaque
         </p>
         <p className="font-editorial text-6xl leading-none font-semibold text-cf-sidebar">
           Caixa Forte
@@ -161,7 +161,7 @@ export function TypographySample() {
       </div>
       <div className="flex flex-col gap-4">
         <p className="text-xs text-cf-text-secondary">
-          Interface — Inter (proposta) · corpo, controles, números e tabelas
+          Interface — Inter (proposta, OFL no repo) · corpo, controles, números e tabelas
         </p>
         <p className="text-[0.7rem] font-medium tracking-[0.24em] text-cf-primary uppercase">
           Rótulo de seção
@@ -206,6 +206,12 @@ export function SpacingSample() {
           <dt className="text-cf-text-secondary">Largura do conteúdo</dt>
           <dd className="font-medium text-cf-text">
             <code>--spacing-content-max</code> 1180px
+          </dd>
+        </div>
+        <div>
+          <dt className="text-cf-text-secondary">Largura do painel da equipe</dt>
+          <dd className="font-medium text-cf-text">
+            <code>--spacing-admin-max</code> 1440px
           </dd>
         </div>
         <div>

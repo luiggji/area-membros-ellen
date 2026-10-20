@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  adminNav,
   exampleCourses,
   findSection,
   HOME_LIMITS,
@@ -19,7 +20,7 @@ describe('protótipo — regras do doc G', () => {
   });
 
   it('cada destino aponta o item do backlog que entrega a tela real', () => {
-    for (const item of [...primaryNav, ...moreNav]) {
+    for (const item of [...primaryNav, ...moreNav, ...adminNav]) {
       expect(item.deliveredBy).toMatch(/^CF-\d{3}$/);
     }
   });

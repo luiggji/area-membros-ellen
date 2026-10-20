@@ -30,7 +30,7 @@ language plpgsql
 stable
 security definer
 set search_path = ''
-as $
+as $$
 declare
   found uuid;
 begin
@@ -40,7 +40,7 @@ begin
   end if;
   return found;
 end;
-$;
+$$;
 
 -- Passa a agir como o usuário (role authenticated + claims do JWT), como o PostgREST faria.
 -- Precisa ser security invoker: o Postgres não deixa trocar de role dentro de security definer.
@@ -48,7 +48,7 @@ create or replace function tests.authenticate_as(identifier text)
 returns void
 language plpgsql
 set search_path = ''
-as $
+as $$
 declare
   user_id uuid := tests.user_id(identifier);
 begin

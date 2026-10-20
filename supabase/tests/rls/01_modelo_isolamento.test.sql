@@ -38,12 +38,12 @@ select results_eq(
 select tests.authenticate_as('bruno');
 select is_empty($$ select * from public.rls_exemplo $$, 'B não lê o registro de A');
 select lives_ok(
-  $ update public.rls_exemplo set conteudo = 'invadido' $,
+  $$ update public.rls_exemplo set conteudo = 'invadido' $$,
   'update de B roda, mas não atinge o registro de A (conferido no fim)'
 );
 select throws_ok(
-  $ insert into public.rls_exemplo (owner_id, conteudo)
-     values (current_setting('tests.ana_id')::uuid, 'forjado') $,
+  $$ insert into public.rls_exemplo (owner_id, conteudo)
+     values (tests.user_id('ana'), 'forjado') $$,
   '42501',
   'new row violates row-level security policy for table "rls_exemplo"',
   'B não cria registro em nome de A'

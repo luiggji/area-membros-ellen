@@ -51,6 +51,7 @@ Dependências só apontam para dentro: `domain` não importa Nest/Next/Supabase;
 8. Nunca push direto/force em `main`/`develop`, merge, deploy, migration destrutiva, gasto com serviço ou mudança em produção **sem autorização explícita**.
 9. Não apagar mudanças locais de terceiros; não refatorar/reformatar fora do escopo da Issue.
 10. Não declarar "pronto", "CI verde" ou "QA aprovado" sem evidência executada.
+11. **Sempre algo para ver:** toda onda do `docs/BACKLOG.md` tem pelo menos uma entrega visual, e toda Issue declara a sua (tela/estado/rota ou onde o backend aparece: `/design`, `/status`, admin). Ao planejar backlog novo, incluir itens de design em cada onda.
 
 ## Prioridades (não confundir)
 

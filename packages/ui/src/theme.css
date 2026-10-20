@@ -39,6 +39,7 @@
   --radius-card: 16px;
   --spacing-sidebar: 236px;
   --spacing-content-max: 1180px;
+  --spacing-admin-max: 1440px;
 }
 
 @layer base {

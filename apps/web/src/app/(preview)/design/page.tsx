@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import {
   ButtonsSample,
   CardsSample,
+  LayoutsSample,
   StatesSample,
 } from '@/modules/design-system/presentation/components';
 import {
@@ -30,7 +31,8 @@ export default function DesignPage() {
             Minimalista, editorial, acolhedor
           </h1>
           <p className="max-w-[65ch] text-cf-text-secondary">
-            Tokens <strong className="font-medium text-cf-text">propostos</strong> em{' '}
+            Tokens e componentes de <code>@caixa-forte/ui</code>, com valores{' '}
+            <strong className="font-medium text-cf-text">propostos</strong> em{' '}
             <code>packages/ui/src/theme.css</code>, pendentes de homologação da Ellen (HEX, logo e
             fontes — P-006). Mudanças de paleta ou tipografia passam pelo Decision Log.
           </p>
@@ -66,6 +68,14 @@ export default function DesignPage() {
           description="Base de 4 e 8px, muito respiro entre seções, raio suave nos cards."
         >
           <SpacingSample />
+        </Section>
+
+        <Section
+          id="layouts"
+          title="Layouts"
+          description="Três shells de @caixa-forte/ui. Membro e equipe dividem o AppShell; o público usa o PublicShell."
+        >
+          <LayoutsSample />
         </Section>
 
         <Section

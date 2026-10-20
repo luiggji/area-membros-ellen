@@ -1,13 +1,19 @@
 import {
   BookOpen,
+  CalendarDays,
   CalendarCheck,
   ChartNoAxesColumn,
+  ChartPie,
   Coffee,
   Crown,
+  FilePen,
   House,
+  LayoutDashboard,
   LifeBuoy,
   type LucideIcon,
   Radio,
+  ScanLine,
+  ShieldCheck,
   UserRoundSearch,
   Users,
   Vault,
@@ -27,6 +33,12 @@ const icons: Record<NavIconName, LucideIcon> = {
   vault: Vault,
   planning: CalendarCheck,
   help: LifeBuoy,
+  overview: LayoutDashboard,
+  events: CalendarDays,
+  checkin: ScanLine,
+  content: FilePen,
+  moderation: ShieldCheck,
+  reports: ChartPie,
 };
 
 export function NavIcon({ name, className }: { name: NavIconName; className?: string }) {

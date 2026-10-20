@@ -1,17 +1,23 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import './globals.css';
 
 // Fontes PROPOSTAS (R-004, pendente de homologação): serifada só em títulos editoriais.
-const editorial = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['500', '600'],
+// Hospedadas no repo (SIL OFL 1.1, licenças em src/shared/fonts) para o build não depender de rede.
+const editorial = localFont({
+  src: '../shared/fonts/cormorant-garamond-latin-wght.woff2',
+  weight: '300 700',
   variable: '--font-cormorant',
   display: 'swap',
 });
 
-const sans = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const sans = localFont({
+  src: '../shared/fonts/inter-latin-wght.woff2',
+  weight: '100 900',
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Caixa Forte',

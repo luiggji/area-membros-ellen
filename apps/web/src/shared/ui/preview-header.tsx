@@ -1,4 +1,4 @@
-import { cn } from '@caixa-forte/ui';
+import { BrandMark, cn } from '@caixa-forte/ui';
 import Link from 'next/link';
 
 const links = [
@@ -12,10 +12,8 @@ export function PreviewHeader({ active }: { active: '/design' | '/status' }) {
   return (
     <header className="border-b border-cf-border bg-cf-surface">
       <div className="mx-auto flex max-w-(--spacing-content-max) flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-8">
-        <div className="flex flex-col">
-          <span className="font-editorial text-xl tracking-[0.14em] text-cf-sidebar uppercase">
-            Caixa Forte
-          </span>
+        <div className="flex flex-col gap-1">
+          <BrandMark tone="on-light" />
           <span className="text-xs text-cf-text-secondary">Rota interna · fora de produção</span>
         </div>
         <nav aria-label="Rotas internas" className="flex gap-1">

@@ -1,10 +1,10 @@
-import { cn } from '@caixa-forte/ui';
+import { AppShell, BrandMark, Button } from '@caixa-forte/ui';
 import { Bell, Search } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { BrandMark, hrefFor, NavLinks, PROTOTYPE_BASE } from './nav-links';
 import { MobileNav } from './mobile-nav';
+import { hrefFor, NavLinks, PROTOTYPE_BASE, TEAM_PROTOTYPE_HREF, TeamNavLinks } from './nav-links';
 
 /** Faixa fixa que impede o protótipo de ser confundido com a plataforma real. */
 function PrototypeNotice() {
@@ -21,6 +21,10 @@ function PrototypeNotice() {
         |{' '}
         <Link className="underline underline-offset-2" href={`${PROTOTYPE_BASE}?estado=novo`}>
           novo membro
+        </Link>{' '}
+        |{' '}
+        <Link className="underline underline-offset-2" href={TEAM_PROTOTYPE_HREF}>
+          equipe
         </Link>
       </span>
     </div>
@@ -28,21 +32,21 @@ function PrototypeNotice() {
 }
 
 /** Avatar sem foto: placeholder não personalizado (doc G §4.5). */
-function MemberGreeting() {
+function Greeting({ initial, name }: { initial: string; name: string }) {
   return (
     <span className="flex items-center gap-3">
       <span
         aria-hidden
         className="grid size-10 place-items-center rounded-full bg-blush-200 font-medium text-cf-primary"
       >
-        M
+        {initial}
       </span>
-      <span className="hidden text-sm text-cf-text sm:inline">Olá, Membro</span>
+      <span className="hidden text-sm text-cf-text sm:inline">{name}</span>
     </span>
   );
 }
 
-function IconButton({
+function UnavailableIconButton({
   label,
   className,
   children,
@@ -52,21 +56,57 @@ function IconButton({
   children: ReactNode;
 }) {
   return (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
+      size="icon"
       disabled
       title={`${label} — entra em uma Issue futura`}
-      className={cn(
-        'grid size-11 place-items-center rounded-full text-cf-text-secondary disabled:cursor-not-allowed',
-        className,
-      )}
+      className={className}
     >
       {children}
       <span className="sr-only">{label} (indisponível no protótipo)</span>
-    </button>
+    </Button>
   );
 }
 
+function Topbar({ home, nav, greeting }: { home: string; nav: ReactNode; greeting: ReactNode }) {
+  return (
+    <>
+      <div className="flex items-center gap-2 lg:hidden">
+        <MobileNav>
+          <BrandMark className="px-2" />
+          {nav}
+        </MobileNav>
+        <Link
+          href={home}
+          className="font-editorial text-base tracking-[0.12em] whitespace-nowrap text-cf-sidebar uppercase sm:text-lg sm:tracking-[0.18em]"
+        >
+          Caixa Forte
+        </Link>
+      </div>
+      <div className="ms-auto flex items-center gap-1 sm:gap-3">
+        <UnavailableIconButton label="Buscar">
+          <Search aria-hidden className="size-5" strokeWidth={1.6} />
+        </UnavailableIconButton>
+        <UnavailableIconButton label="Avisos" className="max-sm:hidden">
+          <Bell aria-hidden className="size-5" strokeWidth={1.6} />
+        </UnavailableIconButton>
+        {greeting}
+      </div>
+    </>
+  );
+}
+
+function SidebarBrand({ href, label }: { href: string; label: string }) {
+  return (
+    <Link href={href} className="px-2">
+      <BrandMark />
+      <span className="sr-only">{label}</span>
+    </Link>
+  );
+}
+
+/** Área do membro: sidebar com até 6 destinos + "Mais" e largura de leitura. */
 export function PrototypeShell({
   activeSlug,
   children,
@@ -74,48 +114,55 @@ export function PrototypeShell({
   activeSlug: string;
   children: ReactNode;
 }) {
+  const nav = <NavLinks activeSlug={activeSlug} />;
   return (
-    <div className="flex min-h-dvh flex-col">
-      <PrototypeNotice />
-      <div className="flex flex-1">
-        <aside className="hidden w-(--spacing-sidebar) shrink-0 flex-col gap-12 bg-cf-sidebar px-5 py-10 lg:flex">
-          <Link href={hrefFor('')} className="px-4">
-            <BrandMark />
-            <span className="sr-only">Início</span>
-          </Link>
-          <NavLinks activeSlug={activeSlug} />
-        </aside>
+    <AppShell
+      banner={<PrototypeNotice />}
+      sidebar={
+        <>
+          <SidebarBrand href={hrefFor('')} label="Início" />
+          {nav}
+        </>
+      }
+      topbar={
+        <Topbar
+          home={hrefFor('')}
+          nav={nav}
+          greeting={<Greeting initial="M" name="Olá, Membro" />}
+        />
+      }
+    >
+      {children}
+    </AppShell>
+  );
+}
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-18 items-center justify-between gap-4 px-4 sm:px-8 lg:justify-end lg:px-12">
-            <div className="flex items-center gap-2 lg:hidden">
-              <MobileNav>
-                <BrandMark className="px-4" />
-                <NavLinks activeSlug={activeSlug} />
-              </MobileNav>
-              <Link
-                href={hrefFor('')}
-                className="font-editorial text-base tracking-[0.12em] whitespace-nowrap text-cf-sidebar uppercase sm:text-lg sm:tracking-[0.18em]"
-              >
-                Caixa Forte
-              </Link>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-3">
-              <IconButton label="Buscar">
-                <Search aria-hidden className="size-5" strokeWidth={1.6} />
-              </IconButton>
-              <IconButton label="Avisos" className="max-sm:hidden">
-                <Bell aria-hidden className="size-5" strokeWidth={1.6} />
-              </IconButton>
-              <MemberGreeting />
-            </div>
-          </header>
-
-          <main className="mx-auto w-full max-w-(--spacing-content-max) flex-1 px-4 pb-16 sm:px-8 lg:px-12">
-            {children}
-          </main>
-        </div>
-      </div>
-    </div>
+/** Painel da equipe (doc G §4.9): mesmo esqueleto, navegação própria e largura para tabelas. */
+export function TeamPrototypeShell({ children }: { children: ReactNode }) {
+  return (
+    <AppShell
+      width="wide"
+      banner={<PrototypeNotice />}
+      sidebar={
+        <>
+          <div className="flex flex-col gap-3">
+            <SidebarBrand href={TEAM_PROTOTYPE_HREF} label="Visão geral da equipe" />
+            <span className="px-2 text-[0.7rem] font-medium tracking-[0.24em] text-champagne-500 uppercase">
+              Painel da equipe
+            </span>
+          </div>
+          <TeamNavLinks />
+        </>
+      }
+      topbar={
+        <Topbar
+          home={TEAM_PROTOTYPE_HREF}
+          nav={<TeamNavLinks />}
+          greeting={<Greeting initial="E" name="Equipe" />}
+        />
+      }
+    >
+      {children}
+    </AppShell>
   );
 }

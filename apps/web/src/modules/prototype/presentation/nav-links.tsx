@@ -1,32 +1,21 @@
 import { cn } from '@caixa-forte/ui';
-import { ChevronDown, LockKeyhole } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 
-import { moreNav, type NavItem, primaryNav } from '../domain/fixtures';
+import { adminNav, moreNav, type NavItem, primaryNav } from '../domain/fixtures';
 import { NavIcon } from './nav-icon';
 
 export const PROTOTYPE_BASE = '/prototipo';
+export const TEAM_PROTOTYPE_HREF = `${PROTOTYPE_BASE}/equipe`;
 
 export function hrefFor(slug: string): string {
   return slug ? `${PROTOTYPE_BASE}/${slug}` : PROTOTYPE_BASE;
 }
 
-/** Marca tipográfica provisória: o cadeado da referência não é logo oficial (doc G §6, P-006). */
-export function BrandMark({ className }: { className?: string }) {
-  return (
-    <span className={cn('flex items-center gap-3 text-cream-50', className)}>
-      <LockKeyhole aria-hidden className="size-7 text-champagne-500" strokeWidth={1.4} />
-      <span className="font-editorial text-xl leading-none tracking-[0.18em] uppercase">
-        Caixa Forte
-      </span>
-    </span>
-  );
-}
-
-function NavLink({ item, active }: { item: NavItem; active: boolean }) {
+function NavLink({ item, active, href }: { item: NavItem; active: boolean; href: string }) {
   return (
     <Link
-      href={hrefFor(item.slug)}
+      href={href}
       aria-current={active ? 'page' : undefined}
       className={cn(
         'flex min-h-11 items-center gap-3 rounded-xl px-4 text-[0.95rem] text-cream-50/80 transition-colors duration-200',
@@ -49,7 +38,12 @@ export function NavLinks({ activeSlug }: { activeSlug: string }) {
   return (
     <nav aria-label="Navegação principal" className="flex flex-col gap-1">
       {primaryNav.map((item) => (
-        <NavLink key={item.slug} item={item} active={item.slug === activeSlug} />
+        <NavLink
+          key={item.slug}
+          item={item}
+          href={hrefFor(item.slug)}
+          active={item.slug === activeSlug}
+        />
       ))}
       <details className="group" open={moreIsActive}>
         <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 rounded-xl px-4 text-[0.95rem] text-cream-50/80 hover:bg-cream-50/8 hover:text-cream-50 focus-visible:outline-champagne-500 [&::-webkit-details-marker]:hidden">
@@ -62,10 +56,31 @@ export function NavLinks({ activeSlug }: { activeSlug: string }) {
         </summary>
         <div className="mt-1 flex flex-col gap-1 pl-2 [&_a]:text-sm">
           {moreNav.map((item) => (
-            <NavLink key={item.slug} item={item} active={item.slug === activeSlug} />
+            <NavLink
+              key={item.slug}
+              item={item}
+              href={hrefFor(item.slug)}
+              active={item.slug === activeSlug}
+            />
           ))}
         </div>
       </details>
+    </nav>
+  );
+}
+
+/** Navegação do painel da equipe: cada item leva ao bloco que explica qual Issue o entrega. */
+export function TeamNavLinks() {
+  return (
+    <nav aria-label="Navegação da equipe" className="flex flex-col gap-1">
+      {adminNav.map((item) => (
+        <NavLink
+          key={item.slug}
+          item={item}
+          href={item.slug ? `${TEAM_PROTOTYPE_HREF}#${item.slug}` : TEAM_PROTOTYPE_HREF}
+          active={item.slug === ''}
+        />
+      ))}
     </nav>
   );
 }

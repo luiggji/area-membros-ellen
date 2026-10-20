@@ -4,9 +4,18 @@ import { z } from 'zod';
  * Variáveis PÚBLICAS (expostas ao browser). Segredos (service_role, gateway) nunca entram aqui:
  * ficam só na API ou em código server-only.
  */
+const optionalText = z
+  .string()
+  .trim()
+  .optional()
+  .transform((value) => value || undefined);
+
 const publicEnvSchema = z.object({
   NEXT_PUBLIC_APP_URL: z.url().default('http://localhost:3000'),
   NEXT_PUBLIC_API_URL: z.url().default('http://localhost:4000/api/v1'),
+  // Supabase (CF-012/CF-156): só URL e chave pública (anon/publishable). Opcionais até P-014.
+  NEXT_PUBLIC_SUPABASE_URL: optionalText.pipe(z.url().optional()),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalText,
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;
@@ -23,4 +32,6 @@ export function parsePublicEnv(source: Record<string, string | undefined>): Publ
 export const publicEnv = parsePublicEnv({
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 });

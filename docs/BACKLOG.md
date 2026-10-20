@@ -89,7 +89,7 @@
 | 1.9 | **CF-154 (novo)** | P0 | Seeds fictícios dev/staging (planos R$89/R$790 de referência, usuários de teste por papel, sem dados reais). *Justificativa: B §5 exige seed e proíbe constantes no frontend.* | CF-016 | `chore/<issue>-seeds-ficticios` | S | — | #18 |
 | 1.10 | **CF-155 (novo)** | P0 | Suíte pgTAP para RLS rodando no CI (base para CF-033/CF-122). *Justificativa: RLS precisa de teste automatizado por PR, não só E2E.* | CF-016, CF-013 | `test/<issue>-pgtap-rls-ci` | M | — | #19 |
 | 1.11 | CF-017 | P0 | Logs estruturados, error tracking e healthcheck (correlation ID, sem PII) | CF-010 | `feat/<issue>-observabilidade` | M | P-014 | #20 |
-| 1.12 | CF-019 | P0 | Gerenciamento de segredos e scanning de dependências | CF-012 | `chore/<issue>-segredos-scan` | S | — | #21 |
+| 1.12 | CF-019 | P0 | Gerenciamento de segredos e scanning de dependências (inclui subir `minimumReleaseAge` do pnpm de 1 para 7 dias após 2026-10-25) | CF-012 | `chore/<issue>-segredos-scan` | S | — | #21 |
 | 1.13 | **CF-152 (novo)** | P0 | Rate limiting e headers de segurança (helmet/CSP, cookies) em web e API. *Justificativa: controles P0 do PRD §09 e E §8 sem item próprio no doc C.* | CF-010 | `feat/<issue>-rate-limit-headers` | M | — | #22 |
 | 1.14 | **CF-151 (novo)** | P0 | OpenAPI/Swagger da API `/api/v1` gerado do código, sem segredos. *Justificativa: E §11 lista OpenAPI como artefato obrigatório.* | CF-010 | `feat/<issue>-openapi` | S | — | #23 |
 | 1.15 | **CF-161 (novo)** | P0 | Audit log genérico append-only (`audit_logs`) + helper de uso nos módulos. *Justificativa: exigido por CF-041/048/061/070/095, mas sem item base.* | CF-016 | `feat/<issue>-audit-log` | M | — | #24 |

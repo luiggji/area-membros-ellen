@@ -56,7 +56,7 @@ export function EditorialHero() {
     <section className="grid items-center gap-8 pt-4 md:grid-cols-[1.1fr_1fr]">
       <div className="flex flex-col gap-3">
         <Eyebrow>Bem-vindo(a)</Eyebrow>
-        <h1 className="font-editorial text-5xl leading-none font-semibold text-cf-sidebar sm:text-6xl">
+        <h1 className="font-editorial tracking-tight text-5xl leading-none text-cf-sidebar sm:text-6xl">
           Caixa Forte
         </h1>
         <p className="font-editorial text-2xl text-cf-sidebar">
@@ -95,7 +95,7 @@ export function JourneyFocusCard({ variant }: { variant: HomeVariant }) {
           <Eyebrow>{isNew ? 'Comece por aqui' : 'Minha jornada'}</Eyebrow>
           <ExampleTag />
         </div>
-        <h2 id="jornada-titulo" className="font-editorial text-3xl font-semibold text-cf-sidebar">
+        <h2 id="jornada-titulo" className="font-editorial tracking-tight text-3xl text-cf-sidebar">
           {isNew ? 'Diagnóstico inicial' : exampleJourney.title}
         </h2>
         <p className="text-cf-text-secondary">
@@ -150,7 +150,7 @@ function CourseCard({ course }: { course: ExampleCourse }) {
           </span>
         </div>
         <div className="flex flex-1 flex-col gap-1 p-3 sm:p-5">
-          <h3 className="font-editorial text-base leading-tight font-semibold text-cf-sidebar sm:text-xl">
+          <h3 className="font-editorial tracking-tight text-base leading-tight text-cf-sidebar sm:text-xl">
             {course.title}
           </h3>
           <p className="hidden text-sm text-cf-text-secondary sm:block">{course.summary}</p>
@@ -210,7 +210,7 @@ function AuxiliaryCard({
       </span>
       <div className="flex flex-1 flex-col gap-2">
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h3 className="font-editorial text-2xl font-semibold text-cf-sidebar">{title}</h3>
+        <h3 className="font-editorial tracking-tight text-2xl text-cf-sidebar">{title}</h3>
         {children}
       </div>
     </article>

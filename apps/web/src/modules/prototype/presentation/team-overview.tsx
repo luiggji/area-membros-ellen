@@ -17,7 +17,7 @@ export function TeamOverview() {
         <p className="text-[0.7rem] font-medium tracking-[0.24em] text-cf-primary uppercase">
           Painel da equipe
         </p>
-        <h1 className="font-editorial text-4xl font-semibold text-cf-sidebar sm:text-5xl">
+        <h1 className="font-editorial tracking-tight text-4xl text-cf-sidebar sm:text-5xl">
           Visão geral
         </h1>
         <p className="max-w-[60ch] text-cf-text-secondary">

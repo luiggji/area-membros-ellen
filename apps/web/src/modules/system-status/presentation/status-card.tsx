@@ -25,7 +25,7 @@ export function StatusCard({
     <article className="flex flex-col gap-5 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 sm:p-8">
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h2 className="font-editorial text-2xl font-semibold text-cf-sidebar">{title}</h2>
+          <h2 className="font-editorial tracking-tight text-2xl text-cf-sidebar">{title}</h2>
           <p className="text-sm text-cf-text-secondary">{summary}</p>
         </div>
         <span className={cn('flex shrink-0 items-center gap-2 text-sm font-medium', style.text)}>

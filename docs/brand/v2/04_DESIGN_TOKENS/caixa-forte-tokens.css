@@ -1,0 +1,63 @@
+/* CAIXA FORTE — DESIGN TOKENS V2. Do not include in site unscoped without evaluating cascade. */
+:root {
+  --cf-plum950: #321927;
+  --cf-burgundy: #4B1E2E;
+  --cf-wine700: #693548;
+  --cf-rose: #A97887;
+  --cf-rose-soft: #E9D3CD;
+  --cf-cream: #FAF7F3;
+  --cf-sand: #F3EAE4;
+  --cf-champagne: #C39B83;
+  --cf-gold: #D6B895;
+  --cf-ink: #30232B;
+  --cf-muted: #655B60;
+  --cf-border: #E5D9D2;
+  --cf-white: #FFFFFF;
+  --cf-success: #27654A;
+  --cf-danger: #A32D44;
+  --cf-info: #235C7A;
+  --cf-color-background: #FAF7F3;
+  --cf-color-surface: #FFFFFF;
+  --cf-color-surfaceSubtle: #F3EAE4;
+  --cf-color-sidebar: #321927;
+  --cf-color-primary: #693548;
+  --cf-color-primaryHover: #4B1E2E;
+  --cf-color-text: #30232B;
+  --cf-color-textMuted: #655B60;
+  --cf-color-border: #E5D9D2;
+  --cf-color-focus: #693548;
+  --cf-color-accent: #C39B83;
+  --cf-color-success: #27654A;
+  --cf-color-danger: #A32D44;
+  --cf-color-info: #235C7A;
+  --cf-space-1: 4px;
+  --cf-space-2: 8px;
+  --cf-space-3: 12px;
+  --cf-space-4: 16px;
+  --cf-space-5: 20px;
+  --cf-space-6: 24px;
+  --cf-space-8: 32px;
+  --cf-space-10: 40px;
+  --cf-space-12: 48px;
+  --cf-space-16: 64px;
+  --cf-radius-sm: 8px;
+  --cf-radius-md: 12px;
+  --cf-radius-card: 16px;
+  --cf-radius-lg: 20px;
+  --cf-radius-pill: 999px;
+  --cf-shadow-card: 0 4px 16px rgba(47,27,32,.08);
+  --cf-shadow-hover: 0 10px 30px rgba(47,27,32,.11);
+  --cf-font-display: "Playfair Display", Georgia, serif;
+  --cf-font-body: Inter, system-ui, sans-serif;
+  --cf-sidebar-width: 232px;
+  --cf-content-max: 1180px;
+  --cf-focus-ring: 0 0 0 3px rgba(105,53,72,.32);
+}
+
+.cf-app { background: var(--cf-color-background); color: var(--cf-color-text); font-family: var(--cf-font-body); }
+.cf-app :focus-visible { outline: 2px solid var(--cf-color-focus); outline-offset: 3px; }
+.cf-display { font-family: var(--cf-font-display); font-weight: 400; letter-spacing: -.025em; }
+.cf-card { background: var(--cf-color-surface); border: 1px solid var(--cf-color-border); border-radius: var(--cf-radius-card); }
+.cf-button-primary { min-height: 44px; color: #fff; background: var(--cf-color-primary); border-radius: 12px; padding: 0 20px; font-weight: 600; }
+.cf-button-primary:hover { background: var(--cf-burgundy); }
+@media(prefers-reduced-motion:reduce){.cf-app *, .cf-app *::before, .cf-app *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }}

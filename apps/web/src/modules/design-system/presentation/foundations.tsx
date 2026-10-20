@@ -19,7 +19,7 @@ export function Section({
   return (
     <section aria-labelledby={id} className="flex flex-col gap-6 border-t border-cf-border pt-10">
       <div className="flex flex-col gap-1">
-        <h2 id={id} className="font-editorial text-3xl font-semibold text-cf-sidebar">
+        <h2 id={id} className="font-editorial tracking-tight text-3xl text-cf-sidebar">
           {title}
         </h2>
         <p className="max-w-[65ch] text-sm text-cf-text-secondary">{description}</p>
@@ -151,17 +151,17 @@ export function TypographySample() {
     <div className="grid gap-8 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 sm:p-8 lg:grid-cols-2">
       <div className="flex flex-col gap-4">
         <p className="text-xs text-cf-text-secondary">
-          Editorial — Cormorant Garamond (proposta, R-004, OFL no repo) · só títulos de destaque
+          Display — Playfair Display (Brand V2, OFL no repo) · hero, curso, campanhas
         </p>
-        <p className="font-editorial text-6xl leading-none font-semibold text-cf-sidebar">
+        <p className="font-editorial tracking-tight text-6xl leading-none text-cf-sidebar">
           Caixa Forte
         </p>
-        <p className="font-editorial text-3xl font-semibold text-cf-sidebar">Título de seção</p>
-        <p className="font-editorial text-xl font-semibold text-cf-sidebar">Título de card</p>
+        <p className="font-editorial tracking-tight text-3xl text-cf-sidebar">Título de seção</p>
+        <p className="font-editorial tracking-tight text-xl text-cf-sidebar">Título de card</p>
       </div>
       <div className="flex flex-col gap-4">
         <p className="text-xs text-cf-text-secondary">
-          Interface — Inter (proposta, OFL no repo) · corpo, controles, números e tabelas
+          Interface — Inter (Brand V2, OFL no repo) · ações, tabelas, formulários e números
         </p>
         <p className="text-[0.7rem] font-medium tracking-[0.24em] text-cf-primary uppercase">
           Rótulo de seção
@@ -199,7 +199,7 @@ export function SpacingSample() {
         <div>
           <dt className="text-cf-text-secondary">Sidebar</dt>
           <dd className="font-medium text-cf-text">
-            <code>--spacing-sidebar</code> 236px
+            <code>--spacing-sidebar</code> 232px
           </dd>
         </div>
         <div>

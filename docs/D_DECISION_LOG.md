@@ -19,14 +19,15 @@
 | D-011 | Seven Box independente de preços e acesso | No máximo link/cupom promocional separado |
 | D-012 | Ingresso de acesso **digital**; kit físico personalizado entregue no Café | QR e check-in, sem tíquete físico obrigatório |
 | **D-013** | **19/10/2026: aprovada direção visual minimalista, leve, com menos informação, espaço generoso, sidebar vinho e canvas creme** | Substitui os antigos mockups densos como referência primária da home. Não altera recursos P0. Asset: `references/REFERENCIA_APROVADA_DASHBOARD_MINIMALISTA.png` |
+| **D-014** | **20/10/2026: adotado o Brand System V2 da agência** (`docs/brand/v2`) como fonte de identidade visual: logotipo e símbolo em PNG como marca oficial de trabalho, Playfair Display (títulos) + Inter (UI), tokens de `tokens.semantic.json` | Substitui as sementes de cor/fonte da v1.1 (R-002, R-004) e o cadeado provisório. Não muda a densidade do doc G nem o escopo P0. A agência marca HEX e fontes como "propostos para homologação": ajuste final da Ellen entra aqui e em `packages/ui/src/theme.css` |
 
 ## B. Diretrizes e referências em avaliação
 | ID | Posição atual | Observação |
 |---|---|---|
 | R-001 | **Caixa Forte** é o nome de trabalho preferido e usado pela cliente | Marca, símbolo, slogan e domínio necessitam validação final |
-| R-002 | Paleta: ameixa/vinho, rosé suave, creme/marfim, champagne | **Direção cromática aceita; HEX exatos v1.1 ainda propostos**, validar contraste e identidade oficial |
+| R-002 | Paleta: ameixa/vinho, rosé suave, creme/marfim, champagne | **Direção cromática aceita; HEX do Brand V2 adotados (D-014)**, homologação final com Ellen |
 | R-003 | Ícone sóbrio de chave/fechadura/cofre e cartões editoriais discretos | Sem 3D exuberante ou excesso metálico; mockups não são marca/ativos finais |
-| R-004 | Tipos editoriais Fraunces/Cormorant e UI Inter/Manrope | Escolha e licença a confirmar |
+| R-004 | Tipos editoriais Fraunces/Cormorant e UI Inter/Manrope | Superada por D-014: Playfair Display + Inter (OFL 1.1, hospedadas no repo) |
 | R-005 | 8 cursos/trilhas e conteúdo Planejamento 2027 | Taxonomia e ordem editorial editáveis; conteúdos reais a produzir |
 | R-006 | Café-piloto em Ourinhos/SP, 26/11/2026, ~20 vagas, recepção 18h30 | Estabelecimento, data e horário ainda sujeitos a confirmação |
 | R-007 | Lotes piloto: 6 × R$89 e 14 × R$109 | Proposta comercial histórica, não tarifa imutável |
@@ -59,7 +60,7 @@
 | P-003 | Política de estorno do café, transferência de ingressos e cancelamento da edição | Ellen + jurídico | Antes de vender ingressos |
 | P-004 | Empresa/CNPJ responsável pelas vendas e notas fiscais; tributação real | Ellen + contador | Antes de produção |
 | P-005 | Domínio da plataforma independente e destino futuro no site Ellen Conrado | Ellen + Luiggi | Antes do DNS de produção |
-| P-006 | Logomarca definitiva, fonte oficial, **fotografias reais autorizadas**, paleta HEX exata e titularidade das artes | Ellen | Antes de publicar marca comercial final |
+| P-006 | Logomarca definitiva, fonte oficial, **fotografias reais autorizadas**, paleta HEX exata e titularidade das artes. *20/10/2026: logo, fontes e paleta recebidas no Brand V2 (D-014); faltam fotos reais, master vetorial do símbolo, registro de marca e homologação final* | Ellen | Antes de publicar marca comercial final |
 | P-007 | Provedor de vídeo, armazenamento/DRM equivalente e custo mensal | Luiggi + Ellen | Antes do player de produção |
 | P-008 | Provedor de e-mail transacional, remetente e domínio autenticado | Luiggi | Antes dos ingressos reais |
 | P-009 | Conteúdo efetivamente disponível e calendário editorial prometido | Ellen | Antes da primeira venda |

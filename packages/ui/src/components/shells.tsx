@@ -44,7 +44,7 @@ export function AppShell({ sidebar, topbar, banner, width = 'reading', children 
           </div>
         </aside>
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex h-18 items-center justify-between gap-4 px-4 sm:px-8 lg:px-12">
+          <header className="flex h-(--spacing-topbar) items-center justify-between gap-4 px-4 sm:px-8 lg:px-12">
             {topbar}
           </header>
           <main

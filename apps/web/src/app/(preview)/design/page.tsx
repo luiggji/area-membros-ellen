@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import {
+  BrandSample,
   ButtonsSample,
   CardsSample,
   LayoutsSample,
@@ -25,18 +26,26 @@ export default function DesignPage() {
       <main className="mx-auto flex max-w-(--spacing-content-max) flex-col gap-12 px-4 py-12 sm:px-8">
         <div className="flex flex-col gap-3">
           <p className="text-[0.7rem] font-medium tracking-[0.24em] text-cf-primary uppercase">
-            Design system v1.1
+            Brand System V2
           </p>
-          <h1 className="font-editorial text-5xl font-semibold text-cf-sidebar">
+          <h1 className="font-editorial tracking-tight text-5xl text-cf-sidebar">
             Minimalista, editorial, acolhedor
           </h1>
           <p className="max-w-[65ch] text-cf-text-secondary">
-            Tokens e componentes de <code>@caixa-forte/ui</code>, com valores{' '}
-            <strong className="font-medium text-cf-text">propostos</strong> em{' '}
-            <code>packages/ui/src/theme.css</code>, pendentes de homologação da Ellen (HEX, logo e
-            fontes — P-006). Mudanças de paleta ou tipografia passam pelo Decision Log.
+            Marca, tokens e componentes do Brand System V2 da agência (<code>docs/brand/v2</code>),
+            aplicados em <code>@caixa-forte/ui</code>. A direção visual está aprovada; HEX e fontes
+            ainda passam pela homologação da Ellen (D-014, P-006). Mudanças passam pelo Decision
+            Log.
           </p>
         </div>
+
+        <Section
+          id="marca"
+          title="Marca"
+          description="PNGs oficiais de trabalho do Brand System V2. Não recolorir, distorcer, separar o símbolo nem aplicar sobre fundo ruidoso."
+        >
+          <BrandSample />
+        </Section>
 
         <Section
           id="cores"

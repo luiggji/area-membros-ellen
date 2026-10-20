@@ -29,6 +29,10 @@ pnpm build      →
 - [ ] Migration aditiva / plano de rollback descrito — ou N/A
 - [ ] Contrato da API (`@caixa-forte/contracts` / OpenAPI) atualizado — ou N/A
 
+## Entrega visual (obrigatória — regra do projeto)
+
+<!-- O que dá para ver depois desta PR: tela, estado, rota ou página (/design, /status, admin). Screenshots aqui. -->
+
 ## UI (se aplicável — docs/G_DESIGN_SYSTEM_MINIMALISTA.md)
 
 - [ ] Screenshots reais 1440px e 390px anexados

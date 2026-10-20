@@ -55,6 +55,14 @@ body:
     attributes:
       label: Dependências (CF-IDs) e decisões pendentes (P-###)
   - type: textarea
+    id: visual
+    attributes:
+      label: Entrega visual (obrigatória)
+      description: O que passa a ser visto ao concluir. Se for só backend, onde o resultado aparece (/design, /status, admin, preview de e-mail). "N/A" só com justificativa.
+      placeholder: 'Ex.: tela /assinatura com estados ativa/pendente/expirada (1440px e 390px).'
+    validations:
+      required: true
+  - type: textarea
     id: ui
     attributes:
       label: Referência de UI (se aplicável)

@@ -9,3 +9,15 @@ allowBuilds:
   unrs-resolver: true
   # usa binário pré-compilado; script de build desnecessário
   '@parcel/watcher': false
+
+# Supply chain (semgrep): versões novas só após um período de quarentena; sem downgrade de
+# confiança; sem deps transitivas vindas de git/tarball.
+# 1 dia por enquanto: o lockfile inicial tem versões publicadas há < 7 dias. Subir para
+# 10080 (7 dias) e remover o nosemgrep quando todas tiverem mais de uma semana — Issue #21.
+minimumReleaseAge: 1440 # nosemgrep: package_managers.pnpm.pnpm-missing-minimum-release-age.pnpm-minimum-release-age -- temporário, #21
+trustPolicy: no-downgrade
+# Versões antigas legítimas publicadas antes do npm ter provenance (falso positivo de downgrade).
+trustPolicyExclude:
+  - semver@6.3.1
+  - eslint-import-resolver-typescript@3.10.1
+blockExoticSubdeps: true

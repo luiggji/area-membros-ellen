@@ -28,6 +28,11 @@
   - O review **só bloqueia** por: (1) bug de severidade P0/P1, (2) falha de segurança/privacidade, (3) critério de aceite não atendido, (4) CI vermelho.
   - Todo o resto (nits, refinamentos, melhorias "seria bom") vira **Issue de follow-up priorizada** (P1/P2) e **não segura o merge**.
   - **Máximo de 2 ciclos de ajuste** por PR. Se surgir um 3º ponto bloqueante, a Issue é re-escopada, não estendida indefinidamente.
+- **Regra de design — sempre algo para ver (regra do projeto):**
+  - **Toda onda tem pelo menos uma entrega visual** (tela, componente, estado ou protótipo), registrada na linha `🎨 Entrega visual da onda` abaixo de cada tabela. Nenhuma onda fecha só com infraestrutura invisível.
+  - **Toda Issue declara sua "Entrega visual"**: o que passa a ser visto (tela/estado/rota) ou, se for só backend, **onde o resultado aparece** (style guide `/design`, página `/status`, admin, e-mail de preview). "N/A" só com justificativa.
+  - PR com UI anexa **screenshots reais 1440px e 390px**. Ao fechar cada onda, uma **demo visual** (screenshots/GIF do que mudou) vai na PR de fechamento ou no marco.
+  - Tudo com os tokens v1.1 de `packages/ui/src/theme.css` e placeholders **explicitamente marcados** como fictícios fora de produção. Nada inventado apresentado como real.
 - **Trilha de negócio paralela:** decisões de Ellen/Luiggi/comercial (Onda 0) andam em paralelo ao código desde o primeiro dia. Código que depende de decisão é construído atrás de interface/feature flag e só vai para produção após a decisão registrada como `D-###`.
 
 ## 2. Ordem de execução — visão geral das ondas
@@ -56,47 +61,55 @@
 ### Onda 0 — Setup e Discovery (M0)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 0.1 | **CF-150 (novo)** | P0 | Setup monorepo pnpm + Turborepo (apps/web Next.js, apps/api NestJS, packages ui/contracts/config), estrutura Supabase, CI, templates GitHub, `.claude/` e docs. **Status: in_progress** | — | `chore/<issue>-setup-monorepo` (bootstrap inicial em `main`, exceção única por repo vazio) | L | P-014 (provedor final) | — |
-| 0.2 | CF-001 | P0 | Auditoria do repositório e inventário (o repo estava vazio; registrar relatório, riscos e relação com `landing-ELLEN`) | — | `docs/<issue>-auditoria-inicial` | S | P-013 | — |
-| 0.3 | CF-002 | P0 | Validar provedor de pagamentos em sandbox (mensal, anual, ingresso; Pix/cartão; webhooks; chargeback; taxas) | CF-001 | `docs/<issue>-decisao-gateway` (ADR + spike) | M | P-001 | — |
-| 0.4 | CF-003 | P0 | Fechar contratos/termos, responsabilidade fiscal e políticas comerciais (compra, cancelamento, privacidade, evento) | CF-002 | `docs/<issue>-politicas-comerciais` | M | P-002, P-003, P-004, P-012 | — |
-| 0.5 | CF-004 | P0 | Consolidar identidade visual implementável: tokens, logo, fontes licenciadas, fotos reais autorizadas | CF-001 | `docs/<issue>-identidade-visual` | M | P-006 | — |
-| 0.6 | CF-005 | P0 | Decidir domínio independente e mapa de URLs | CF-001 | `docs/<issue>-dominio-urls` | S | P-005 | — |
-| 0.7 | CF-006 | P0 | Validar programação mínima e calendário editorial (aulas reais e cronograma) | — | `docs/<issue>-calendario-editorial` | S | P-009 | — |
-| 0.8 | CF-007 | P0 | Homologar layout v1.1 minimalista e ativos de produção (desktop/mobile, 1 hero + 1 jornada + 3 cursos + 2 auxiliares) | CF-004 | `docs/<issue>-homologacao-layout` | S | P-006 | — |
+| 0.1 | **CF-150 (novo)** | P0 | Setup monorepo pnpm + Turborepo (apps/web Next.js, apps/api NestJS, packages ui/contracts/config), estrutura Supabase, CI, templates GitHub, `.claude/` e docs. **Status: in_progress** | — | `chore/<issue>-setup-monorepo` (bootstrap inicial em `main`, exceção única por repo vazio) | L | P-014 (provedor final) | #1 |
+| 0.2 | CF-001 | P0 | Auditoria do repositório e inventário (o repo estava vazio; registrar relatório, riscos e relação com `landing-ELLEN`) | — | `docs/<issue>-auditoria-inicial` | S | P-013 | #2 |
+| 0.3 | CF-002 | P0 | Validar provedor de pagamentos em sandbox (mensal, anual, ingresso; Pix/cartão; webhooks; chargeback; taxas) | CF-001 | `docs/<issue>-decisao-gateway` (ADR + spike) | M | P-001 | #3 |
+| 0.4 | CF-003 | P0 | Fechar contratos/termos, responsabilidade fiscal e políticas comerciais (compra, cancelamento, privacidade, evento) | CF-002 | `docs/<issue>-politicas-comerciais` | M | P-002, P-003, P-004, P-012 | #4 |
+| 0.5 | CF-004 | P0 | Consolidar identidade visual implementável: tokens, logo, fontes licenciadas, fotos reais autorizadas | CF-001 | `docs/<issue>-identidade-visual` | M | P-006 | #5 |
+| 0.6 | CF-005 | P0 | Decidir domínio independente e mapa de URLs | CF-001 | `docs/<issue>-dominio-urls` | S | P-005 | #6 |
+| 0.7 | CF-006 | P0 | Validar programação mínima e calendário editorial (aulas reais e cronograma) | — | `docs/<issue>-calendario-editorial` | S | P-009 | #7 |
+| 0.8 | **CF-169 (novo)** | P0 | Protótipo navegável do layout v1.1 (home, sidebar + "Mais", drawer mobile) em rota de preview `/prototipo` com tokens propostos e placeholders marcados como fictícios, só em dev/staging. *Justificativa: regra de design do projeto; dá a Ellen algo real para homologar em CF-007 antes do shell definitivo.* | CF-150 | `feat/<issue>-prototipo-layout` | M | P-006 | #8 |
+| 0.9 | CF-007 | P0 | Homologar layout v1.1 minimalista e ativos de produção (desktop/mobile, 1 hero + 1 jornada + 3 cursos + 2 auxiliares) | CF-004, CF-169 | `docs/<issue>-homologacao-layout` | S | P-006 | #9 |
+
+> 🎨 **Entrega visual da onda:** protótipo navegável `/prototipo` (CF-169) em 1440px e 390px, comparado lado a lado com `docs/references/REFERENCIA_APROVADA_DASHBOARD_MINIMALISTA.png` para a homologação de Ellen (CF-007).
 
 > CF-002…CF-007 são **decisões de negócio** de Ellen/Luiggi. O "código" delas é registrar o resultado (`D-###` no Decision Log, ADR, tokens finais). Elas destravam a produção, não o desenvolvimento.
 
 ### Onda 1 — Fundação técnica (M1)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 1.1 | CF-010 | P0 | Monorepo/estrutura compatível (validar o que CF-150 entregou; fechar lacunas) | CF-001, CF-150 | `chore/<issue>-estrutura-monorepo` | S | — | — |
-| 1.2 | CF-011 | P0 | TS strict, lint, formatter e scripts reprodutíveis (validar em runner limpo) | CF-010 | `chore/<issue>-lint-typecheck` | S | — | — |
-| 1.3 | CF-013 | P0 | Pipelines CI: lint, typecheck, testes, build, security (validar no 1º PR real) | CF-011 | `chore/<issue>-pipeline-ci` | S | — | — |
-| 1.4 | CF-014 | P0 | Branch protection, templates de PR/Issue, CODEOWNERS, nome numérico obrigatório | CF-010 | `chore/<issue>-branch-protection` | S | P-015 (+ plano GitHub p/ repo privado) | — |
-| 1.5 | CF-012 | P0 | Ambientes dev/staging/prod independentes (Supabase, storage, gateway sandbox separados) | CF-010 | `chore/<issue>-ambientes` | M | P-014 | — |
-| 1.6 | CF-016 | P0 | Migrações versionadas + teste de compatibilidade (sobe do zero; runbook de rollback) | CF-012 | `chore/<issue>-pipeline-migrations` | M | — | — |
-| 1.7 | **CF-156 (novo)** | P0 | Cliente Supabase server/browser tipado (`@supabase/ssr`), geração de types do schema no CI. *Justificativa: evita acesso direto não tipado e uso de `service_role` no browser.* | CF-012, CF-016 | `feat/<issue>-supabase-client` | S | — | — |
-| 1.8 | **CF-154 (novo)** | P0 | Seeds fictícios dev/staging (planos R$89/R$790 de referência, usuários de teste por papel, sem dados reais). *Justificativa: B §5 exige seed e proíbe constantes no frontend.* | CF-016 | `chore/<issue>-seeds-ficticios` | S | — | — |
-| 1.9 | **CF-155 (novo)** | P0 | Suíte pgTAP para RLS rodando no CI (base para CF-033/CF-122). *Justificativa: RLS precisa de teste automatizado por PR, não só E2E.* | CF-016, CF-013 | `test/<issue>-pgtap-rls-ci` | M | — | — |
-| 1.10 | CF-017 | P0 | Logs estruturados, error tracking e healthcheck (correlation ID, sem PII) | CF-010 | `feat/<issue>-observabilidade` | M | P-014 | — |
-| 1.11 | CF-019 | P0 | Gerenciamento de segredos e scanning de dependências | CF-012 | `chore/<issue>-segredos-scan` | S | — | — |
-| 1.12 | **CF-152 (novo)** | P0 | Rate limiting e headers de segurança (helmet/CSP, cookies) em web e API. *Justificativa: controles P0 do PRD §09 e E §8 sem item próprio no doc C.* | CF-010 | `feat/<issue>-rate-limit-headers` | M | — | — |
-| 1.13 | **CF-151 (novo)** | P0 | OpenAPI/Swagger da API `/api/v1` gerado do código, sem segredos. *Justificativa: E §11 lista OpenAPI como artefato obrigatório.* | CF-010 | `feat/<issue>-openapi` | S | — | — |
-| 1.14 | **CF-161 (novo)** | P0 | Audit log genérico append-only (`audit_logs`) + helper de uso nos módulos. *Justificativa: exigido por CF-041/048/061/070/095, mas sem item base.* | CF-016 | `feat/<issue>-audit-log` | M | — | — |
-| 1.15 | **CF-157 (novo)** | P0 | Padrões Next: `error.tsx`, `loading.tsx`, `not-found.tsx`, `EmptyState`/`ErrorState` base. *Justificativa: convenção de estados do PRD §03 em todas as telas.* | CF-010 | `feat/<issue>-estados-padrao-next` | S | — | — |
-| 1.16 | **CF-158 (novo)** | P0 | Feature flags simples por ambiente para módulos não lançados. *Justificativa: lançamento progressivo sem CTA morto (B §8) e código pronto atrás de decisão pendente.* | CF-010 | `feat/<issue>-feature-flags` | S | — | — |
-| 1.17 | **CF-162 (novo)** | P0 | Buckets privados no Storage + política de upload (tipo/tamanho) + signed URLs de curta duração. *Justificativa: base comum para materiais, capas e anexos (CF-085, CF-066).* | CF-012, CF-016 | `feat/<issue>-storage-privado` | M | P-007 (vídeo à parte) | — |
-| 1.18 | **CF-163 (novo)** | P0 | Política de cache/rendering Next: público cacheável com revalidação em mudança de preço/evento, privado `no-store`. *Justificativa: E §7; evita preço desatualizado e vazamento de dados por cache.* | CF-010 | `feat/<issue>-politica-cache` | S | — | — |
-| 1.19 | CF-015 | P0 | Pipeline de deploy staging e produção com gates (promoção rastreável, smoke) | CF-012, CF-013 | `chore/<issue>-deploy-pipeline` | M | P-014, P-005 | — |
-| 1.20 | CF-018 | P0 | Backup e teste de restauração; runbook de incidente | CF-012 | `docs/<issue>-backup-restore-runbook` | M | P-014 | — |
+| 1.1 | CF-010 | P0 | Monorepo/estrutura compatível (validar o que CF-150 entregou; fechar lacunas) | CF-001, CF-150 | `chore/<issue>-estrutura-monorepo` | S | — | #10 |
+| 1.2 | CF-011 | P0 | TS strict, lint, formatter e scripts reprodutíveis (validar em runner limpo) | CF-010 | `chore/<issue>-lint-typecheck` | S | — | #11 |
+| 1.3 | **CF-170 (novo)** | P0 | Style guide vivo `/design` (cores, tipografia editorial, espaçamento, botões, cards, estados) + página `/status` com o health de web e API, ambas fora de produção. *Justificativa: regra de design do projeto; torna a fundação visível e vira a vitrine dos componentes das Ondas 1–2.* | CF-010 | `feat/<issue>-style-guide-status` | M | — | #12 |
+| 1.4 | CF-013 | P0 | Pipelines CI: lint, typecheck, testes, build, security (validar no 1º PR real) | CF-011 | `chore/<issue>-pipeline-ci` | S | — | #13 |
+| 1.5 | CF-014 | P0 | Branch protection, templates de PR/Issue, CODEOWNERS, nome numérico obrigatório | CF-010 | `chore/<issue>-branch-protection` | S | P-015 (+ plano GitHub p/ repo privado) | #14 |
+| 1.6 | CF-012 | P0 | Ambientes dev/staging/prod independentes (Supabase, storage, gateway sandbox separados) | CF-010 | `chore/<issue>-ambientes` | M | P-014 | #15 |
+| 1.7 | CF-016 | P0 | Migrações versionadas + teste de compatibilidade (sobe do zero; runbook de rollback) | CF-012 | `chore/<issue>-pipeline-migrations` | M | — | #16 |
+| 1.8 | **CF-156 (novo)** | P0 | Cliente Supabase server/browser tipado (`@supabase/ssr`), geração de types do schema no CI. *Justificativa: evita acesso direto não tipado e uso de `service_role` no browser.* | CF-012, CF-016 | `feat/<issue>-supabase-client` | S | — | #17 |
+| 1.9 | **CF-154 (novo)** | P0 | Seeds fictícios dev/staging (planos R$89/R$790 de referência, usuários de teste por papel, sem dados reais). *Justificativa: B §5 exige seed e proíbe constantes no frontend.* | CF-016 | `chore/<issue>-seeds-ficticios` | S | — | #18 |
+| 1.10 | **CF-155 (novo)** | P0 | Suíte pgTAP para RLS rodando no CI (base para CF-033/CF-122). *Justificativa: RLS precisa de teste automatizado por PR, não só E2E.* | CF-016, CF-013 | `test/<issue>-pgtap-rls-ci` | M | — | #19 |
+| 1.11 | CF-017 | P0 | Logs estruturados, error tracking e healthcheck (correlation ID, sem PII) | CF-010 | `feat/<issue>-observabilidade` | M | P-014 | #20 |
+| 1.12 | CF-019 | P0 | Gerenciamento de segredos e scanning de dependências (inclui subir `minimumReleaseAge` do pnpm de 1 para 7 dias após 2026-10-25) | CF-012 | `chore/<issue>-segredos-scan` | S | — | #21 |
+| 1.13 | **CF-152 (novo)** | P0 | Rate limiting e headers de segurança (helmet/CSP, cookies) em web e API. *Justificativa: controles P0 do PRD §09 e E §8 sem item próprio no doc C.* | CF-010 | `feat/<issue>-rate-limit-headers` | M | — | #22 |
+| 1.14 | **CF-151 (novo)** | P0 | OpenAPI/Swagger da API `/api/v1` gerado do código, sem segredos. *Justificativa: E §11 lista OpenAPI como artefato obrigatório.* | CF-010 | `feat/<issue>-openapi` | S | — | #23 |
+| 1.15 | **CF-161 (novo)** | P0 | Audit log genérico append-only (`audit_logs`) + helper de uso nos módulos. *Justificativa: exigido por CF-041/048/061/070/095, mas sem item base.* | CF-016 | `feat/<issue>-audit-log` | M | — | #24 |
+| 1.16 | **CF-157 (novo)** | P0 | Padrões Next: `error.tsx`, `loading.tsx`, `not-found.tsx`, `EmptyState`/`ErrorState` base. *Justificativa: convenção de estados do PRD §03 em todas as telas.* | CF-010 | `feat/<issue>-estados-padrao-next` | S | — | #25 |
+| 1.17 | **CF-158 (novo)** | P0 | Feature flags simples por ambiente para módulos não lançados. *Justificativa: lançamento progressivo sem CTA morto (B §8) e código pronto atrás de decisão pendente.* | CF-010 | `feat/<issue>-feature-flags` | S | — | #26 |
+| 1.18 | **CF-162 (novo)** | P0 | Buckets privados no Storage + política de upload (tipo/tamanho) + signed URLs de curta duração. *Justificativa: base comum para materiais, capas e anexos (CF-085, CF-066).* | CF-012, CF-016 | `feat/<issue>-storage-privado` | M | P-007 (vídeo à parte) | #27 |
+| 1.19 | **CF-163 (novo)** | P0 | Política de cache/rendering Next: público cacheável com revalidação em mudança de preço/evento, privado `no-store`. *Justificativa: E §7; evita preço desatualizado e vazamento de dados por cache.* | CF-010 | `feat/<issue>-politica-cache` | S | — | #28 |
+| 1.20 | CF-015 | P0 | Pipeline de deploy staging e produção com gates (promoção rastreável, smoke) | CF-012, CF-013 | `chore/<issue>-deploy-pipeline` | M | P-014, P-005 | #29 |
+| 1.21 | CF-018 | P0 | Backup e teste de restauração; runbook de incidente | CF-012 | `docs/<issue>-backup-restore-runbook` | M | P-014 | #30 |
+
+> 🎨 **Entrega visual da onda:** `/design` com os tokens e componentes base, `/status` com o health de web/API (CF-170) e as telas padrão de erro, 404 e loading (CF-157). Itens só de backend mostram o resultado nessas páginas sempre que fizer sentido (ex.: flags ativas em `/status`).
 
 ### Onda 2 — Design system e shell minimalista (M1)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 2.1 | CF-020 | P0 | Base de design system, AppShell, layouts público/privado/admin (cream + plum, tokens v1.1) | CF-004, CF-010, CF-007 | `feat/<issue>-design-system-shell` | L | P-006 | — |
-| 2.2 | CF-021 | P0 | Sidebar progressiva (≤ 6 links + Mais) e topbar minimalista; drawer mobile | CF-020 | `feat/<issue>-sidebar-mais` | M | — | — |
-| 2.3 | CF-022 | P0 | Componentes editoriais: EditorialHero, JourneyFocusCard, CourseCard, cartões compactos, estados | CF-020 | `feat/<issue>-componentes-editoriais` | M | — | — |
+| 2.1 | CF-020 | P0 | Base de design system, AppShell, layouts público/privado/admin (cream + plum, tokens v1.1) | CF-004, CF-010, CF-007 | `feat/<issue>-design-system-shell` | L | P-006 | #31 |
+| 2.2 | CF-021 | P0 | Sidebar progressiva (≤ 6 links + Mais) e topbar minimalista; drawer mobile | CF-020 | `feat/<issue>-sidebar-mais` | M | — | #32 |
+| 2.3 | CF-022 | P0 | Componentes editoriais: EditorialHero, JourneyFocusCard, CourseCard, cartões compactos, estados | CF-020 | `feat/<issue>-componentes-editoriais` | M | — | #33 |
+
+> 🎨 **Entrega visual da onda:** AppShell real (sidebar vinho, canvas creme, topbar), sidebar com "Mais" e drawer mobile, componentes editoriais no `/design`, tudo em 1440px e 390px.
 
 > CF-020 pode ser **desenvolvido com os tokens propostos** do doc G. A homologação (CF-007) é gate de merge para `main`, não para começar.
 
@@ -110,6 +123,8 @@
 | 3.5 | CF-034 | P0 | MFA/admin hardening e restrição de rotas `/admin` | CF-032 | `feat/<issue>-mfa-admin` | M | — | — |
 | 3.6 | CF-035 | P0 | Onboarding inicial (estágio, cidade/UF, objetivo) com retomada | CF-031 | `feat/<issue>-onboarding` | M | — | — |
 | 3.7 | **CF-153 (novo)** | P0 | Páginas legais LGPD (termos, privacidade, cookies) + centro de preferências de comunicação. *Justificativa: exigidas por CF-01/CF-13 e pelo checklist go/no-go, mas sem item de implementação.* | CF-031, CF-003 | `feat/<issue>-paginas-lgpd` | M | P-012, P-004 | — |
+
+> 🎨 **Entrega visual da onda:** telas de cadastro, login, verificação e recuperação de senha; onboarding com retomada; perfil com consentimentos; tela de MFA; `/admin` negado para member; páginas LGPD.
 
 ### Onda 4 — Receita: assinaturas (M2)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
@@ -126,6 +141,8 @@
 | 4.10 | CF-047 | P0 | Minha Assinatura: estado, cobranças, instruções de gestão | CF-046 | `feat/<issue>-minha-assinatura` | S | — | — |
 | 4.11 | CF-048 | P0 | Concessões manuais com expiração e auditoria (owner-only) | CF-046, CF-161 | `feat/<issue>-concessao-manual` | S | — | — |
 | 4.12 | CF-049 | P0 | Testes de falha, estorno, renovação, chargeback e corrida | CF-045, CF-046 | `test/<issue>-billing-cenarios` | M | P-002 | — |
+
+> 🎨 **Entrega visual da onda:** landing pública com comparador de planos, checkout sandbox, tela de "aguardando confirmação", Minha Assinatura com cada estado (ativa, pendente, expirada), admin de planos/preços e preview dos e-mails transacionais.
 
 ### Onda 5 — Café Estratégico e bilheteria (M3) — em paralelo com a Onda 6
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
@@ -147,6 +164,8 @@
 | 5.15 | CF-071 | P0 | Relatório do evento: vendas, vagas, presentes, atribuição | CF-069, CF-046, CF-164 | `feat/<issue>-relatorio-evento` | M | — | — |
 | 5.16 | CF-072 | P0 | Simulação do evento piloto e checklist de operação no local | CF-067, CF-071 | `test/<issue>-simulacao-piloto` | M | P-010, P-011 | — |
 
+> 🎨 **Entrega visual da onda:** `/eventos` e landing do evento, checkout do ingresso, página do ingresso com QR, e-mail do ingresso, tela de check-in no celular (válido / já usado / inválido) e relatório do evento no admin.
+
 ### Onda 6 — Conteúdo e biblioteca (M4) — em paralelo com a Onda 5
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
@@ -158,6 +177,8 @@
 | 6.6 | CF-085 | P0 | Biblioteca de materiais privados com acesso temporário | CF-046, CF-016, CF-162 | `feat/<issue>-cofre-materiais` | M | — | — |
 | 6.7 | CF-086 | P0 | Publicar a primeira onda de aulas e recursos reais (operação de conteúdo) | CF-081, CF-006 | `docs/<issue>-primeira-onda-conteudo` | M | P-009 | — |
 
+> 🎨 **Entrega visual da onda:** catálogo de cursos (publicados × programados), página do curso, player com "continuar aula" e progresso, biblioteca de materiais e editor de conteúdo (CMS) no admin.
+
 ### Onda 7 — Comunidade e networking (M5)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
@@ -168,6 +189,8 @@
 | 7.5 | CF-094 | P0 | Publicar/editar/excluir posts próprios e comentar (XSS neutralizado) | CF-093 | `feat/<issue>-posts-comentarios` | M | — | — |
 | 7.6 | CF-095 | P0 | Denúncias e moderação owner (privada, auditada) | CF-094, CF-032, CF-161 | `feat/<issue>-moderacao` | M | — | — |
 | 7.7 | CF-096 | P0 | Regras da comunidade e aviso contra sigilo de clientes | CF-094, CF-003 | `feat/<issue>-regras-comunidade` | S | P-012 | — |
+
+> 🎨 **Entrega visual da onda:** diretório com busca por cidade/UF/área, perfil público opt-in, lista de grupos, feed com posts e comentários, fluxo de denúncia e fila de moderação no admin.
 
 ### Onda 8 — Jornada, home, ao vivo e administração (M6)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
@@ -181,6 +204,8 @@
 | 8.7 | CF-101 | P0 | Home híbrida minimalista v1.1 com dados reais e estados vazios | CF-084, CF-094, CF-035, CF-021, CF-022 | `feat/<issue>-home-minimalista` | M | — | — |
 | 8.8 | CF-111 | P0 | QA de estados da home e navegação progressiva | CF-101 | `test/<issue>-qa-estados-home` | S | — | — |
 
+> 🎨 **Entrega visual da onda:** home minimalista definitiva com dados reais (1 hero + 1 jornada + ≤3 cursos + ≤2 auxiliares), diagnóstico, metas de 90/30 dias, calendário ao vivo, ajuda, painel admin e relatórios.
+
 ### Onda 9 — QA e release do MVP (M7)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
@@ -192,6 +217,8 @@
 | 9.6 | CF-124 | P0 | Homologação de conteúdo e termos de venda por Ellen | CF-086, CF-003 | `docs/<issue>-homologacao-conteudo` | S | P-003, P-009 | — |
 | 9.7 | CF-125 | P0 | Backup/restore + rollback + smoke pré-release | CF-018, CF-015 | `test/<issue>-restore-rollback-smoke` | M | P-014 | — |
 | 9.8 | CF-126 | P0 | Go/no-go e deploy controlado com monitoramento | CF-120…CF-125, CF-127 | `release/<issue>-v1-0-0` | M | todas as P0 abertas | — |
+
+> 🎨 **Entrega visual da onda:** galeria de regressão visual de todas as telas P0 (CF-127) em 320…1440px e o relatório de QA responsivo/a11y que Ellen usa no go/no-go.
 
 ### Onda 10 — Evolução P1 (após go-live)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
@@ -208,6 +235,8 @@
 | 10.10 | CF-141 | P1 | Execução gradual da integração ao projeto Ellen Conrado | CF-140 | `feat/<issue>-integracao-ellen` | L | P-017 | — |
 | 10.11 | **CF-168 (novo)** | P1 | Upgrade NestJS 11 → 12 (ESM) e reavaliar Vitest+SWC na API. *Justificativa: Nest 12 saiu em set/2026; setup ficou no 11 para estabilidade (ADR 0001).* | CF-126 | `chore/<issue>-upgrade-nestjs-12` | M | — | — |
 
+> 🎨 **Entrega visual da onda:** busca transversal, reações e anexos, foto de perfil, histórico de diagnósticos com score, central de dados do titular (exportar/excluir) e mensagens privadas.
+
 ### Onda 11 — Evolução P2
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
@@ -215,13 +244,15 @@
 | 11.2 | CF-143 | P2 | Benefícios comerciais Seven Box (cupom/link), sem acesso acidental | CF-126 | `feat/<issue>-beneficio-seven-box` | S | acordo comercial | — |
 | 11.3 | CF-144 | P2 | Matching de membros, desafios, gamificação e assistente IA | CF-098, CF-108 | `feat/<issue>-matching-desafios` | L | nova validação | — |
 
+> 🎨 **Entrega visual da onda:** telas de metas gamificadas, benefícios Seven Box e matching/desafios, validadas com protótipo antes de codar.
+
 ### Contagem
 | Prioridade | Doc C | Novos (CF-150+) | Total |
 |---|---|---|---|
-| P0 | 80 | 16 | 96 |
+| P0 | 80 | 18 | 98 |
 | P1 | 8 | 3 | 11 |
 | P2 | 3 | 0 | 3 |
-| **Total** | **91** | **19** | **110** |
+| **Total** | **91** | **21** | **112** |
 
 ---
 
@@ -229,8 +260,8 @@
 
 | Marco | Itens essenciais | Critério de pronto / demonstração de valor |
 |---|---|---|
-| **M0 — Entendimento** | CF-150, CF-001…CF-007 | Repositório configurado e auditado; decisões bloqueantes encaminhadas com responsável; referência minimalista homologada (CF-007) |
-| **M1 — Fundação** | CF-010…CF-022, CF-030…CF-035, CF-151…CF-158, CF-161…CF-163 | App protegido em staging; CI bloqueando PR; migrations do zero; login + papéis testados (RLS/IDOR); shell minimalista com tokens v1.1 em desktop/mobile |
+| **M0 — Entendimento** | CF-150, CF-001…CF-007, CF-169 | Repositório configurado e auditado; decisões bloqueantes encaminhadas com responsável; protótipo `/prototipo` homologado como referência minimalista (CF-007) |
+| **M1 — Fundação** | CF-010…CF-022, CF-030…CF-035, CF-151…CF-158, CF-161…CF-163, CF-170 | App protegido em staging; CI bloqueando PR; migrations do zero; login + papéis testados (RLS/IDOR); shell minimalista com tokens v1.1 em desktop/mobile |
 | **M2 — Pagamentos** | CF-040…CF-049, CF-100, CF-160 | Compra mensal sandbox ativa acesso só via webhook; webhook duplicado sem efeito; anual homologado **ou** desativado explicitamente |
 | **M3 — Café** | CF-060…CF-072, CF-159, CF-164, CF-165 | Vender 1 ingresso de teste, receber QR por e-mail, validar no check-in; 21ª venda bloqueada com capacidade 20; segundo check-in negado |
 | **M4 — Conteúdo** | CF-080…CF-086 | Ellen publica curso/aula sem código; membro assiste, progride e baixa material; visitante/expirado bloqueado na mídia |
@@ -264,10 +295,10 @@
 ## 6. Próximos 10 passos imediatos (após o setup)
 
 1. **Fechar CF-150:** commit do setup em `main`, criar `develop`, push das duas e confirmar que o CI roda.
-2. **Bootstrap do GitHub** (`.github/scripts/bootstrap-github.sh`, após `gh auth login`): labels P0/P1/P2, `type:*`, `epic:*`; milestones M0–M7; Issues P0 das Ondas 0–3. Depois, preencher a coluna `Issue #` deste arquivo numa PR `docs/<issue>-numeros-issues`.
+2. **Bootstrap do GitHub** (`.github/scripts/bootstrap-github.mjs`, após `gh auth login`): labels P0/P1/P2, `type:*`, `epic:*`; milestones M0–M7; Issues por onda (começando pelas Ondas 0–2). Depois, preencher a coluna `Issue #` deste arquivo numa PR `docs/<issue>-numeros-issues`.
 3. **Trilha de negócio (Ellen):** iniciar CF-002 (gateway, P-001), CF-004/CF-007 (identidade e homologação visual, P-006) e CF-006 (calendário editorial, P-009). Em paralelo, sem bloquear o código.
-4. **CF-001:** registrar o relatório de auditoria (repo vazio, `landing-ELLEN` separado, ferramentas da máquina) e fechar P-013.
-5. **CF-011 / CF-013 / CF-014:** primeiro PR real para `develop` validando `branch-convention`, lint, typecheck, test, build e security. Aplicar branch protection (ou registrar a limitação do plano GitHub para repo privado).
+4. **CF-001 + CF-169:** registrar o relatório de auditoria (repo vazio, `landing-ELLEN` separado, ferramentas da máquina, fecha P-013) e, logo em seguida, o protótipo navegável `/prototipo` — a primeira coisa visível para Ellen.
+5. **CF-011 / CF-170 / CF-013 / CF-014:** style guide `/design` + `/status` como primeira PR real para `develop` validando `branch-convention`, lint, typecheck, test, build e security. Aplicar branch protection (ou registrar a limitação do plano GitHub para repo privado).
 6. **CF-012 (P-014):** decidir Supabase cloud × local (Docker) e criar os projetos dev/staging isolados.
 7. **CF-016 + CF-156 + CF-154:** pipeline de migrations, cliente Supabase tipado e seeds fictícios.
 8. **CF-020:** shell minimalista com tokens propostos e screenshots 1440/390px para a homologação de Ellen (CF-007).

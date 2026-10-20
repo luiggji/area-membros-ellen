@@ -1,6 +1,8 @@
-import { BrandMark, PublicShell } from '@caixa-forte/ui';
+import { PublicShell } from '@caixa-forte/ui';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+
+import { BrandMark } from '@/shared/ui/brand-mark';
 
 /**
  * Layout público (landing, planos, `/eventos/[slug]`). "Entrar" e "Assinar" entram com as telas
@@ -11,7 +13,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
     <PublicShell
       brand={
         <Link href="/" aria-label="Caixa Forte — página inicial">
-          <BrandMark tone="on-light" />
+          <BrandMark priority />
         </Link>
       }
       footer={<p>Caixa Forte · educação e networking para advogados.</p>}

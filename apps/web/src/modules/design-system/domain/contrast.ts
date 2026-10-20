@@ -29,12 +29,15 @@ const pairs: ReadonlyArray<[foreground: string, background: string, context: str
   ['cf-text-secondary', 'cf-bg', 'Texto secundário no canvas'],
   ['cf-text-secondary', 'cf-surface-muted', 'Texto secundário em card de destaque'],
   ['cf-surface', 'cf-primary', 'Texto do botão primário'],
+  ['cf-surface', 'cf-primary-hover', 'Texto do botão primário (hover)'],
   ['cf-primary', 'cf-bg', 'Links e rótulos no canvas'],
   ['cf-primary', 'cf-surface-muted', 'Rótulos em card de destaque'],
   ['cream-50', 'cf-sidebar', 'Itens da sidebar'],
-  ['champagne-500', 'cf-sidebar', 'Ícone da marca na sidebar'],
+  ['champagne-500', 'cf-sidebar', 'Acento na sidebar'],
   ['ink', 'blush-200', 'Faixa de aviso'],
+  ['info', 'cf-surface', 'Mensagem informativa'],
   ['champagne-500', 'cf-bg', 'Acento como texto (evitar)'],
+  ['rose-400', 'cf-surface', 'Rosé como texto (evitar)'],
 ];
 
 export function contrastChecks(): ContrastCheck[] {

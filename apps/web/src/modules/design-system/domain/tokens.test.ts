@@ -35,6 +35,42 @@ describe('tokens de cor', () => {
   });
 });
 
+describe('Brand System V2 (D-014)', () => {
+  const brand = JSON.parse(
+    readFileSync(
+      path.join(
+        import.meta.dirname,
+        '../../../../../../docs/brand/v2/04_DESIGN_TOKENS/tokens.semantic.json',
+      ),
+      'utf8',
+    ),
+  ) as { color: Record<string, string> };
+
+  it('o tema usa as cores semânticas entregues pela agência', () => {
+    const mapping: Record<string, string> = {
+      background: 'cf-bg',
+      surface: 'cf-surface',
+      surfaceSubtle: 'cf-surface-muted',
+      sidebar: 'cf-sidebar',
+      primary: 'cf-primary',
+      primaryHover: 'cf-primary-hover',
+      text: 'cf-text',
+      textMuted: 'cf-text-secondary',
+      border: 'cf-border',
+      focus: 'cf-focus',
+      accent: 'cf-accent',
+      success: 'success',
+      danger: 'danger',
+      info: 'info',
+    };
+    for (const [brandName, token] of Object.entries(mapping)) {
+      expect(resolveHex(token), `${brandName} → ${token}`).toBe(
+        brand.color[brandName]!.toLowerCase(),
+      );
+    }
+  });
+});
+
 describe('contraste WCAG', () => {
   it('calcula os extremos conhecidos', () => {
     expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 1);

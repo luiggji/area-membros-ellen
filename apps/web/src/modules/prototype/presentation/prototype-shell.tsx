@@ -1,7 +1,9 @@
-import { AppShell, BrandMark, Button } from '@caixa-forte/ui';
+import { AppShell, Button } from '@caixa-forte/ui';
 import { Bell, Search } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+
+import { BrandMark } from '@/shared/ui/brand-mark';
 
 import { MobileNav } from './mobile-nav';
 import { hrefFor, NavLinks, PROTOTYPE_BASE, TEAM_PROTOTYPE_HREF, TeamNavLinks } from './nav-links';
@@ -74,14 +76,11 @@ function Topbar({ home, nav, greeting }: { home: string; nav: ReactNode; greetin
     <>
       <div className="flex items-center gap-2 lg:hidden">
         <MobileNav>
-          <BrandMark className="px-2" />
+          <BrandMark variant="sidebar" className="px-2" />
           {nav}
         </MobileNav>
-        <Link
-          href={home}
-          className="font-editorial text-base tracking-[0.12em] whitespace-nowrap text-cf-sidebar uppercase sm:text-lg sm:tracking-[0.18em]"
-        >
-          Caixa Forte
+        <Link href={home}>
+          <BrandMark variant="compact" />
         </Link>
       </div>
       <div className="ms-auto flex items-center gap-1 sm:gap-3">
@@ -100,7 +99,7 @@ function Topbar({ home, nav, greeting }: { home: string; nav: ReactNode; greetin
 function SidebarBrand({ href, label }: { href: string; label: string }) {
   return (
     <Link href={href} className="px-2">
-      <BrandMark />
+      <BrandMark variant="sidebar" priority />
       <span className="sr-only">{label}</span>
     </Link>
   );

@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
-import { BrandMark } from './brand-mark.js';
 import { Button, buttonClasses } from './button.js';
 import { Card } from './card.js';
 import { AppShell, PublicShell } from './shells.js';
@@ -47,15 +46,6 @@ describe('Card', () => {
       </Card>,
     );
     expect(markup).toMatch(/^<article class="[^"]*bg-cf-sidebar/);
-  });
-});
-
-describe('BrandMark', () => {
-  it('é tipográfica e mantém o nome legível por leitor de tela', () => {
-    const markup = html(<BrandMark />);
-    expect(markup).toContain('Caixa Forte');
-    expect(markup).toContain('aria-hidden="true"');
-    expect(markup).not.toContain('<svg');
   });
 });
 

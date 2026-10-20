@@ -7,7 +7,7 @@ Papéis: **Ellen** (produto, homologação), **Luiggi** (técnica, release), **C
 
 1. `docs/D_DECISION_LOG.md` — decisões confirmadas (D-###) e pendências (P-###). A decisão explícita mais recente vence.
 2. `docs/A_PRD_MASTER_CAIXA_FORTE.md` — escopo funcional, regras, modelo de dados, RLS.
-3. `docs/G_DESIGN_SYSTEM_MINIMALISTA.md` + `docs/references/REFERENCIA_APROVADA_DASHBOARD_MINIMALISTA.png` — **fonte da UI**.
+3. `docs/brand/v2/` (Brand System V2 da agência: marca, tokens, style guide — D-014) + `docs/G_DESIGN_SYSTEM_MINIMALISTA.md` (hierarquia e densidade) + `docs/references/REFERENCIA_APROVADA_DASHBOARD_MINIMALISTA.png` — **fonte da UI**. Antes de mexer em UI, ler `docs/brand/v2/05_UI_DESIGN_SYSTEM/STYLE_GUIDE.md`.
 4. `docs/BACKLOG.md` — ordem de execução, prioridades, dependências, número real das Issues.
 5. `docs/B_MVP_BLUEPRINT.md` (limites do MVP), `docs/E_…` (engenharia/CI/CD), `docs/F_…` (QA), `docs/H_…` (Git Flow operacional).
 
@@ -46,7 +46,7 @@ Dependências só apontam para dentro: `domain` não importa Nest/Next/Supabase;
 3. Pagamento só ativa acesso por **webhook assinado e idempotente** — nunca por `success_url`. Pagar ingresso ≠ virar assinante.
 4. Bilheteria: reserva com TTL, sem overbooking sob concorrência, QR opaco sem PII, check-in atômico.
 5. Nada inventado: cursos, preços, métricas, depoimentos, fotos, datas, progresso. Preços vêm do banco (versionados), nunca constantes no front.
-6. **Visual v1.1 minimalista**: sidebar vinho, canvas creme, home = 1 hero + 1 jornada + ≤3 cursos + ≤2 auxiliares. Só tokens de `packages/ui/src/theme.css`. Não voltar a dashboards densos.
+6. **Visual v1.1 minimalista**: sidebar vinho, canvas creme, home = 1 hero + 1 jornada + ≤3 cursos + ≤2 auxiliares. Só tokens de `packages/ui/src/theme.css` e a marca via `BrandMark` (PNGs oficiais, sem recolorir/distorcer). Não voltar a dashboards densos.
 7. LGPD: diretório só opt-in, contato oculto por padrão, logs sem PII, sem DM no MVP.
 8. Nunca push direto/force em `main`/`develop`, merge, deploy, migration destrutiva, gasto com serviço ou mudança em produção **sem autorização explícita**.
 9. Não apagar mudanças locais de terceiros; não refatorar/reformatar fora do escopo da Issue.

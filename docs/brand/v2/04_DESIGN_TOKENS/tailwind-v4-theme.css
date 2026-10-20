@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@theme inline {
+  --color-cf-bg: var(--cf-color-background);
+  --color-cf-surface: var(--cf-color-surface);
+  --color-cf-sidebar: var(--cf-color-sidebar);
+  --color-cf-primary: var(--cf-color-primary);
+  --color-cf-ink: var(--cf-color-text);
+  --color-cf-muted: var(--cf-color-textMuted);
+  --color-cf-border: var(--cf-color-border);
+  --font-cf-display: var(--cf-font-display);
+  --font-cf-body: var(--cf-font-body);
+}

@@ -3,12 +3,15 @@ import localFont from 'next/font/local';
 
 import './globals.css';
 
-// Fontes PROPOSTAS (R-004, pendente de homologação): serifada só em títulos editoriais.
+// Fontes do Brand System V2 (D-014): Playfair Display nos títulos editoriais, Inter na UI.
 // Hospedadas no repo (SIL OFL 1.1, licenças em src/shared/fonts) para o build não depender de rede.
 const editorial = localFont({
-  src: '../shared/fonts/cormorant-garamond-latin-wght.woff2',
-  weight: '300 700',
-  variable: '--font-cormorant',
+  src: [
+    { path: '../shared/fonts/playfair-display-latin-wght.woff2', style: 'normal' },
+    { path: '../shared/fonts/playfair-display-latin-wght-italic.woff2', style: 'italic' },
+  ],
+  weight: '400 900',
+  variable: '--font-playfair',
   display: 'swap',
 });
 
@@ -21,6 +24,7 @@ const sans = localFont({
 
 export const metadata: Metadata = {
   title: 'Caixa Forte',
+  applicationName: 'Caixa Forte',
   description: 'Comunidade de educação e networking para advogados.',
   robots: { index: false, follow: false },
 };

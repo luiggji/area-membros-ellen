@@ -1,23 +1,29 @@
 /*
- * Caixa Forte — design tokens v1.1 (docs/G_DESIGN_SYSTEM_MINIMALISTA.md §2).
- * STATUS: sementes PROPOSTAS. A direção (vinho + creme + rosé) está aprovada (D-013),
- * os HEX exatos e fontes ainda dependem de homologação (R-002, R-004, P-006).
+ * Caixa Forte — design tokens (Brand System V2, 20/10/2026).
+ * Fonte: docs/brand/v2/04_DESIGN_TOKENS/tokens.semantic.json (D-014). A direção visual está
+ * aprovada (D-013); a agência entregou os HEX e as fontes ainda como "propostos para
+ * homologação" — ajuste final passa pelo Decision Log e muda aqui, em um lugar só.
  * Regra: componentes usam SOMENTE estes tokens — nunca HEX solto.
- * Mudança de paleta/tipografia exige entrada no Decision Log.
  */
 @theme {
   /* Paleta base */
   --color-plum-950: #321927;
+  --color-burgundy-800: #4b1e2e;
   --color-wine-700: #693548;
+  --color-rose-400: #a97887;
+  --color-blush-200: #e9d3cd;
   --color-cream-50: #faf7f3;
   --color-sand-100: #f3eae4;
-  --color-blush-200: #ebd7cf;
   --color-champagne-500: #c39b83;
+  --color-gold-300: #d6b895;
   --color-ink: #30232b;
   --color-muted: #655b60;
-  --color-success: #277253;
+
+  /* Estados (warning não veio no kit V2: mantido o da v1.1 até a agência definir) */
+  --color-success: #27654a;
   --color-warning: #996317;
-  --color-danger: #b23c50;
+  --color-danger: #a32d44;
+  --color-info: #235c7a;
 
   /* Semânticos (preferir estes nos componentes) */
   --color-cf-bg: var(--color-cream-50);
@@ -25,19 +31,28 @@
   --color-cf-surface-muted: var(--color-sand-100);
   --color-cf-sidebar: var(--color-plum-950);
   --color-cf-primary: var(--color-wine-700);
+  --color-cf-primary-hover: var(--color-burgundy-800);
   --color-cf-accent: var(--color-champagne-500);
   --color-cf-text: var(--color-ink);
   --color-cf-text-secondary: var(--color-muted);
   --color-cf-border: #e5d9d2;
   --color-cf-focus: var(--color-wine-700);
 
-  /* Tipografia: serifada só em títulos editoriais; sans em UI/números/labels */
-  --font-editorial: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  /* Tipografia: display serifada com moderação (hero, curso, campanhas); Inter em toda a UI */
+  --font-editorial: var(--font-playfair), 'Playfair Display', Georgia, serif;
   --font-sans: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
 
-  /* Composição */
+  /* Raios e sombras (kit V2) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
   --radius-card: 16px;
-  --spacing-sidebar: 236px;
+  --radius-lg: 20px;
+  --shadow-card: 0 4px 16px rgb(47 27 32 / 0.08);
+  --shadow-hover: 0 10px 30px rgb(47 27 32 / 0.11);
+
+  /* Composição */
+  --spacing-sidebar: 232px;
+  --spacing-topbar: 72px;
   --spacing-content-max: 1180px;
   --spacing-admin-max: 1440px;
 }

@@ -8,7 +8,7 @@ export default function HomePage() {
       <p className="text-xs font-medium tracking-[0.2em] text-cf-text-secondary uppercase">
         Em construção
       </p>
-      <h1 className="font-editorial text-5xl font-semibold text-cf-sidebar sm:text-6xl">
+      <h1 className="font-editorial tracking-tight text-5xl text-cf-sidebar sm:text-6xl">
         Caixa Forte
       </h1>
       <p className="max-w-prose text-lg text-cf-text-secondary">

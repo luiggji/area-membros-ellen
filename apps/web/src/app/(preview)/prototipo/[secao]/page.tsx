@@ -24,7 +24,7 @@ export default async function PrototypeSectionPage({
         >
           <NavIcon name={section.icon} className="size-7" />
         </span>
-        <h1 className="font-editorial text-5xl font-semibold text-cf-sidebar">{section.label}</h1>
+        <h1 className="font-editorial tracking-tight text-5xl text-cf-sidebar">{section.label}</h1>
         <p className="max-w-[52ch] text-cf-text-secondary">
           Esta tela ainda não faz parte do protótipo. Ela será construída em{' '}
           <strong className="font-medium text-cf-text">{section.deliveredBy}</strong>, seguindo a

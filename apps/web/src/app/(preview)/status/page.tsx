@@ -67,7 +67,7 @@ export default async function StatusPage() {
             <p className="text-[0.7rem] font-medium tracking-[0.24em] text-cf-primary uppercase">
               Status do sistema
             </p>
-            <h1 className="font-editorial text-5xl font-semibold text-cf-sidebar">Tudo no ar?</h1>
+            <h1 className="font-editorial tracking-tight text-5xl text-cf-sidebar">Tudo no ar?</h1>
           </div>
           <Link
             href="/status"

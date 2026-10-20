@@ -1,4 +1,3 @@
-export { BrandMark } from './components/brand-mark.js';
 export {
   Button,
   buttonClasses,

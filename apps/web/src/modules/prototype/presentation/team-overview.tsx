@@ -2,7 +2,7 @@ import { Card } from '@caixa-forte/ui';
 import { Inbox } from 'lucide-react';
 
 import { adminNav } from '../domain/fixtures';
-import { NavIcon } from './nav-icon';
+import { NavIcon } from '@/modules/navigation/presentation/nav-icon';
 
 const indicators = ['Assinaturas ativas', 'Ingressos vendidos', 'Check-ins realizados'];
 

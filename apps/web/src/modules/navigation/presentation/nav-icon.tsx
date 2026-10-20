@@ -19,7 +19,7 @@ import {
   Vault,
 } from 'lucide-react';
 
-import type { NavIcon as NavIconName } from '../domain/fixtures';
+import type { NavIconName } from '../domain/member-nav';
 
 const icons: Record<NavIconName, LucideIcon> = {
   home: House,

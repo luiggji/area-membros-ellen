@@ -1,7 +1,8 @@
+import { buttonClasses } from '@caixa-forte/ui';
 import { notFound } from 'next/navigation';
 
 import { findSection } from '@/modules/prototype/domain/fixtures';
-import { NavIcon } from '@/modules/prototype/presentation/nav-icon';
+import { NavIcon } from '@/modules/navigation/presentation/nav-icon';
 import { hrefFor } from '@/modules/prototype/presentation/nav-links';
 import { PrototypeShell } from '@/modules/prototype/presentation/prototype-shell';
 import Link from 'next/link';
@@ -16,7 +17,7 @@ export default async function PrototypeSectionPage({
   if (!section) notFound();
 
   return (
-    <PrototypeShell activeSlug={section.slug}>
+    <PrototypeShell>
       <section className="flex flex-col items-start gap-6 pt-4">
         <span
           aria-hidden
@@ -30,10 +31,7 @@ export default async function PrototypeSectionPage({
           <strong className="font-medium text-cf-text">{section.deliveredBy}</strong>, seguindo a
           mesma linguagem visual (veja <code>docs/BACKLOG.md</code>).
         </p>
-        <Link
-          href={hrefFor('')}
-          className="inline-flex min-h-11 items-center rounded-full border border-cf-primary px-6 text-sm font-medium text-cf-primary hover:bg-cf-surface-muted"
-        >
+        <Link href={hrefFor('')} className={buttonClasses({ variant: 'secondary' })}>
           Voltar ao início
         </Link>
       </section>

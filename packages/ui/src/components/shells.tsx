@@ -23,6 +23,8 @@ export interface AppShellProps {
   topbar: ReactNode;
   /** Faixa acima do shell para avisos que não podem sumir (assinatura irregular, protótipo). */
   banner?: ReactNode;
+  /** Navegação fixa no rodapé do mobile (some a partir de `lg`, onde a sidebar assume). */
+  bottomBar?: ReactNode;
   /** `reading` limita a largura (área do membro); `wide` dá espaço a tabelas (painel da equipe). */
   width?: 'reading' | 'wide';
   children: ReactNode;
@@ -32,7 +34,14 @@ export interface AppShellProps {
  * Shell das áreas logadas: sidebar vinho fixa à esquerda, canvas creme à direita (doc G §3).
  * Membro e equipe usam o mesmo esqueleto; muda a navegação e a largura do conteúdo.
  */
-export function AppShell({ sidebar, topbar, banner, width = 'reading', children }: AppShellProps) {
+export function AppShell({
+  sidebar,
+  topbar,
+  banner,
+  bottomBar,
+  width = 'reading',
+  children,
+}: AppShellProps) {
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink />
@@ -53,12 +62,15 @@ export function AppShell({ sidebar, topbar, banner, width = 'reading', children 
             className={cn(
               'mx-auto w-full flex-1 px-4 pb-16 focus:outline-none sm:px-8 lg:px-12',
               width === 'reading' ? 'max-w-(--spacing-content-max)' : 'max-w-(--spacing-admin-max)',
+              // Reserva espaço para a barra fixa não cobrir o fim do conteúdo.
+              bottomBar && 'max-lg:pb-28',
             )}
           >
             {children}
           </main>
         </div>
       </div>
+      {bottomBar && <div className="lg:hidden">{bottomBar}</div>}
     </div>
   );
 }

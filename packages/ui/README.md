@@ -17,6 +17,10 @@ Design system minimalista (sidebar vinho, canvas creme). Fontes de verdade: `doc
 
 A marca (`BrandMark`) mora no app (`apps/web/src/shared/ui/brand-mark.tsx`) porque usa os PNGs oficiais via `next/image`. O pacote não depende do Next. Navegação, links e menus que precisam do router (sidebar com "Mais", drawer mobile) ficam no app e entram pelos slots `sidebar` e `topbar`. Para um link com cara de botão, use `<Link className={buttonClasses()}>`.
 
-Componentes editoriais da home (`EditorialHero`, `JourneyFocusCard`, `CourseCard`...) chegam com CF-022, e `EmptyState`/`ErrorState` com CF-157.
+## Componentes editoriais (CF-022)
+
+`EditorialHero`, `EditorialArt`, `JourneyFocusCard` (estados `novo`, `em-progresso`, `completo`, `erro`; barra só com progresso real), `CourseCard` (`disponivel`, `programado`, `indisponivel` sem link), `CourseCover`, `CourseCardSkeleton`, `CourseGrid` (3/2/1, com frase de vazio), `SectionHeader`, `CompactCard`, `Eyebrow` e `IconBadge`. Links entram por `linkAs` (ex.: `linkAs={Link}`) e CTAs como elemento pronto, para o pacote seguir sem depender do Next. Catálogo vivo em `/design#jornada`.
+
+`EmptyState`/`ErrorState` de tela inteira chegam com CF-157.
 
 Uso no app: `@import "tailwindcss"; @import "@caixa-forte/ui/theme.css";` + `@source` apontando para `packages/ui/src`.

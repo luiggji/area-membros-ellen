@@ -2,20 +2,24 @@
 
 **Regra:** cada ambiente tem **banco, storage, Auth, gateway, e-mail e chaves próprios**. Staging nunca consulta dados reais e nenhum ambiente que não seja produção aponta para o banco de produção.
 
-**Estado em 20/10/2026:** estrutura pronta, nada provisionado. A hospedagem e o modelo do Supabase (cloud por ambiente ou local via Docker) dependem da **P-014** (Luiggi).
+**Estado em 21/10/2026:**
+
+- **Supabase cloud (D-015):** um projeto atende development e staging juntos, sempre com dados fictícios. Produção terá projeto próprio, criado antes do go-live.
+- **Web na Vercel (D-016):** o projeto ainda não foi criado e não há domínio (P-005).
+- **Ainda em aberto:** o host da API (CF-015) e o gateway em sandbox, que será o Stripe (D-017, CF-002).
 
 ## Matriz
 
-| Recurso                                           | development                                                             | staging                                        | production                                       |
-| ------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
-| `APP_ENV`                                         | `development`                                                           | `staging`                                      | `production`                                     |
-| Supabase (banco + Auth + Storage)                 | local (`npx supabase start`, Docker) ou projeto cloud `caixa-forte-dev` | projeto próprio `caixa-forte-staging`          | projeto próprio `caixa-forte-prod`               |
-| Dados                                             | seeds fictícios (CF-154)                                                | seeds fictícios; nunca cópia de produção       | reais                                            |
-| Gateway de pagamento                              | sandbox                                                                 | sandbox (conta separada se o gateway permitir) | produção                                         |
-| E-mail transacional                               | captura local (Inbucket do Supabase)                                    | domínio de teste, envio só para a equipe       | domínio autenticado                              |
-| Web / API                                         | `localhost:3000` / `localhost:4000`                                     | host de preview/staging (P-014)                | domínio final (P-005)                            |
-| Rotas internas `/prototipo`, `/design`, `/status` | ligadas                                                                 | ligadas com `ENABLE_PREVIEW_ROUTES=true`       | desligadas                                       |
-| Onde ficam os segredos                            | `.env` local (fora do git)                                              | GitHub Environment `staging` + painel do host  | GitHub Environment `production` + painel do host |
+| Recurso                                           | development                                                                | staging                                        | production                                       |
+| ------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
+| `APP_ENV`                                         | `development`                                                              | `staging`                                      | `production`                                     |
+| Supabase (banco + Auth + Storage)                 | projeto cloud compartilhado dev+staging (D-015); local via Docker opcional | o mesmo projeto cloud de dev (D-015)           | projeto próprio `caixa-forte-prod`               |
+| Dados                                             | seeds fictícios (CF-154)                                                   | seeds fictícios; nunca cópia de produção       | reais                                            |
+| Gateway de pagamento                              | sandbox                                                                    | sandbox (conta separada se o gateway permitir) | produção                                         |
+| E-mail transacional                               | captura local (Inbucket do Supabase)                                       | domínio de teste, envio só para a equipe       | domínio autenticado                              |
+| Web / API                                         | `localhost:3000` / `localhost:4000`                                        | host de preview/staging (P-014)                | domínio final (P-005)                            |
+| Rotas internas `/prototipo`, `/design`, `/status` | ligadas                                                                    | ligadas com `ENABLE_PREVIEW_ROUTES=true`       | desligadas                                       |
+| Onde ficam os segredos                            | `.env` local (fora do git)                                                 | GitHub Environment `staging` + painel do host  | GitHub Environment `production` + painel do host |
 
 ## Variáveis
 
@@ -40,10 +44,10 @@ Os modelos estão em `apps/api/.env.example` e `apps/web/.env.example`.
 - **API:** a validação roda no boot e a API **não sobe** com configuração violada. Fora de dev, também exige a `service_role` do próprio projeto.
 - **Web:** o `/status` mostra o card "Ambiente e banco" com o ambiente, o projeto e o resultado da checagem.
 
-## Checklist de provisionamento (depois da P-014)
+## Checklist de provisionamento
 
-1. Criar os projetos Supabase `caixa-forte-staging` e `caixa-forte-prod`, cada um em sua organização ou com acesso restrito, e anotar o ref de produção.
-2. Aplicar as migrations do zero em staging (runbook de migrations, CF-016) e rodar os testes de RLS (CF-155).
+1. Projeto dev+staging: já criado (D-015). Antes do go-live, criar `caixa-forte-prod` com acesso restrito e anotar o ref de produção.
+2. Aplicar as migrations do zero no projeto dev+staging (runbook de migrations, CF-016) e rodar os testes de RLS (CF-155).
 3. Cadastrar os segredos nos GitHub Environments `staging` e `production` e no host. Produção exige aprovação e só aceita deploy a partir de `main`.
 4. Preencher `SUPABASE_PRODUCTION_REF` em todos os ambientes.
 5. Conferir o `/status` de staging: o card "Ambiente e banco" precisa ficar verde.

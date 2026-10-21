@@ -6,11 +6,11 @@
 modules/<contexto>/
   domain/          tipos e regras puras do contexto (ex.: estado de exibição de um curso)
   application/     casos de uso do front: queries/mutations, server actions, mapeamento de contratos
-  infrastructure/  clientes HTTP da API (/api/v1), cliente Supabase server/browser (CF-156)
+  infrastructure/  clientes HTTP da API (/api/v1); dados do Supabase via `shared/lib/supabase` (CF-156)
   presentation/    componentes React do contexto (usam @caixa-forte/ui + tokens)
 ```
 
-`src/shared/` guarda o que é transversal: `config/` (env validado), `lib/`, `ui/` (composições locais).
+`src/shared/` guarda o que é transversal: `config/` (env validado), `lib/` (inclui os clientes Supabase tipados `server.ts`/`browser.ts`, só com chave pública), `ui/` (composições locais).
 
 Regras:
 

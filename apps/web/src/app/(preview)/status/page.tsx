@@ -6,9 +6,14 @@ import {
   type ApiHealth,
   checkApiHealth,
 } from '@/modules/system-status/application/check-api-health';
+import {
+  type SupabaseHealth,
+  checkSupabaseHealth,
+} from '@/modules/system-status/application/check-supabase-health';
 import { StatusCard, type StatusTone } from '@/modules/system-status/presentation/status-card';
 import { publicEnv } from '@/shared/config/env';
 import { type EnvironmentStatus, environmentStatus } from '@/shared/config/environment';
+import { supabasePublicConfig } from '@/shared/lib/supabase/config';
 import { PreviewHeader } from '@/shared/ui/preview-header';
 
 export const metadata: Metadata = { title: 'Status · Caixa Forte' };
@@ -86,9 +91,53 @@ function environmentCard({ appEnv, isolation }: EnvironmentStatus): {
   }
 }
 
+function supabaseCard(health: SupabaseHealth | null): {
+  tone: StatusTone;
+  summary: string;
+  details: [string, string][];
+} {
+  const cliente: [string, string][] = [
+    ['Cliente', '@supabase/ssr tipado'],
+    ['Chave', 'pública, sob RLS'],
+  ];
+  if (!health) {
+    return {
+      tone: 'warning',
+      summary: 'Sem URL ou chave pública do Supabase neste ambiente.',
+      details: [...cliente, ['Configurar', 'NEXT_PUBLIC_SUPABASE_URL e _ANON_KEY']],
+    };
+  }
+  switch (health.state) {
+    case 'ok':
+      return {
+        tone: 'ok',
+        summary: 'Conectado: o Auth respondeu com a chave pública deste ambiente.',
+        details: [
+          ...cliente,
+          ['Latência', `${health.latencyMs} ms`],
+          ['Versão do Auth', health.authVersion ?? '—'],
+        ],
+      };
+    case 'invalid':
+      return {
+        tone: 'warning',
+        summary: `Respondeu com problema: ${health.detail}.`,
+        details: [...cliente, ['Latência', `${health.latencyMs} ms`]],
+      };
+    case 'down':
+      return { tone: 'down', summary: `${health.detail}.`, details: cliente };
+  }
+}
+
 /** Saúde de web e API (CF-170), consultada no servidor a cada acesso. */
 export default async function StatusPage() {
-  const api = apiCard(await checkApiHealth(publicEnv.NEXT_PUBLIC_API_URL));
+  const supabaseConfig = supabasePublicConfig(publicEnv);
+  const [apiHealth, supabaseHealth] = await Promise.all([
+    checkApiHealth(publicEnv.NEXT_PUBLIC_API_URL),
+    supabaseConfig ? checkSupabaseHealth(supabaseConfig) : null,
+  ]);
+  const api = apiCard(apiHealth);
+  const supabase = supabaseCard(supabaseHealth);
   const environment = environmentCard(environmentStatus(process.env));
 
   return (
@@ -121,6 +170,7 @@ export default async function StatusPage() {
           />
           <StatusCard title="API (NestJS)" {...api} />
           <StatusCard title="Ambiente e banco (CF-012)" {...environment} />
+          <StatusCard title="Supabase (CF-156)" {...supabase} />
         </div>
 
         <p className="text-xs text-cf-text-secondary">

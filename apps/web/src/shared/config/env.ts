@@ -1,3 +1,4 @@
+import { supabaseKeyKind } from '@caixa-forte/contracts';
 import { z } from 'zod';
 
 /**
@@ -15,7 +16,10 @@ const publicEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: z.url().default('http://localhost:4000/api/v1'),
   // Supabase (CF-012/CF-156): só URL e chave pública (anon/publishable). Opcionais até P-014.
   NEXT_PUBLIC_SUPABASE_URL: optionalText.pipe(z.url().optional()),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalText,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalText.refine(
+    (key) => !key || supabaseKeyKind(key) !== 'secret',
+    'chave secreta (service_role/sb_secret_) nunca vai para o browser: use a anon/publishable',
+  ),
 });
 
 export type PublicEnv = z.infer<typeof publicEnvSchema>;

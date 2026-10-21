@@ -1,6 +1,6 @@
 # Supabase — banco, Auth e Storage
 
-**Estado atual:** nenhum projeto cloud provisionado (P-014). O schema já é versionado e **testado do zero no CI** (job `database`: Postgres local do Supabase no runner, sem chaves). Ambientes: `docs/runbooks/ambientes.md`. Migrations e rollback: `docs/runbooks/migrations.md`.
+**Estado atual:** um projeto cloud atende dev+staging (D-015); produção terá projeto próprio. O schema já é versionado e **testado do zero no CI** (job `database`: Postgres local do Supabase no runner, sem chaves). Ambientes: `docs/runbooks/ambientes.md`. Migrations e rollback: `docs/runbooks/migrations.md`.
 
 ```
 supabase/
@@ -14,14 +14,14 @@ supabase/
 
 ## Comandos (via `pnpm dlx supabase@<versão>` ou `npx supabase`)
 
-| Ação                        | Comando                                                                                |
-| --------------------------- | -------------------------------------------------------------------------------------- |
-| Nova migration              | `npx supabase migration new <descricao>`                                               |
-| Subir local (exige Docker)  | `npx supabase start`                                                                   |
-| Recriar banco local + seeds | `npx supabase db reset` (**somente local**)                                            |
-| Testes de RLS               | `npx supabase test db`                                                                 |
-| Gerar tipos TS              | `npx supabase gen types typescript --local > packages/contracts/src/database.types.ts` |
-| Vincular projeto cloud      | `npx supabase link --project-ref <ref>` (cada ambiente com seu projeto)                |
+| Ação                        | Comando                                                                            |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| Nova migration              | `npx supabase migration new <descricao>`                                           |
+| Subir local (exige Docker)  | `npx supabase start`                                                               |
+| Recriar banco local + seeds | `npx supabase db reset` (**somente local**)                                        |
+| Testes de RLS               | `npx supabase test db`                                                             |
+| Gerar tipos TS              | `pnpm db:types` (exige Docker; o CI compara e mostra o arquivo gerado se divergir) |
+| Vincular projeto cloud      | `npx supabase link --project-ref <ref>` (cada ambiente com seu projeto)            |
 
 ## Regras inegociáveis
 

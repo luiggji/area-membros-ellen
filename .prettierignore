@@ -8,3 +8,6 @@ supabase/.temp
 
 # Kit da agência: versionado byte a byte (confere com docs/brand/v2/MANIFEST_SHA256.json)
 docs/brand/v2/
+
+# Gerado pelo Supabase CLI (CF-156): o CI compara byte a byte com a saída do gen types.
+packages/contracts/src/database.types.ts

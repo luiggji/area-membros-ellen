@@ -149,6 +149,15 @@ jobs:
         run: supabase db lint --local --level error --fail-on error
       - name: Testes pgTAP (supabase/tests)
         run: supabase test db
+      - name: Types do schema em dia (CF-156)
+        run: |
+          supabase gen types typescript --local --schema public > "$RUNNER_TEMP/database.types.ts"
+          if ! diff -u packages/contracts/src/database.types.ts "$RUNNER_TEMP/database.types.ts"; then
+            echo "::error file=packages/contracts/src/database.types.ts::Types desatualizados. Rode 'pnpm db:types' (exige Docker) ou copie o arquivo gerado abaixo."
+            echo "----- gerado pelo CLI -----"
+            cat "$RUNNER_TEMP/database.types.ts"
+            exit 1
+          fi
       - name: Resumo
         if: always()
         run: |

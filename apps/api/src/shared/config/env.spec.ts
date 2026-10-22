@@ -30,6 +30,12 @@ describe('validateEnv (CF-012)', () => {
     expect(validateEnv({ API_DOCS_ENABLED: 'false' }).API_DOCS_ENABLED).toBe(false);
   });
 
+  it('resolve as feature flags do ambiente e recusa flag desconhecida (CF-158)', () => {
+    expect(validateEnv({}).features.community).toBe(true);
+    expect(validateEnv({ FEATURE_FLAGS: '-community' }).features.community).toBe(false);
+    expect(() => validateEnv({ FEATURE_FLAGS: 'comunity' })).toThrow(/flag desconhecida/);
+  });
+
   it('trata variável vazia do .env como ausente', () => {
     expect(validateEnv({ SUPABASE_URL: '', SUPABASE_SERVICE_ROLE_KEY: '' }).SUPABASE_URL).toBe(
       undefined,

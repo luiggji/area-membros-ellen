@@ -15,6 +15,8 @@ Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (uni
 
 **OpenAPI (CF-151):** toda rota anota a resposta com o schema zod do contrato, ex. `@ApiOkResponse({ schema: contractSchema(healthResponseSchema) })`, e o PR inclui o `docs/api/openapi.json` regenerado (`pnpm openapi:export`). O CI falha se o arquivo divergir do código. Swagger UI em `/api/v1/docs` fora de produção.
 
+**Módulo não lançado (CF-158):** controller com `@RequireFeature('<flag>')` (`shared/http/feature-flag.guard`) responde 404 enquanto a flag estiver desligada no ambiente. Catálogo em `@caixa-forte/contracts` (`FEATURE_FLAGS`).
+
 | Módulo        | Escopo (PRD)                                  | CF principais      |
 | ------------- | --------------------------------------------- | ------------------ |
 | identity      | Auth, perfis, consentimentos, RBAC            | CF-030…035         |

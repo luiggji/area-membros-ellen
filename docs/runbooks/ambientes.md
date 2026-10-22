@@ -23,14 +23,15 @@
 
 ## Variáveis
 
-| Variável                        | Onde               | Segredo?      | Observação                                                                    |
-| ------------------------------- | ------------------ | ------------- | ----------------------------------------------------------------------------- |
-| `APP_ENV`                       | web (server) e API | não           | decide quais destinos são aceitos                                             |
-| `SUPABASE_URL`                  | API                | não           | URL do projeto do próprio ambiente                                            |
-| `SUPABASE_SERVICE_ROLE_KEY`     | API                | **sim**       | só na API; obrigatória fora de dev                                            |
-| `NEXT_PUBLIC_SUPABASE_URL`      | web                | não           | mesma URL, exposta ao browser                                                 |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | web                | não (pública) | protegida por RLS; nunca usar a service_role aqui                             |
-| `SUPABASE_PRODUCTION_REF`       | web (server) e API | não           | ref público de produção, usado para **barrar** staging/dev apontando para ele |
+| Variável                        | Onde               | Segredo?      | Observação                                                                                            |
+| ------------------------------- | ------------------ | ------------- | ----------------------------------------------------------------------------------------------------- |
+| `APP_ENV`                       | web (server) e API | não           | decide quais destinos são aceitos                                                                     |
+| `SUPABASE_URL`                  | API                | não           | URL do projeto do próprio ambiente                                                                    |
+| `SUPABASE_SERVICE_ROLE_KEY`     | API                | **sim**       | só na API; obrigatória fora de dev                                                                    |
+| `NEXT_PUBLIC_SUPABASE_URL`      | web                | não           | mesma URL, exposta ao browser                                                                         |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | web                | não (pública) | protegida por RLS; nunca usar a service_role aqui                                                     |
+| `SUPABASE_PRODUCTION_REF`       | web (server) e API | não           | ref público de produção, usado para **barrar** staging/dev apontando para ele                         |
+| `FEATURE_FLAGS`                 | web (server) e API | não           | módulos não lançados (CF-158): dev liga tudo, staging/produção desligam; `nome` liga, `-nome` desliga |
 
 Os modelos estão em `apps/api/.env.example` e `apps/web/.env.example`.
 

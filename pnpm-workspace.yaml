@@ -21,3 +21,12 @@ trustPolicyExclude:
   - semver@6.3.1
   - eslint-import-resolver-typescript@3.10.1
 blockExoticSubdeps: true
+
+# Riscos aceitos no audit (CF-019, docs/runbooks/segredos.md §Riscos aceitos). Só entram aqui achados
+# sem versão corrigida e fora do código de produção; revisar a cada atualização do Dependabot.
+auditConfig:
+  ignoreGhsas:
+    # braces ≤3.0.3 (alta, DoS por padrão aninhado): só no lint do Next (fast-glob); sem correção.
+    - GHSA-vfj7-8cjw-p6xm
+    # sprintf-js ≤1.1.3 (moderada, DoS por precisão): só no Jest (istanbul/js-yaml); sem correção.
+    - GHSA-hp3w-g68c-fv3c

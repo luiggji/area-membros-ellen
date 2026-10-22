@@ -56,4 +56,4 @@ Os modelos estão em `apps/api/.env.example` e `apps/web/.env.example`.
 ## Rotação e vazamento
 
 - Chave vazada: rotacionar no painel do Supabase/gateway, atualizar o Environment e o host, e registrar no runbook de incidente (CF-018).
-- O secret-scan (gitleaks) roda em toda PR. Nenhum `.env` é versionado (`.gitignore`).
+- Inventário, barreiras automáticas e procedimento completo: [segredos](segredos.md) (CF-019).

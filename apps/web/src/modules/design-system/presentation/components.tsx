@@ -1,4 +1,4 @@
-import { Button, buttonClasses, Card, Skeleton } from '@caixa-forte/ui';
+import { Button, buttonClasses, Card, EmptyState, ErrorState, LoadingState } from '@caixa-forte/ui';
 import { AlertTriangle, ArrowRight, Inbox, Lock, PanelLeft, PanelTop } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,7 +8,7 @@ import { BrandMark } from '@/shared/ui/brand-mark';
 
 /**
  * Amostras renderizadas com os componentes reais de `@caixa-forte/ui` (CF-020). Os componentes
- * editoriais da home chegam com CF-022 e os estados de tela padrão com CF-157.
+ * editoriais da home vêm do CF-022 e os estados de tela padrão do CF-157.
  */
 
 /** Aplicações da marca oficial de trabalho (Brand System V2) nos fundos permitidos. */
@@ -114,66 +114,47 @@ export function CardsSample() {
   );
 }
 
-function StatePanel({
-  icon,
-  title,
-  text,
-  action,
-  tone = 'neutral',
-}: {
-  icon: ReactNode;
-  title: string;
-  text: string;
-  action: string;
-  tone?: 'neutral' | 'danger';
-}) {
-  return (
-    <Card className="flex flex-col items-center gap-3 text-center">
-      <span
-        aria-hidden
-        className={
-          tone === 'danger'
-            ? 'grid size-12 place-items-center rounded-full bg-danger/10 text-danger'
-            : 'grid size-12 place-items-center rounded-full bg-blush-200 text-cf-primary'
-        }
-      >
-        {icon}
-      </span>
-      <h3 className="font-medium text-cf-text">{title}</h3>
-      <p className="text-sm text-cf-text-secondary">{text}</p>
-      <span className={buttonClasses({ variant: 'secondary', className: 'px-5' })}>{action}</span>
-    </Card>
-  );
-}
-
+/** Estados reais de `@caixa-forte/ui` (CF-157), com os textos do COPY_TONE da marca. */
 export function StatesSample() {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      <Card className="flex flex-col gap-3">
-        <span className="text-xs text-cf-text-secondary">Carregando · Skeleton</span>
-        <Skeleton className="h-24" />
-        <Skeleton className="h-4 w-3/4 rounded" />
-        <Skeleton className="h-4 w-1/2 rounded" />
-      </Card>
-      <StatePanel
-        icon={<Inbox className="size-5" />}
-        title="Nada por aqui ainda"
-        text="Mensagem verdadeira sobre o vazio, nunca conteúdo inventado."
-        action="Explorar cursos"
-      />
-      <StatePanel
-        icon={<AlertTriangle className="size-5" />}
-        title="Não foi possível carregar"
-        text="Explica o erro em linguagem simples e oferece tentar de novo."
-        action="Tentar novamente"
-        tone="danger"
-      />
-      <StatePanel
-        icon={<Lock className="size-5" />}
-        title="Conteúdo para assinantes"
-        text="Sem permissão: diz o motivo e o caminho, sem expor o conteúdo."
-        action="Ver planos"
-      />
+    <div className="flex flex-col gap-6">
+      <div className="grid gap-5 lg:grid-cols-2">
+        <Card className="flex flex-col gap-3">
+          <span className="text-xs text-cf-text-secondary">Carregando · LoadingState</span>
+          <LoadingState />
+        </Card>
+        <EmptyState
+          icon={<Inbox className="size-5" />}
+          title="Você ainda não começou uma trilha."
+          description="Escolha por onde começar."
+          action={
+            <Link href="/prototipo" className={buttonClasses({ variant: 'secondary' })}>
+              Ver o protótipo
+            </Link>
+          }
+        />
+        <ErrorState
+          icon={<AlertTriangle className="size-5" />}
+          title="Não foi possível carregar as aulas."
+          description="Tente novamente."
+          reference="exemplo-1234"
+        />
+        <EmptyState
+          icon={<Lock className="size-5" />}
+          title="Conteúdo para assinantes"
+          description="Sem permissão: diz o motivo e o caminho, sem expor o conteúdo. A tela de planos chega com o CF-042."
+        />
+      </div>
+      <p className="text-sm text-cf-text-secondary">
+        Telas reais:{' '}
+        <Link href="/rota-que-nao-existe" className="text-cf-primary underline underline-offset-4">
+          404
+        </Link>
+        {' · '}
+        <Link href="/design/erro" className="text-cf-primary underline underline-offset-4">
+          erro inesperado (simulado)
+        </Link>
+      </p>
     </div>
   );
 }

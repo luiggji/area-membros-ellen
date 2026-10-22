@@ -1,24 +1,8 @@
-import { PublicShell } from '@caixa-forte/ui';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { BrandMark } from '@/shared/ui/brand-mark';
+import { PublicFrame } from '@/shared/ui/public-frame';
 
-/**
- * Layout público (landing, planos, `/eventos/[slug]`). "Entrar" e "Assinar" entram com as telas
- * reais (CF-030, CF-042): botão sem destino não aparece (doc G §5).
- */
+/** Layout público (landing, planos, `/eventos/[slug]`). */
 export default function PublicLayout({ children }: { children: ReactNode }) {
-  return (
-    <PublicShell
-      brand={
-        <Link href="/" aria-label="Caixa Forte — página inicial">
-          <BrandMark priority />
-        </Link>
-      }
-      footer={<p>Caixa Forte · educação e networking para advogados.</p>}
-    >
-      {children}
-    </PublicShell>
-  );
+  return <PublicFrame>{children}</PublicFrame>;
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { requireSupabasePublicConfig, supabasePublicConfig } from './config';
+import { requireSupabasePublicConfig, supabaseCookieOptions, supabasePublicConfig } from './config';
 
 const configured = {
   NEXT_PUBLIC_SUPABASE_URL: 'https://abcdefghijklmnopqrst.supabase.co',
@@ -26,5 +26,12 @@ describe('supabasePublicConfig', () => {
     expect(() =>
       requireSupabasePublicConfig({ ...configured, NEXT_PUBLIC_SUPABASE_URL: undefined }),
     ).toThrow(/Supabase não configurado/);
+  });
+});
+
+describe('supabaseCookieOptions', () => {
+  it('marca secure em produção e mantém sameSite=lax sempre', () => {
+    expect(supabaseCookieOptions(true)).toEqual({ path: '/', sameSite: 'lax', secure: true });
+    expect(supabaseCookieOptions(false).secure).toBe(false);
   });
 });

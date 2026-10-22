@@ -9,6 +9,14 @@ describe('validateEnv (CF-012)', () => {
     expect(env.SUPABASE_URL).toBeUndefined();
   });
 
+  it('aplica limites seguros de rate limit e trust proxy por padrão (CF-152)', () => {
+    const env = validateEnv({});
+    expect(env.API_RATE_LIMIT_PER_MINUTE).toBe(120);
+    expect(env.API_TRUST_PROXY).toBe(0);
+    expect(() => validateEnv({ API_RATE_LIMIT_PER_MINUTE: '0' })).toThrow();
+    expect(() => validateEnv({ API_TRUST_PROXY: '-1' })).toThrow();
+  });
+
   it('trata variável vazia do .env como ausente', () => {
     expect(validateEnv({ SUPABASE_URL: '', SUPABASE_SERVICE_ROLE_KEY: '' }).SUPABASE_URL).toBe(
       undefined,

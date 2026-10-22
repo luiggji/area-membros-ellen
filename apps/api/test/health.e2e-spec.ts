@@ -15,7 +15,7 @@ describe('GET /api/v1/health (e2e)', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
     app = moduleRef.createNestApplication();
-    configureApp(app, ['http://localhost:3000']);
+    configureApp(app, { corsOrigins: ['http://localhost:3000'], trustProxy: 0 });
     await app.init();
   });
 

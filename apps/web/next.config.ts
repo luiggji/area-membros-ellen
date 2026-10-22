@@ -2,11 +2,12 @@ import path from 'node:path';
 
 import type { NextConfig } from 'next';
 
+import { buildCsp } from './src/shared/security/csp';
+
 const isDev = process.env.NODE_ENV !== 'production';
 
 /**
  * Cabeçalhos de segurança aplicados a todas as respostas (mesmo padrão do landing-ELLEN).
- * CSP inicial: 'unsafe-inline' é provisório até a CSP com nonce (CF-152).
  * Camera fica bloqueada até o check-in por QR (CF-068) liberar `camera=(self)` na rota de check-in.
  */
 const securityHeaders = [
@@ -18,22 +19,14 @@ const securityHeaders = [
     key: 'Permissions-Policy',
     value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
   },
-  {
-    key: 'Content-Security-Policy',
-    value: [
-      "default-src 'self'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "frame-ancestors 'none'",
-      "img-src 'self' data: blob:",
-      "font-src 'self' data:",
-      "style-src 'self' 'unsafe-inline'",
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
-      `connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL ?? ''}`.trim(),
-      "object-src 'none'",
-    ].join('; '),
-  },
 ];
+
+/** CSP estática das páginas públicas (CF-152); a área privada recebe a CSP com nonce do proxy.ts. */
+const publicCsp = buildCsp({
+  isDev,
+  apiUrl: process.env.NEXT_PUBLIC_API_URL,
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+});
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -41,7 +34,14 @@ const nextConfig: NextConfig = {
   // Raiz do monorepo: evita que o Next infira a raiz errada (há um repo git na home do usuário).
   turbopack: { root: path.join(import.meta.dirname, '../..') },
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      // Tudo menos /app e /admin (e suas subrotas), que ficam com o nonce do proxy.
+      {
+        source: '/((?!app(?:/|$)|admin(?:/|$)).*)',
+        headers: [{ key: 'Content-Security-Policy', value: publicCsp }],
+      },
+    ];
   },
 };
 

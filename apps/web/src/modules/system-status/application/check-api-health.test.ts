@@ -51,6 +51,23 @@ describe('checkApiHealth', () => {
     );
   });
 
+  it('lê a cota de rate limit dos headers da API (CF-152)', async () => {
+    const result = await checkApiHealth(
+      'http://api',
+      async () =>
+        new Response(JSON.stringify(healthy), {
+          headers: { 'X-RateLimit-Limit': '120', 'X-RateLimit-Remaining': '119' },
+        }),
+      fakeNow,
+    );
+    expect(result).toMatchObject({ state: 'ok', rateLimit: { limit: 120, remaining: 119 } });
+  });
+
+  it('sem headers de rate limit, não inventa cota', async () => {
+    const result = await checkApiHealth('http://api', respondWith(healthy), fakeNow);
+    expect(result).not.toHaveProperty('rateLimit');
+  });
+
   it('marca down quando a API não responde', async () => {
     const result = await checkApiHealth('http://api', async () => {
       throw new TypeError('fetch failed');

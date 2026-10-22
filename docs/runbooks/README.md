@@ -7,6 +7,7 @@ Procedimentos operacionais, criados nas Issues correspondentes:
 | [Ambientes dev/staging/produção](ambientes.md)           | CF-012         |
 | Deploy staging/produção e rollback                       | CF-015, CF-125 |
 | [Migrations e rollback de banco](migrations.md)          | CF-016         |
+| [Segredos e varredura de dependências](segredos.md)      | CF-019         |
 | Backup e restauração                                     | CF-018         |
 | Incidente (pagamentos, QR/check-in, vazamento)           | CF-018         |
 | Operação do check-in no Café (contingência sem internet) | CF-072         |

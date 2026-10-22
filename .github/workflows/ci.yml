@@ -36,6 +36,7 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
           BASE_REF: ${{ github.base_ref }}
           PR_BODY: ${{ github.event.pull_request.body }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
 
   lint-and-typecheck:
     name: lint-and-typecheck
@@ -92,8 +93,21 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - name: Vulnerabilidades altas/críticas em dependências de produção
-        run: pnpm audit --prod --audit-level high
+      # Riscos aceitos ficam em pnpm-workspace.yaml (auditConfig.ignoreGhsas), com justificativa (CF-019).
+      - name: Produção sem vulnerabilidade moderada ou acima
+        run: pnpm audit --prod --audit-level moderate
+      - name: Todas as dependências (inclui dev/CI) sem vulnerabilidade alta ou crítica
+        run: pnpm audit --audit-level high
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "### Dependências (CF-019)"
+            echo '```'
+            pnpm audit 2>&1 | tail -n 3 || true
+            echo '```'
+            echo "Riscos aceitos: \`auditConfig.ignoreGhsas\` em pnpm-workspace.yaml · runbook: docs/runbooks/segredos.md"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   secret-scan:
     name: secret-scan

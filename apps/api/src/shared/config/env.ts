@@ -24,6 +24,8 @@ const envSchema = z
      * usar o IP real do cliente. 0 em dev; o host da API (CF-015) define o valor.
      */
     API_TRUST_PROXY: z.coerce.number().int().min(0).default(0),
+    /** Swagger UI e openapi.json (CF-151). Sem valor: ligado fora de produção, desligado nela. */
+    API_DOCS_ENABLED: z.stringbool().optional(),
     // Supabase: opcionais em dev até a hospedagem ser escolhida (P-014); obrigatórios fora dele.
     SUPABASE_URL: optionalText.pipe(z.url().optional()),
     /** Segredo: só na API, nunca em variável NEXT_PUBLIC_*. */
@@ -47,7 +49,11 @@ const envSchema = z
         message: `${env.APP_ENV} exige a chave de serviço do próprio projeto`,
       });
     }
-  });
+  })
+  .transform((env) => ({
+    ...env,
+    API_DOCS_ENABLED: env.API_DOCS_ENABLED ?? env.APP_ENV !== 'production',
+  }));
 
 export type Env = z.infer<typeof envSchema>;
 

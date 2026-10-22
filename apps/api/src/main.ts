@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
   configureApp(app, {
     corsOrigins: config.get('API_CORS_ORIGINS', { infer: true }),
     trustProxy: config.get('API_TRUST_PROXY', { infer: true }),
+    docsEnabled: config.get('API_DOCS_ENABLED', { infer: true }),
   });
 
   const port = config.get('API_PORT', { infer: true });

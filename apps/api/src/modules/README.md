@@ -13,6 +13,8 @@ modules/<contexto>/
 
 Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (unit) e `test/*.e2e-spec.ts` (HTTP).
 
+**OpenAPI (CF-151):** toda rota anota a resposta com o schema zod do contrato, ex. `@ApiOkResponse({ schema: contractSchema(healthResponseSchema) })`, e o PR inclui o `docs/api/openapi.json` regenerado (`pnpm openapi:export`). O CI falha se o arquivo divergir do código. Swagger UI em `/api/v1/docs` fora de produção.
+
 | Módulo        | Escopo (PRD)                                  | CF principais      |
 | ------------- | --------------------------------------------- | ------------------ |
 | identity      | Auth, perfis, consentimentos, RBAC            | CF-030…035         |

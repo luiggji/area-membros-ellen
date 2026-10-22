@@ -81,6 +81,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - name: OpenAPI versionado em dia com o código (CF-151)
+        run: |
+          pnpm openapi:export
+          if ! git diff --exit-code docs/api/openapi.json; then
+            echo "::error file=docs/api/openapi.json::OpenAPI desatualizado. Rode 'pnpm openapi:export' e commite o arquivo."
+            exit 1
+          fi
 
   dependency-security:
     name: dependency-security

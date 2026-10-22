@@ -1,4 +1,9 @@
-import { appEnvSchema, checkEnvironmentIsolation } from '@caixa-forte/contracts';
+import {
+  appEnvSchema,
+  checkEnvironmentIsolation,
+  InvalidFeatureFlagsError,
+  resolveFeatureFlags,
+} from '@caixa-forte/contracts';
 import { z } from 'zod';
 
 const optionalText = z
@@ -26,6 +31,8 @@ const envSchema = z
     API_TRUST_PROXY: z.coerce.number().int().min(0).default(0),
     /** Swagger UI e openapi.json (CF-151). Sem valor: ligado fora de produção, desligado nela. */
     API_DOCS_ENABLED: z.stringbool().optional(),
+    /** Liga/desliga módulos não lançados (CF-158), ex.: `community,-planning`. */
+    FEATURE_FLAGS: optionalText,
     // Supabase: opcionais em dev até a hospedagem ser escolhida (P-014); obrigatórios fora dele.
     SUPABASE_URL: optionalText.pipe(z.url().optional()),
     /** Segredo: só na API, nunca em variável NEXT_PUBLIC_*. */
@@ -34,6 +41,12 @@ const envSchema = z
     SUPABASE_PRODUCTION_REF: optionalText,
   })
   .superRefine((env, ctx) => {
+    try {
+      resolveFeatureFlags(env.APP_ENV, env.FEATURE_FLAGS);
+    } catch (error) {
+      if (!(error instanceof InvalidFeatureFlagsError)) throw error;
+      ctx.addIssue({ code: 'custom', path: ['FEATURE_FLAGS'], message: error.message });
+    }
     const isolation = checkEnvironmentIsolation({
       appEnv: env.APP_ENV,
       supabaseUrl: env.SUPABASE_URL,
@@ -53,6 +66,7 @@ const envSchema = z
   .transform((env) => ({
     ...env,
     API_DOCS_ENABLED: env.API_DOCS_ENABLED ?? env.APP_ENV !== 'production',
+    features: resolveFeatureFlags(env.APP_ENV, env.FEATURE_FLAGS),
   }));
 
 export type Env = z.infer<typeof envSchema>;

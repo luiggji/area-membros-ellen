@@ -1,3 +1,4 @@
+import { type FeatureFlag, featureFlagKeys } from '@caixa-forte/contracts';
 import { buttonClasses } from '@caixa-forte/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ import {
 import { StatusCard, type StatusTone } from '@/modules/system-status/presentation/status-card';
 import { publicEnv } from '@/shared/config/env';
 import { type EnvironmentStatus, environmentStatus } from '@/shared/config/environment';
+import { featureFlagsStatus } from '@/shared/config/feature-flags';
 import { supabasePublicConfig } from '@/shared/lib/supabase/config';
 import { PreviewHeader } from '@/shared/ui/preview-header';
 
@@ -143,6 +145,36 @@ function supabaseCard(health: SupabaseHealth | null): {
   }
 }
 
+/** Rótulos curtos; o Record obriga um rótulo para cada flag nova do catálogo. */
+const flagLabels: Record<FeatureFlag, string> = {
+  learning: 'Cursos',
+  community: 'Comunidade',
+  events: 'Café Estratégico',
+  planning: 'Minha Jornada',
+  live_sessions: 'Ao Vivo',
+  resources: 'Cofre de Materiais',
+  checkout: 'Assinatura (checkout)',
+};
+
+function flagsCard(status: ReturnType<typeof featureFlagsStatus>): {
+  tone: StatusTone;
+  summary: string;
+  details: [string, string][];
+} {
+  if (!status.ok) {
+    return { tone: 'down', summary: `Configuração inválida: ${status.error}.`, details: [] };
+  }
+  const enabled = featureFlagKeys.filter((key) => status.state[key]).length;
+  return {
+    tone: 'ok',
+    summary: `${enabled} de ${featureFlagKeys.length} módulos ligados neste ambiente. Desligado = fora da navegação e 404 na API.`,
+    details: featureFlagKeys.map((key) => [
+      flagLabels[key],
+      status.state[key] ? 'ligado' : 'desligado',
+    ]),
+  };
+}
+
 /** Saúde de web e API (CF-170), consultada no servidor a cada acesso. */
 export default async function StatusPage() {
   const supabaseConfig = supabasePublicConfig(publicEnv);
@@ -153,6 +185,7 @@ export default async function StatusPage() {
   const api = apiCard(apiHealth);
   const supabase = supabaseCard(supabaseHealth);
   const environment = environmentCard(environmentStatus(process.env));
+  const flags = flagsCard(featureFlagsStatus(process.env));
 
   return (
     <>
@@ -186,6 +219,7 @@ export default async function StatusPage() {
           <StatusCard title="API (NestJS)" {...api} />
           <StatusCard title="Ambiente e banco (CF-012)" {...environment} />
           <StatusCard title="Supabase (CF-156)" {...supabase} />
+          <StatusCard title="Feature flags (CF-158)" {...flags} />
         </div>
 
         <p className="text-xs text-cf-text-secondary">

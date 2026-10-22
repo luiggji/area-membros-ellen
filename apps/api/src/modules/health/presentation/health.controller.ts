@@ -21,6 +21,7 @@ export class HealthController {
       service: report.service,
       version: report.version,
       timestamp: report.checkedAt.toISOString(),
+      checks: report.checks.map(({ name, healthy }) => ({ name, healthy })),
     };
   }
 }

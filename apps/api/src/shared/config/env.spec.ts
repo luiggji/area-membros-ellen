@@ -17,6 +17,19 @@ describe('validateEnv (CF-012)', () => {
     expect(() => validateEnv({ API_TRUST_PROXY: '-1' })).toThrow();
   });
 
+  it('documentação da API ligada fora de produção e desligada nela, salvo override (CF-151)', () => {
+    expect(validateEnv({}).API_DOCS_ENABLED).toBe(true);
+    const prod = {
+      APP_ENV: 'production',
+      SUPABASE_URL: 'https://prodref.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+      SUPABASE_PRODUCTION_REF: 'prodref',
+    };
+    expect(validateEnv(prod).API_DOCS_ENABLED).toBe(false);
+    expect(validateEnv({ ...prod, API_DOCS_ENABLED: 'true' }).API_DOCS_ENABLED).toBe(true);
+    expect(validateEnv({ API_DOCS_ENABLED: 'false' }).API_DOCS_ENABLED).toBe(false);
+  });
+
   it('trata variável vazia do .env como ausente', () => {
     expect(validateEnv({ SUPABASE_URL: '', SUPABASE_SERVICE_ROLE_KEY: '' }).SUPABASE_URL).toBe(
       undefined,

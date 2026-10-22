@@ -18,7 +18,11 @@ describe('Segurança HTTP da API (CF-152, e2e)', () => {
     const { AppModule } = await import('../src/app.module.js');
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
     app = moduleRef.createNestApplication();
-    configureApp(app, { corsOrigins: ['http://localhost:3000'], trustProxy: 1 });
+    configureApp(app, {
+      corsOrigins: ['http://localhost:3000'],
+      trustProxy: 1,
+      docsEnabled: false,
+    });
     await app.init();
   });
 

@@ -8,7 +8,8 @@
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "openapi:export": "tsc -p tsconfig.build.json && node dist/openapi-export.js"
   },
   "dependencies": {
     "@caixa-forte/contracts": "workspace:*",
@@ -16,6 +17,7 @@
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.2.7",
     "@nestjs/platform-express": "^11.2.7",
+    "@nestjs/swagger": "~11.4.7",
     "@nestjs/throttler": "^6.7.1",
     "helmet": "^8.3.0",
     "reflect-metadata": "^0.2.2",

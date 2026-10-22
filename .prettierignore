@@ -11,3 +11,6 @@ docs/brand/v2/
 
 # Gerado pelo Supabase CLI (CF-156): o CI compara byte a byte com a saída do gen types.
 packages/contracts/src/database.types.ts
+
+# Gerado pelo `pnpm openapi:export` (CF-151): o CI compara byte a byte com o código.
+docs/api/openapi.json

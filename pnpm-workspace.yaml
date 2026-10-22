@@ -9,6 +9,8 @@ allowBuilds:
   unrs-resolver: true
   # usa binário pré-compilado; script de build desnecessário
   '@parcel/watcher': false
+  # telemetria do swagger-ui-dist (via @nestjs/swagger): nunca roda na instalação (CF-151)
+  '@scarf/scarf': false
 
 # Supply chain (semgrep): versões novas só após um período de quarentena; sem downgrade de
 # confiança; sem deps transitivas vindas de git/tarball.
@@ -24,6 +26,11 @@ blockExoticSubdeps: true
 
 # Riscos aceitos no audit (CF-019, docs/runbooks/segredos.md §Riscos aceitos). Só entram aqui achados
 # sem versão corrigida e fora do código de produção; revisar a cada atualização do Dependabot.
+# @nestjs/swagger 11.4.7 fixa js-yaml 5.3.0 (GHSA-r3ph-w7gj-g6xm, moderada, em produção). A 5.4.x é
+# minor compatível. Remover quando o swagger depender de versão corrigida (CF-151).
+overrides:
+  '@nestjs/swagger>js-yaml': 5.4.3
+
 auditConfig:
   ignoreGhsas:
     # braces ≤3.0.3 (alta, DoS por padrão aninhado): só no lint do Next (fast-glob); sem correção.

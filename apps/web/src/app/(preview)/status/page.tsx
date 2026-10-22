@@ -50,6 +50,7 @@ function apiCard(health: ApiHealth): {
               ? `${health.rateLimit.remaining} de ${health.rateLimit.limit} req/min restantes`
               : 'sem cabeçalhos X-RateLimit',
           ],
+          ['Documentação (CF-151)', `${publicEnv.NEXT_PUBLIC_API_URL}/docs`],
         ],
       };
     case 'invalid':

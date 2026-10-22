@@ -32,6 +32,8 @@
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | web                | não (pública) | protegida por RLS; nunca usar a service_role aqui                                                     |
 | `SUPABASE_PRODUCTION_REF`       | web (server) e API | não           | ref público de produção, usado para **barrar** staging/dev apontando para ele                         |
 | `FEATURE_FLAGS`                 | web (server) e API | não           | módulos não lançados (CF-158): dev liga tudo, staging/produção desligam; `nome` liga, `-nome` desliga |
+| `REVALIDATE_SECRET`             | web (server) e API | **sim**       | revalidação das páginas públicas (CF-163); mesmo valor nos dois, 32+ caracteres                       |
+| `WEB_REVALIDATE_URL`            | API                | não           | `https://<web>/api/revalidate`; vai junto com o segredo                                               |
 
 Os modelos estão em `apps/api/.env.example` e `apps/web/.env.example`.
 

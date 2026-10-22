@@ -33,6 +33,10 @@ const envSchema = z
     API_DOCS_ENABLED: z.stringbool().optional(),
     /** Liga/desliga módulos não lançados (CF-158), ex.: `community,-planning`. */
     FEATURE_FLAGS: optionalText,
+    /** Endpoint de revalidação do web, ex.: https://<web>/api/revalidate (CF-163). */
+    WEB_REVALIDATE_URL: optionalText.pipe(z.url().optional()),
+    /** Segredo compartilhado com o web para pedir revalidação. Nunca em NEXT_PUBLIC_*. */
+    REVALIDATE_SECRET: optionalText.pipe(z.string().min(32).optional()),
     // Supabase: opcionais em dev até a hospedagem ser escolhida (P-014); obrigatórios fora dele.
     SUPABASE_URL: optionalText.pipe(z.url().optional()),
     /** Segredo: só na API, nunca em variável NEXT_PUBLIC_*. */
@@ -41,6 +45,13 @@ const envSchema = z
     SUPABASE_PRODUCTION_REF: optionalText,
   })
   .superRefine((env, ctx) => {
+    if (Boolean(env.WEB_REVALIDATE_URL) !== Boolean(env.REVALIDATE_SECRET)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['REVALIDATE_SECRET'],
+        message: 'WEB_REVALIDATE_URL e REVALIDATE_SECRET vão juntos (CF-163)',
+      });
+    }
     try {
       resolveFeatureFlags(env.APP_ENV, env.FEATURE_FLAGS);
     } catch (error) {

@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuditModule } from './modules/audit/audit.module';
 import { HealthModule } from './modules/health/health.module';
 import { validateEnv } from './shared/config/env';
+import { WebCacheModule } from './shared/cache/web-cache.module';
 import { RateLimitModule } from './shared/http/rate-limit.module';
 import { SupabaseModule } from './shared/supabase/supabase.module';
 
@@ -13,6 +14,7 @@ import { SupabaseModule } from './shared/supabase/supabase.module';
     // Sem ler .env aqui, os testes não dependem das chaves locais de quem roda.
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true, validate: validateEnv }),
     SupabaseModule,
+    WebCacheModule,
     RateLimitModule,
     AuditModule,
     HealthModule,

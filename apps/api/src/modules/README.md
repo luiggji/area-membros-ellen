@@ -17,6 +17,8 @@ Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (uni
 
 **Módulo não lançado (CF-158):** controller com `@RequireFeature('<flag>')` (`shared/http/feature-flag.guard`) responde 404 enquanto a flag estiver desligada no ambiente. Catálogo em `@caixa-forte/contracts` (`FEATURE_FLAGS`).
 
+**Dado público mudou (CF-163):** depois de persistir preço, evento/lote ou catálogo, injete `WEB_CACHE` (`shared/cache/web-cache.module`) e chame `revalidate(['prices'])`: o web renova as páginas públicas daquela tag.
+
 | Módulo        | Escopo (PRD)                                  | CF principais      |
 | ------------- | --------------------------------------------- | ------------------ |
 | identity      | Auth, perfis, consentimentos, RBAC            | CF-030…035         |

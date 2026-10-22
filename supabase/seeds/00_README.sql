@@ -1,5 +1,11 @@
 -- Seeds de desenvolvimento/staging (CF-154).
--- Regras: somente dados FICTÍCIOS, sem e-mails/CPFs reais; preços de referência
--- (R$ 89 mensal / R$ 790 anual) entram como price_versions de seed, nunca como constantes no frontend.
--- Os arquivos desta pasta são executados em ordem alfabética por `supabase db reset`.
+-- Regras: somente dados FICTÍCIOS (e-mails @teste.local, sem CPF); o CI barra o resto
+-- (.github/scripts/check-seeds.mjs). Os arquivos desta pasta rodam em ordem alfabética no
+-- `supabase db reset` local/CI e NUNCA são enviados ao cloud (`db push` sem --include-seed).
+--
+-- Pessoas de teste do Auth (owner, comercial, técnica, membro, visitante): `pnpm seed:dev`
+-- (supabase/scripts/seed-dev.mjs), que funciona também no projeto cloud dev+staging (D-015).
+-- Cada módulo semeia aqui as próprias tabelas quando elas existirem:
+--   CF-032: papéis em user_roles por e-mail das pessoas de teste;
+--   CF-040: planos e price_versions de referência (R$ 89 mensal / R$ 790 anual), nunca constantes no front.
 select 1;

@@ -86,7 +86,7 @@
 | 1.6 | CF-012 | P0 | Ambientes dev/staging/prod independentes (Supabase, storage, gateway sandbox separados) | CF-010 | `chore/<issue>-ambientes` | M | P-014 | #15 |
 | 1.7 | CF-016 | P0 | Migrações versionadas + teste de compatibilidade (sobe do zero; runbook de rollback) | CF-012 | `chore/<issue>-pipeline-migrations` | M | — | #16 |
 | 1.8 | **CF-156 (novo)** | P0 | Cliente Supabase server/browser tipado (`@supabase/ssr`), geração de types do schema no CI. *Justificativa: evita acesso direto não tipado e uso de `service_role` no browser.* | CF-012, CF-016 | `feat/<issue>-supabase-client` | S | — | #17 |
-| 1.9 | **CF-154 (novo)** | P0 | Seeds fictícios dev/staging (planos R$89/R$790 de referência, usuários de teste por papel, sem dados reais). *Justificativa: B §5 exige seed e proíbe constantes no frontend.* | CF-016 | `chore/<issue>-seeds-ficticios` | S | — | #18 |
+| 1.9 | **CF-154 (novo)** | P0 | Seeds fictícios dev/staging (planos R$89/R$790 de referência, usuários de teste por papel, sem dados reais). *Justificativa: B §5 exige seed e proíbe constantes no frontend.* **Refinamento 22/10/2026 (Luiggi):** entrega a infraestrutura (pessoas de teste por papel via `pnpm seed:dev` e guarda de dado real no CI); planos e papéis são semeados no CF-040 e no CF-032, que criam as tabelas. | CF-016 | `chore/<issue>-seeds-ficticios` | S | — | #18 |
 | 1.10 | **CF-155 (novo)** | P0 | Suíte pgTAP para RLS rodando no CI (base para CF-033/CF-122). *Justificativa: RLS precisa de teste automatizado por PR, não só E2E.* | CF-016, CF-013 | `test/<issue>-pgtap-rls-ci` | M | — | #19 |
 | 1.11 | CF-017 | P0 | Logs estruturados, error tracking e healthcheck (correlation ID, sem PII) | CF-010 | `feat/<issue>-observabilidade` | M | P-014 | #20 |
 | 1.12 | CF-019 | P0 | Gerenciamento de segredos e scanning de dependências (inclui subir `minimumReleaseAge` do pnpm de 1 para 7 dias após 2026-10-25) | CF-012 | `chore/<issue>-segredos-scan` | S | — | #21 |
@@ -118,7 +118,7 @@
 |---|---|---|---|---|---|---|---|---|
 | 3.1 | CF-030 | P0 | Cadastro/login/verificação/recuperação de senha (Supabase Auth) | CF-012 | `feat/<issue>-auth` | M | — | — |
 | 3.2 | CF-031 | P0 | Perfis pessoais com consentimentos versionados | CF-030, CF-016 | `feat/<issue>-perfis-consentimentos` | M | P-012 | — |
-| 3.3 | CF-032 | P0 | RBAC owner/commercial/tech/member (servidor) | CF-030 | `feat/<issue>-rbac` | M | — | — |
+| 3.3 | CF-032 | P0 | RBAC owner/commercial/tech/member (servidor) + seed dos papéis das pessoas de teste do CF-154 | CF-030 | `feat/<issue>-rbac` | M | — | — |
 | 3.4 | CF-033 | P0 | RLS e testes de isolamento/IDOR em todas as tabelas com PII | CF-031, CF-032, CF-155 | `test/<issue>-rls-idor` | M | — | — |
 | 3.5 | CF-034 | P0 | MFA/admin hardening e restrição de rotas `/admin` | CF-032 | `feat/<issue>-mfa-admin` | M | — | — |
 | 3.6 | CF-035 | P0 | Onboarding inicial (estágio, cidade/UF, objetivo) com retomada | CF-031 | `feat/<issue>-onboarding` | M | — | — |
@@ -130,7 +130,7 @@
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
 | 4.1 | CF-100 | P0 | Provedor de e-mail e templates transacionais (signup, compra, ingresso) com retry/log | CF-012 | `feat/<issue>-email-transacional` | M | P-008 | — |
-| 4.2 | CF-040 | P0 | Schema `plans`, `price_versions`, `subscriptions`, `payments`, `entitlements`, `webhook_receipts` | CF-016, CF-002 | `feat/<issue>-schema-billing` | M | P-001 | — |
+| 4.2 | CF-040 | P0 | Schema `plans`, `price_versions`, `subscriptions`, `payments`, `entitlements`, `webhook_receipts` + seed dos planos de referência R$89/R$790 (CF-154) | CF-016, CF-002 | `feat/<issue>-schema-billing` | M | P-001 | — |
 | 4.3 | CF-041 | P0 | CRUD owner de planos e versões de preço (novas vendas, sem retroatividade) | CF-040, CF-032 | `feat/<issue>-crud-planos` | M | — | — |
 | 4.4 | CF-042 | P0 | Landing pública e comparador de planos com checkout | CF-020, CF-041, CF-003 | `feat/<issue>-landing-planos` | M | P-002 | — |
 | 4.5 | CF-043 | P0 | Adapter do gateway + checkout assinatura mensal | CF-040, CF-002 | `feat/<issue>-gateway-mensal` | L | P-001 | — |

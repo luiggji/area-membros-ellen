@@ -19,3 +19,5 @@ Regras:
 - Área privada (`/app`, `/admin`) sem cache compartilhado (`no-store`); páginas públicas cacheáveis (CF-163).
 - Área privada é **sempre dinâmica**: a CSP com nonce (`src/proxy.ts`, CF-152) só alcança scripts de páginas renderizadas por requisição. O build falha se alguma rota de `/app` ou `/admin` for pré-renderizada.
 - Estados `loading`, `empty`, `error`, `forbidden` obrigatórios em cada tela.
+- Estados padrão (CF-157): `not-found.tsx`, `error.tsx` e `global-error.tsx` na raiz; `EmptyState`, `ErrorState` e `LoadingState` de `@caixa-forte/ui`.
+- **Sem `loading.tsx` de segmento**: ele faz streaming, e `notFound()`/erros passam a responder HTTP 200 (404/500 viram só `noindex`). Carregamento vai dentro da página: `<Suspense fallback={<LoadingState />}>` em volta do trecho que busca dados.

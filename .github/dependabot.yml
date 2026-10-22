@@ -8,6 +8,11 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
+    # Majors entram por Issue planejada (ex.: NestJS 12 = CF-168; TypeScript 7 = ADR 0001).
+    # Vulnerabilidade em major continua aparecendo nos alertas (aba Security) e no audit do CI.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
     groups:
       minor-and-patch:
         update-types: [minor, patch]

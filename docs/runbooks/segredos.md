@@ -28,7 +28,7 @@ Estado em 22/10/2026: nenhum secret cadastrado no GitHub (repositório nem Envir
 | Semgrep `p/secrets` + OWASP          | segredo e padrão inseguro no código                                                                                                        | CI `sast`                     |
 | `pnpm audit`                         | produção: moderada ou acima; tudo (dev/CI): alta ou acima                                                                                  | CI `dependency-security`      |
 | Dependabot alerts + security updates | CVE nova abre alerta e PR de correção para `develop`                                                                                       | GitHub (ligado em 22/10/2026) |
-| Dependabot version updates           | atualização semanal com quarentena de 7 dias (`cooldown`)                                                                                  | `.github/dependabot.yml`      |
+| Dependabot version updates           | minor/patch semanal, quarentena de 7 dias; majors só por Issue                                                                             | `.github/dependabot.yml`      |
 | pnpm supply chain                    | versão com menos de `minimumReleaseAge`, queda de confiança (`trustPolicy`), dependência de git/tarball, script de instalação não auditado | `pnpm-workspace.yaml`         |
 | Actions pinadas por SHA              | troca silenciosa de action                                                                                                                 | workflows                     |
 

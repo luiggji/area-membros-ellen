@@ -5,7 +5,21 @@ export type Database = {
   
   "public": {
           Tables: {
-            [_ in never]: never
+            "audit_logs": {
+                  Row: {
+                    "action": string,"actor_id": string | null,"actor_role": string,"after": Json | null,"before": Json | null,"correlation_id": string | null,"happened_at": string,"id": string,"target_id": string | null,"target_type": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "action": string,"actor_id"?: string | null,"actor_role": string,"after"?: Json | null,"before"?: Json | null,"correlation_id"?: string | null,"happened_at"?: string,"id"?: string,"target_id"?: string | null,"target_type": string
+                  }
+                  Update: {
+                    "action"?: string,"actor_id"?: string | null,"actor_role"?: string,"after"?: Json | null,"before"?: Json | null,"correlation_id"?: string | null,"happened_at"?: string,"id"?: string,"target_id"?: string | null,"target_type"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                }
           }
           Views: {
             [_ in never]: never

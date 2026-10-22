@@ -12,7 +12,8 @@ const DESTRUCTIVE = [
   /\bdrop\s+table\b/i,
   /\bdrop\s+schema\b/i,
   /\bdrop\s+column\b/i,
-  /\btruncate\b/i,
+  // Só o comando (início de instrução): `revoke truncate` e `before truncate` protegem, não apagam.
+  /(^|;)\s*truncate\b/im,
   /\bdelete\s+from\b/i,
   /\balter\s+column\s+\w+\s+(set\s+data\s+)?type\b/i,
 ];

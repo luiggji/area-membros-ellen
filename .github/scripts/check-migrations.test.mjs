@@ -36,3 +36,12 @@ test('proíbe desligar RLS, mesmo com aprovação', () => {
   const sql = '-- destrutiva-aprovada: #1\nalter table public.x disable row level security;';
   assert.equal(checkMigration(ok, sql).length, 1);
 });
+
+test('truncate só conta como comando, não como privilégio ou evento de trigger', () => {
+  const protege =
+    'revoke update, delete, truncate on public.x from service_role;\n' +
+    'create trigger x_sem_truncate before truncate on public.x execute function f();';
+  assert.deepEqual(checkMigration(ok, protege), []);
+  assert.equal(checkMigration(ok, 'select 1;\ntruncate public.x;').length, 1);
+  assert.equal(checkMigration(ok, 'select 1; truncate table public.x;').length, 1);
+});

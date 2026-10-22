@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 
+import { SUPABASE_ADMIN, SupabaseAdmin } from '../../shared/supabase/supabase.module';
 import { GetHealthUseCase } from './application/get-health.use-case';
-import { CLOCK, DEPENDENCY_CHECKERS } from './application/ports';
+import { CLOCK, DEPENDENCY_CHECKERS, DependencyChecker } from './application/ports';
+import { AuditLogChecker } from './infrastructure/audit-log.checker';
 import { SystemClock } from './infrastructure/system-clock';
 import { HealthController } from './presentation/health.controller';
 
@@ -10,8 +12,13 @@ import { HealthController } from './presentation/health.controller';
   providers: [
     GetHealthUseCase,
     { provide: CLOCK, useClass: SystemClock },
-    // Checkers de DB/e-mail/gateway entram aqui quando os adapters existirem (CF-017).
-    { provide: DEPENDENCY_CHECKERS, useValue: [] },
+    // Sem Supabase (dev, CI) não há dependência a checar. E-mail/gateway entram com os adapters (CF-017).
+    {
+      provide: DEPENDENCY_CHECKERS,
+      inject: [SUPABASE_ADMIN],
+      useFactory: (client: SupabaseAdmin | null): DependencyChecker[] =>
+        client ? [new AuditLogChecker(client)] : [],
+    },
   ],
 })
 export class HealthModule {}

@@ -7,6 +7,7 @@ const healthy = {
   service: 'caixa-forte-api',
   version: '0.0.0',
   timestamp: '2026-10-20T12:00:00.000Z',
+  checks: [{ name: 'audit_log', healthy: true }],
 };
 
 const respondWith =

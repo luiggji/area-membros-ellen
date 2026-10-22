@@ -24,6 +24,9 @@ const dateTime = new Intl.DateTimeFormat('pt-BR', {
   timeZone: 'America/Sao_Paulo',
 });
 
+/** Nomes amigáveis das dependências checadas pela API (health). */
+const dependencyLabels: Record<string, string> = { audit_log: 'Audit log (CF-161)' };
+
 function apiCard(health: ApiHealth): {
   tone: StatusTone;
   summary: string;
@@ -51,6 +54,10 @@ function apiCard(health: ApiHealth): {
               : 'sem cabeçalhos X-RateLimit',
           ],
           ['Documentação (CF-151)', `${publicEnv.NEXT_PUBLIC_API_URL}/docs`],
+          ...health.report.checks.map(({ name, healthy }): [string, string] => [
+            dependencyLabels[name] ?? name,
+            healthy ? 'operacional' : 'indisponível',
+          ]),
         ],
       };
     case 'invalid':

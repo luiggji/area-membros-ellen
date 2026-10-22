@@ -116,13 +116,13 @@
 ### Onda 3 — Identidade e papéis (M1)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 3.1 | CF-030 | P0 | Cadastro/login/verificação/recuperação de senha (Supabase Auth) | CF-012 | `feat/<issue>-auth` | M | — | — |
-| 3.2 | CF-031 | P0 | Perfis pessoais com consentimentos versionados | CF-030, CF-016 | `feat/<issue>-perfis-consentimentos` | M | P-012 | — |
-| 3.3 | CF-032 | P0 | RBAC owner/commercial/tech/member (servidor) + seed dos papéis das pessoas de teste do CF-154 | CF-030 | `feat/<issue>-rbac` | M | — | — |
-| 3.4 | CF-033 | P0 | RLS e testes de isolamento/IDOR em todas as tabelas com PII | CF-031, CF-032, CF-155 | `test/<issue>-rls-idor` | M | — | — |
-| 3.5 | CF-034 | P0 | MFA/admin hardening e restrição de rotas `/admin` | CF-032 | `feat/<issue>-mfa-admin` | M | — | — |
-| 3.6 | CF-035 | P0 | Onboarding inicial (estágio, cidade/UF, objetivo) com retomada | CF-031 | `feat/<issue>-onboarding` | M | — | — |
-| 3.7 | **CF-153 (novo)** | P0 | Páginas legais LGPD (termos, privacidade, cookies) + centro de preferências de comunicação. *Justificativa: exigidas por CF-01/CF-13 e pelo checklist go/no-go, mas sem item de implementação.* | CF-031, CF-003 | `feat/<issue>-paginas-lgpd` | M | P-012, P-004 | — |
+| 3.1 | CF-030 | P0 | Cadastro/login/verificação/recuperação de senha (Supabase Auth) | CF-012 | `feat/<issue>-auth` | M | — | #61 |
+| 3.2 | CF-031 | P0 | Perfis pessoais com consentimentos versionados | CF-030, CF-016 | `feat/<issue>-perfis-consentimentos` | M | P-012 | #62 |
+| 3.3 | CF-032 | P0 | RBAC owner/commercial/tech/member (servidor) + seed dos papéis das pessoas de teste do CF-154 | CF-030 | `feat/<issue>-rbac` | M | — | #63 |
+| 3.4 | CF-033 | P0 | RLS e testes de isolamento/IDOR em todas as tabelas com PII | CF-031, CF-032, CF-155 | `test/<issue>-rls-idor` | M | — | #64 |
+| 3.5 | CF-034 | P0 | MFA/admin hardening e restrição de rotas `/admin` | CF-032 | `feat/<issue>-mfa-admin` | M | — | #65 |
+| 3.6 | CF-035 | P0 | Onboarding inicial (estágio, cidade/UF, objetivo) com retomada | CF-031 | `feat/<issue>-onboarding` | M | — | #66 |
+| 3.7 | **CF-153 (novo)** | P0 | Páginas legais LGPD (termos, privacidade, cookies) + centro de preferências de comunicação. *Justificativa: exigidas por CF-01/CF-13 e pelo checklist go/no-go, mas sem item de implementação.* | CF-031, CF-003 | `feat/<issue>-paginas-lgpd` | M | P-012, P-004 | #67 |
 
 > 🎨 **Entrega visual da onda:** telas de cadastro, login, verificação e recuperação de senha; onboarding com retomada; perfil com consentimentos; tela de MFA; `/admin` negado para member; páginas LGPD.
 

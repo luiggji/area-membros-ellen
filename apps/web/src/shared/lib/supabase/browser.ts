@@ -3,7 +3,7 @@ import { createBrowserClient } from '@supabase/ssr';
 
 import { publicEnv } from '@/shared/config/env';
 
-import { requireSupabasePublicConfig } from './config';
+import { requireSupabasePublicConfig, supabaseCookieOptions } from './config';
 
 /**
  * Cliente Supabase tipado para Client Components (CF-156). Só a chave pública, protegida por
@@ -11,5 +11,7 @@ import { requireSupabasePublicConfig } from './config';
  */
 export function createSupabaseBrowserClient() {
   const { url, publicKey } = requireSupabasePublicConfig(publicEnv);
-  return createBrowserClient<Database>(url, publicKey);
+  return createBrowserClient<Database>(url, publicKey, {
+    cookieOptions: supabaseCookieOptions(process.env.NODE_ENV === 'production'),
+  });
 }

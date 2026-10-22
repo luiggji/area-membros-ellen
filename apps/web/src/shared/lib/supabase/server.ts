@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 import { publicEnv } from '@/shared/config/env';
 
-import { requireSupabasePublicConfig } from './config';
+import { requireSupabasePublicConfig, supabaseCookieOptions } from './config';
 
 /**
  * Cliente Supabase tipado para Server Components, Server Actions e Route Handlers (CF-156).
@@ -15,6 +15,7 @@ export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(url, publicKey, {
+    cookieOptions: supabaseCookieOptions(process.env.NODE_ENV === 'production'),
     cookies: {
       getAll: () => cookieStore.getAll(),
       setAll: (cookiesToSet) => {

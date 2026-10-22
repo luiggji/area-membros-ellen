@@ -1,8 +1,19 @@
 import { type HealthResponse, healthResponseSchema } from '@caixa-forte/contracts';
 
 /** Resultado do health da API como a tela `/status` precisa exibir — inclusive as falhas. */
+/** Cota de requisições informada pela API nos headers X-RateLimit-* (CF-152). */
+export interface RateLimitInfo {
+  limit: number;
+  remaining: number;
+}
+
 export type ApiHealth =
-  | { state: 'ok' | 'degraded'; latencyMs: number; report: HealthResponse }
+  | {
+      state: 'ok' | 'degraded';
+      latencyMs: number;
+      report: HealthResponse;
+      rateLimit?: RateLimitInfo;
+    }
   | { state: 'invalid'; latencyMs: number; detail: string }
   | { state: 'down'; detail: string };
 
@@ -37,5 +48,20 @@ export async function checkApiHealth(
   if (!parsed.success) {
     return { state: 'invalid', latencyMs, detail: 'Resposta fora do contrato HealthResponse' };
   }
-  return { state: parsed.data.status, latencyMs, report: parsed.data };
+  const rateLimit = readRateLimit(response.headers);
+  return {
+    state: parsed.data.status,
+    latencyMs,
+    report: parsed.data,
+    ...(rateLimit && { rateLimit }),
+  };
+}
+
+function readRateLimit(headers: Headers): RateLimitInfo | undefined {
+  const limit = Number(headers.get('x-ratelimit-limit'));
+  const remaining = Number(headers.get('x-ratelimit-remaining'));
+  if (!headers.has('x-ratelimit-limit') || !Number.isFinite(limit) || !Number.isFinite(remaining)) {
+    return undefined;
+  }
+  return { limit, remaining };
 }

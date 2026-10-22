@@ -17,4 +17,5 @@ Regras:
 - Componente de apresentação **não** decide autorização: o servidor/API decide (doc G §5).
 - Nada de HEX solto: só tokens de `@caixa-forte/ui/theme.css`.
 - Área privada (`/app`, `/admin`) sem cache compartilhado (`no-store`); páginas públicas cacheáveis (CF-163).
+- Área privada é **sempre dinâmica**: a CSP com nonce (`src/proxy.ts`, CF-152) só alcança scripts de páginas renderizadas por requisição. O build falha se alguma rota de `/app` ou `/admin` for pré-renderizada.
 - Estados `loading`, `empty`, `error`, `forbidden` obrigatórios em cada tela.

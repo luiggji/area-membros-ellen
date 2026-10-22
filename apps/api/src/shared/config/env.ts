@@ -17,6 +17,13 @@ const envSchema = z
       .string()
       .default('http://localhost:3000')
       .transform((value) => value.split(',').map((origin) => origin.trim())),
+    /** Requisições por minuto por IP em toda a API (CF-152). Rotas sensíveis podem ser mais estritas. */
+    API_RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(120),
+    /**
+     * Quantos proxies confiáveis ficam na frente da API (Express `trust proxy`), para o rate limit
+     * usar o IP real do cliente. 0 em dev; o host da API (CF-015) define o valor.
+     */
+    API_TRUST_PROXY: z.coerce.number().int().min(0).default(0),
     // Supabase: opcionais em dev até a hospedagem ser escolhida (P-014); obrigatórios fora dele.
     SUPABASE_URL: optionalText.pipe(z.url().optional()),
     /** Segredo: só na API, nunca em variável NEXT_PUBLIC_*. */

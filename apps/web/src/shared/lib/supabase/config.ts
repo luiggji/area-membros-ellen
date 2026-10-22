@@ -15,6 +15,14 @@ export function supabasePublicConfig(env: SupabaseEnv): SupabasePublicConfig | n
   return url && publicKey ? { url, publicKey } : null;
 }
 
+/**
+ * Cookies da sessão (CF-152): `secure` fora de dev (o padrão do @supabase/ssr não marca) e
+ * `sameSite=lax` contra CSRF. Não dá para ser `httpOnly`: o cliente de browser lê a sessão.
+ */
+export function supabaseCookieOptions(isProduction: boolean) {
+  return { path: '/', sameSite: 'lax', secure: isProduction } as const;
+}
+
 export function requireSupabasePublicConfig(env: SupabaseEnv): SupabasePublicConfig {
   const config = supabasePublicConfig(env);
   if (!config) {

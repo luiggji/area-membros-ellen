@@ -44,6 +44,12 @@ function apiCard(health: ApiHealth): {
           ['Serviço', `${health.report.service} v${health.report.version}`],
           ['Latência', `${health.latencyMs} ms`],
           ['Verificado pela API em', dateTime.format(new Date(health.report.timestamp))],
+          [
+            'Rate limit (CF-152)',
+            health.rateLimit
+              ? `${health.rateLimit.remaining} de ${health.rateLimit.limit} req/min restantes`
+              : 'sem cabeçalhos X-RateLimit',
+          ],
         ],
       };
     case 'invalid':
@@ -166,6 +172,7 @@ export default async function StatusPage() {
               ['Renderizada em', dateTime.format(new Date())],
               ['Rotas internas', '/prototipo, /design, /status'],
               ['URL pública', publicEnv.NEXT_PUBLIC_APP_URL],
+              ['CSP (CF-152)', 'estática aqui; nonce em /app e /admin'],
             ]}
           />
           <StatusCard title="API (NestJS)" {...api} />

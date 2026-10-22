@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "branch:check": "node .github/scripts/check-branch-name.mjs",
+    "seed:dev": "node --env-file=apps/api/.env supabase/scripts/seed-dev.mjs",
     "db:types": "npx -y supabase@2.120.0 gen types typescript --local --schema public > packages/contracts/src/database.types.ts"
   },
   "devDependencies": {

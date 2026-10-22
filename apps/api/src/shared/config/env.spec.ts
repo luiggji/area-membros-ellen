@@ -36,6 +36,26 @@ describe('validateEnv (CF-012)', () => {
     expect(() => validateEnv({ FEATURE_FLAGS: 'comunity' })).toThrow(/flag desconhecida/);
   });
 
+  it('revalidação do web: URL e segredo forte vão juntos (CF-163)', () => {
+    const secret = 's'.repeat(32);
+    expect(() => validateEnv({ WEB_REVALIDATE_URL: 'https://web.test/api/revalidate' })).toThrow(
+      /vão juntos/,
+    );
+    expect(() => validateEnv({ REVALIDATE_SECRET: secret })).toThrow(/vão juntos/);
+    expect(() =>
+      validateEnv({
+        WEB_REVALIDATE_URL: 'https://web.test/api/revalidate',
+        REVALIDATE_SECRET: 'curto',
+      }),
+    ).toThrow();
+    expect(
+      validateEnv({
+        WEB_REVALIDATE_URL: 'https://web.test/api/revalidate',
+        REVALIDATE_SECRET: secret,
+      }).REVALIDATE_SECRET,
+    ).toBe(secret);
+  });
+
   it('trata variável vazia do .env como ausente', () => {
     expect(validateEnv({ SUPABASE_URL: '', SUPABASE_SERVICE_ROLE_KEY: '' }).SUPABASE_URL).toBe(
       undefined,

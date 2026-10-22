@@ -4,14 +4,15 @@
 
 ## Inventário
 
-| Segredo                                         | Usado por                 | development                              | staging / production                          |
-| ----------------------------------------------- | ------------------------- | ---------------------------------------- | --------------------------------------------- |
-| `SUPABASE_SERVICE_ROLE_KEY`                     | API (servidor)            | `apps/api/.env` local                    | GitHub Environment + host da API (CF-015)     |
-| `SEED_USER_PASSWORD`                            | `pnpm seed:dev`           | `apps/api/.env` local                    | staging: idem dev; **production: não existe** |
-| Senha do banco (Postgres)                       | `supabase link`/`db push` | digitada no terminal, não salva          | GitHub Environment (CF-015)                   |
-| Token do Supabase CLI                           | `supabase` (CLI)          | credencial do Windows (`supabase login`) | GitHub Environment (CF-015)                   |
-| `PAYMENT_WEBHOOK_SECRET` (Stripe)               | API (webhook)             | sandbox, `.env` local (CF-043)           | GitHub Environment + host (CF-043)            |
-| `CLAUDE_CODE_OAUTH_TOKEN` / `ANTHROPIC_API_KEY` | workflow `claude-review`  | —                                        | secret do repositório (opcional)              |
+| Segredo                                         | Usado por                             | development                              | staging / production                          |
+| ----------------------------------------------- | ------------------------------------- | ---------------------------------------- | --------------------------------------------- |
+| `SUPABASE_SERVICE_ROLE_KEY`                     | API (servidor)                        | `apps/api/.env` local                    | GitHub Environment + host da API (CF-015)     |
+| `SEED_USER_PASSWORD`                            | `pnpm seed:dev`                       | `apps/api/.env` local                    | staging: idem dev; **production: não existe** |
+| Senha do banco (Postgres)                       | `supabase link`/`db push`             | digitada no terminal, não salva          | GitHub Environment (CF-015)                   |
+| Token do Supabase CLI                           | `supabase` (CLI)                      | credencial do Windows (`supabase login`) | GitHub Environment (CF-015)                   |
+| `REVALIDATE_SECRET`                             | API → web (`/api/revalidate`, CF-163) | `.env` local (web e API)                 | GitHub Environment + hosts do web e da API    |
+| `PAYMENT_WEBHOOK_SECRET` (Stripe)               | API (webhook)                         | sandbox, `.env` local (CF-043)           | GitHub Environment + host (CF-043)            |
+| `CLAUDE_CODE_OAUTH_TOKEN` / `ANTHROPIC_API_KEY` | workflow `claude-review`              | —                                        | secret do repositório (opcional)              |
 
 **Não são segredos** (podem ir ao browser, protegidos por RLS): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (anon/publishable) e `SUPABASE_PRODUCTION_REF`. O `env.ts` do web **recusa** chave secreta numa variável pública (CF-156).
 

@@ -16,7 +16,7 @@ Regras:
 
 - Componente de apresentação **não** decide autorização: o servidor/API decide (doc G §5).
 - Nada de HEX solto: só tokens de `@caixa-forte/ui/theme.css`.
-- Área privada (`/app`, `/admin`) sem cache compartilhado (`no-store`); páginas públicas cacheáveis (CF-163).
+- Cache (CF-163, modelo clássico; sem Cache Components por causa do nonce e dos status 404/500): dado público com `publicFetch(url, ['prices'])` de `shared/lib/cache/policy` (tag + rede de segurança de 1h), revalidado pela API via `POST /api/revalidate`; área privada (`/app`, `/admin`) por requisição e `private, no-store` no proxy.
 - Área privada é **sempre dinâmica**: a CSP com nonce (`src/proxy.ts`, CF-152) só alcança scripts de páginas renderizadas por requisição. O build falha se alguma rota de `/app` ou `/admin` for pré-renderizada.
 - Estados `loading`, `empty`, `error`, `forbidden` obrigatórios em cada tela.
 - Estados padrão (CF-157): `not-found.tsx`, `error.tsx` e `global-error.tsx` na raiz; `EmptyState`, `ErrorState` e `LoadingState` de `@caixa-forte/ui`.

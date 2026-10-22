@@ -22,6 +22,8 @@ export function proxy(request: NextRequest) {
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set('Content-Security-Policy', csp);
+  // Página de membro/equipe nunca entra em cache compartilhado (CDN, proxy) (CF-163).
+  response.headers.set('Cache-Control', 'private, no-store');
   return response;
 }
 

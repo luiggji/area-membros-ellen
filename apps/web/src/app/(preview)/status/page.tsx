@@ -1,4 +1,4 @@
-import { type FeatureFlag, featureFlagKeys } from '@caixa-forte/contracts';
+import { CACHE_TAGS, type FeatureFlag, featureFlagKeys } from '@caixa-forte/contracts';
 import { buttonClasses } from '@caixa-forte/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ import { StatusCard, type StatusTone } from '@/modules/system-status/presentatio
 import { publicEnv } from '@/shared/config/env';
 import { type EnvironmentStatus, environmentStatus } from '@/shared/config/environment';
 import { featureFlagsStatus } from '@/shared/config/feature-flags';
+import { PUBLIC_REVALIDATE_SECONDS, revalidateProfile } from '@/shared/lib/cache/policy';
 import { supabasePublicConfig } from '@/shared/lib/supabase/config';
 import { PreviewHeader } from '@/shared/ui/preview-header';
 
@@ -175,6 +176,31 @@ function flagsCard(status: ReturnType<typeof featureFlagsStatus>): {
   };
 }
 
+/** Política de cache (CF-163): o que é público, como revalida e se a API consegue pedir. */
+function cacheCard(revalidateConfigured: boolean): {
+  tone: StatusTone;
+  summary: string;
+  details: [string, string][];
+} {
+  const tags = (Object.keys(CACHE_TAGS) as (keyof typeof CACHE_TAGS)[]).map(
+    (tag): [string, string] => [
+      `Tag ${tag}`,
+      revalidateProfile(tag) === 'max' ? 'atualiza em segundo plano' : 'vale no próximo acesso',
+    ],
+  );
+  return {
+    tone: revalidateConfigured ? 'ok' : 'warning',
+    summary: revalidateConfigured
+      ? 'Público em cache, revalidado pela API quando preço, evento ou catálogo muda.'
+      : 'REVALIDATE_SECRET ausente: páginas públicas só se renovam pela rede de segurança.',
+    details: [
+      ['Área privada (/app, /admin)', 'private, no-store'],
+      ['Rede de segurança (público)', `${PUBLIC_REVALIDATE_SECONDS / 60} min`],
+      ...tags,
+    ],
+  };
+}
+
 /** Saúde de web e API (CF-170), consultada no servidor a cada acesso. */
 export default async function StatusPage() {
   const supabaseConfig = supabasePublicConfig(publicEnv);
@@ -186,6 +212,7 @@ export default async function StatusPage() {
   const supabase = supabaseCard(supabaseHealth);
   const environment = environmentCard(environmentStatus(process.env));
   const flags = flagsCard(featureFlagsStatus(process.env));
+  const cache = cacheCard(Boolean(process.env.REVALIDATE_SECRET));
 
   return (
     <>
@@ -220,6 +247,7 @@ export default async function StatusPage() {
           <StatusCard title="Ambiente e banco (CF-012)" {...environment} />
           <StatusCard title="Supabase (CF-156)" {...supabase} />
           <StatusCard title="Feature flags (CF-158)" {...flags} />
+          <StatusCard title="Cache (CF-163)" {...cache} />
         </div>
 
         <p className="text-xs text-cf-text-secondary">

@@ -23,6 +23,8 @@ export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
         'autorização sempre no servidor.',
     )
     .setVersion(process.env.npm_package_version ?? '0.0.0')
+    // Access token do Supabase Auth (Authorization: Bearer), verificado no servidor (CF-032).
+    .addBearerAuth()
     .build();
   return SwaggerModule.createDocument(app, config);
 }

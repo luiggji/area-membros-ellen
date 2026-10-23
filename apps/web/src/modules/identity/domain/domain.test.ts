@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { fieldErrors, newPasswordSchema, signInSchema, signUpSchema } from './credentials';
+import { describeRoles } from './role-labels';
 import { safeNext } from './safe-redirect';
 
 // Senhas fictícias montadas em tempo de execução: literal parecido com senha dispara o gitleaks.
@@ -74,5 +75,13 @@ describe('safeNext', () => {
     ]) {
       expect(safeNext(value), String(value)).toBe('/app');
     }
+  });
+});
+
+describe('describeRoles', () => {
+  it('lista a equipe antes do papel base, sem repetir', () => {
+    expect(describeRoles(['member', 'owner'])).toBe('Gestão (owner) · Membro');
+    expect(describeRoles(['member'])).toBe('Membro');
+    expect(describeRoles([])).toBe('');
   });
 });

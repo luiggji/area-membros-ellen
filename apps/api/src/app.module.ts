@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AuditModule } from './modules/audit/audit.module';
 import { HealthModule } from './modules/health/health.module';
+import { IdentityModule } from './modules/identity/identity.module';
 import { validateEnv } from './shared/config/env';
 import { WebCacheModule } from './shared/cache/web-cache.module';
 import { RateLimitModule } from './shared/http/rate-limit.module';
@@ -17,6 +18,7 @@ import { SupabaseModule } from './shared/supabase/supabase.module';
     WebCacheModule,
     RateLimitModule,
     AuditModule,
+    IdentityModule,
     HealthModule,
   ],
 })

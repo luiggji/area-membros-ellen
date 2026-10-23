@@ -2,16 +2,32 @@
 // Usuários FICTÍCIOS de teste no Supabase de dev/staging (CF-154), via API de Admin do Auth.
 // Uso: pnpm seed:dev   (lê apps/api/.env; precisa de SEED_USER_PASSWORD). Idempotente.
 //
-// `app_metadata.seed_persona` só identifica a pessoa de teste: NÃO é autorização. Os papéis reais
-// ficam em `user_roles` (CF-032), que semeia o papel de cada e-mail abaixo quando a tabela existir.
+// `app_metadata.seed_persona` só identifica a pessoa de teste: NÃO é autorização. O papel real vai
+// para `user_roles` (CF-032); `member` já nasce com o cadastro (trigger), então só owner,
+// comercial e técnico precisam ser semeados.
 import { fileURLToPath } from 'node:url';
 
 export const SEED_DOMAIN = 'teste.local';
 
 export const PERSONAS = [
-  { persona: 'owner', email: `owner@${SEED_DOMAIN}`, name: 'Pessoa de teste (owner)' },
-  { persona: 'commercial', email: `comercial@${SEED_DOMAIN}`, name: 'Pessoa de teste (comercial)' },
-  { persona: 'tech', email: `tecnico@${SEED_DOMAIN}`, name: 'Pessoa de teste (técnica)' },
+  {
+    persona: 'owner',
+    role: 'owner',
+    email: `owner@${SEED_DOMAIN}`,
+    name: 'Pessoa de teste (owner)',
+  },
+  {
+    persona: 'commercial',
+    role: 'commercial',
+    email: `comercial@${SEED_DOMAIN}`,
+    name: 'Pessoa de teste (comercial)',
+  },
+  {
+    persona: 'tech',
+    role: 'tech',
+    email: `tecnico@${SEED_DOMAIN}`,
+    name: 'Pessoa de teste (técnica)',
+  },
   { persona: 'member', email: `membro@${SEED_DOMAIN}`, name: 'Pessoa de teste (membro)' },
   {
     persona: 'visitor',
@@ -78,13 +94,17 @@ export function seedTarget(env) {
 }
 
 /** Cria cada persona; e-mail já cadastrado conta como sucesso (idempotente). */
-export async function seedUsers({ url, serviceKey, password }, fetchFn = fetch) {
-  const headers = {
+function adminHeaders(serviceKey) {
+  return {
     apikey: serviceKey,
     'content-type': 'application/json',
     // Chaves novas (sb_secret_) não são JWT: o gateway aceita só o header apikey.
     ...(isJwt(serviceKey) && { authorization: `Bearer ${serviceKey}` }),
   };
+}
+
+export async function seedUsers({ url, serviceKey, password }, fetchFn = fetch) {
+  const headers = adminHeaders(serviceKey);
   const results = [];
   for (const { persona, email, name } of PERSONAS) {
     const response = await fetchFn(`${url}/auth/v1/admin/users`, {
@@ -114,6 +134,36 @@ export async function seedUsers({ url, serviceKey, password }, fetchFn = fetch) 
   return results;
 }
 
+/**
+ * Papéis da equipe fictícia em `user_roles` (CF-032). Idempotente: papel já concedido é ignorado.
+ * Cada concessão vira uma entrada em audit_logs (trigger), como ação do sistema.
+ */
+export async function seedRoles({ url, serviceKey }, fetchFn = fetch) {
+  const headers = adminHeaders(serviceKey);
+  const listed = await fetchFn(`${url}/auth/v1/admin/users?per_page=1000`, { headers });
+  if (!listed.ok) throw new Error(`falha ao listar usuários: HTTP ${listed.status}`);
+  const { users = [] } = await listed.json();
+  const idByEmail = new Map(users.map((user) => [user.email, user.id]));
+
+  const results = [];
+  for (const { persona, email, role } of PERSONAS.filter((p) => p.role)) {
+    const userId = idByEmail.get(email);
+    if (!userId) throw new Error(`pessoa de teste ausente: ${email} (rode o seed de usuários)`);
+    const response = await fetchFn(`${url}/rest/v1/user_roles`, {
+      method: 'POST',
+      headers: { ...headers, prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify({ user_id: userId, role }),
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      const hint = body.code === 'PGRST205' ? ' — aplique a migration user_roles (db push)' : '';
+      throw new Error(`falha ao conceder ${role} a ${email}: HTTP ${response.status}${hint}`);
+    }
+    results.push({ persona, email, role });
+  }
+  return results;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   try {
     const results = await seedUsers(seedTarget(process.env));
@@ -121,6 +171,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     for (const { persona, email, status } of results) {
       console.log(`  ${persona.padEnd(10)} ${email.padEnd(24)} ${status}`);
     }
+    const roles = await seedRoles(seedTarget(process.env));
+    console.log('Papéis (user_roles; member vem do cadastro):');
+    for (const { email, role } of roles) console.log(`  ${email.padEnd(24)} ${role}`);
   } catch (error) {
     console.error(error.message);
     process.exit(1);

@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { PERSONAS, SEED_DOMAIN, seedTarget, seedUsers } from './seed-dev.mjs';
+import { PERSONAS, SEED_DOMAIN, seedRoles, seedTarget, seedUsers } from './seed-dev.mjs';
 
 const jwt = (payload) =>
   ['eyJhbGciOiJIUzI1NiJ9', Buffer.from(JSON.stringify(payload)).toString('base64url'), 'sig'].join(
@@ -96,4 +96,52 @@ test('falha com o status quando o Auth recusa por outro motivo', async () => {
     ),
     /HTTP 403 not_admin/,
   );
+});
+
+test('semeia só os papéis da equipe (member vem do cadastro), com upsert idempotente', async () => {
+  const calls = [];
+  const users = PERSONAS.map(({ email }, index) => ({ email, id: `id-${index}` }));
+  const fakeFetch = async (url, init = {}) => {
+    calls.push({ url, init });
+    if (url.includes('/auth/v1/admin/users')) return new Response(JSON.stringify({ users }));
+    return new Response(null, { status: 201 });
+  };
+  const results = await seedRoles(seedTarget(env), fakeFetch);
+
+  assert.deepEqual(
+    results.map(({ email, role }) => [email, role]),
+    [
+      [`owner@${SEED_DOMAIN}`, 'owner'],
+      [`comercial@${SEED_DOMAIN}`, 'commercial'],
+      [`tecnico@${SEED_DOMAIN}`, 'tech'],
+    ],
+  );
+  const inserts = calls.filter(({ url }) => url.endsWith('/rest/v1/user_roles'));
+  assert.equal(inserts.length, 3);
+  assert.match(inserts[0].init.headers.prefer, /ignore-duplicates/);
+  assert.deepEqual(JSON.parse(inserts[0].init.body), { user_id: 'id-0', role: 'owner' });
+});
+
+test('papel sem a tabela user_roles aponta para a migration', async () => {
+  const users = PERSONAS.map(({ email }, index) => ({ email, id: `id-${index}` }));
+  await assert.rejects(
+    seedRoles(seedTarget(env), async (url) =>
+      url.includes('/auth/v1/')
+        ? new Response(JSON.stringify({ users }))
+        : new Response(JSON.stringify({ code: 'PGRST205' }), { status: 404 }),
+    ),
+    /aplique a migration user_roles/,
+  );
+});
+
+test('pessoa de teste ausente falha com orientação, sem conceder nada', async () => {
+  let inserts = 0;
+  await assert.rejects(
+    seedRoles(seedTarget(env), async (url) => {
+      if (url.includes('/rest/v1/')) inserts += 1;
+      return new Response(JSON.stringify({ users: [] }));
+    }),
+    /rode o seed de usuários/,
+  );
+  assert.equal(inserts, 0);
 });

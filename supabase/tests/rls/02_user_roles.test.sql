@@ -44,10 +44,13 @@ select throws_ok($$ select * from public.user_roles $$, '42501', null, 'anônimo
 
 -- A API (service_role) concede e revoga; as duas ações ficam na trilha com o autor.
 select tests.as_service();
+-- service_role não enxerga o schema tests: os ids são resolvidos antes de trocar de papel.
+create temporary table ids as select tests.user_id('ana') as ana, tests.user_id('bruno') as bruno;
+grant select on ids to service_role;
 set local role service_role;
 insert into public.user_roles (user_id, role, granted_by)
-values (tests.user_id('bruno'), 'commercial', tests.user_id('ana'));
-delete from public.user_roles where user_id = tests.user_id('bruno') and role = 'commercial';
+select bruno, 'commercial', ana from ids;
+delete from public.user_roles where user_id = (select bruno from ids) and role = 'commercial';
 reset role;
 
 select results_eq(

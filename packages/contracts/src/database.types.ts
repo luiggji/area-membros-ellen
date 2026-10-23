@@ -55,14 +55,14 @@ isOneToOne: false
                   ]
                 },"user_profiles": {
                   Row: {
-                    "bio": string | null,"city": string | null,"created_at": string,"directory_opt_in": boolean,"id": string,"name": string | null,"professional_stage": string | null,"state": string | null,"updated_at": string
+                    "bio": string | null,"city": string | null,"created_at": string,"directory_opt_in": boolean,"id": string,"main_goal": string | null,"name": string | null,"onboarding_completed_at": string | null,"professional_stage": string | null,"state": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "bio"?: string | null,"city"?: string | null,"created_at"?: string,"directory_opt_in"?: boolean,"id": string,"name"?: string | null,"professional_stage"?: string | null,"state"?: string | null,"updated_at"?: string
+                    "bio"?: string | null,"city"?: string | null,"created_at"?: string,"directory_opt_in"?: boolean,"id": string,"main_goal"?: string | null,"name"?: string | null,"onboarding_completed_at"?: string | null,"professional_stage"?: string | null,"state"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "bio"?: string | null,"city"?: string | null,"created_at"?: string,"directory_opt_in"?: boolean,"id"?: string,"name"?: string | null,"professional_stage"?: string | null,"state"?: string | null,"updated_at"?: string
+                    "bio"?: string | null,"city"?: string | null,"created_at"?: string,"directory_opt_in"?: boolean,"id"?: string,"main_goal"?: string | null,"name"?: string | null,"onboarding_completed_at"?: string | null,"professional_stage"?: string | null,"state"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     

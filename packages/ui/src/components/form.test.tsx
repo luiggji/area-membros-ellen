@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
-import { Notice, SelectField, TextAreaField, TextField } from './form.js';
+import { ChoiceCards, Notice, SelectField, TextAreaField, TextField } from './form.js';
 
 const html = (node: ReactNode) => renderToStaticMarkup(node);
 
@@ -55,5 +55,35 @@ describe('SelectField e TextAreaField', () => {
     );
     expect(markup).toContain('<textarea');
     expect(markup).toContain('aria-describedby="bio-ajuda"');
+  });
+});
+
+describe('ChoiceCards', () => {
+  it('agrupa rádios nativos num fieldset com legenda e marca o valor atual', () => {
+    const markup = html(
+      <ChoiceCards
+        name="main_goal"
+        legend="Seu objetivo principal"
+        defaultValue="conectar"
+        options={[
+          { value: 'aprender', label: 'Aprender' },
+          { value: 'conectar', label: 'Conectar com colegas', description: 'Comunidade.' },
+        ]}
+      />,
+    );
+    expect(markup).toContain('<fieldset');
+    expect(markup).toContain('<legend');
+    expect(markup.match(/type="radio"/g)).toHaveLength(2);
+    const checked = markup.match(/<input[^>]*checked=""[^>]*>/g) ?? [];
+    expect(checked).toHaveLength(1);
+    expect(checked[0]).toContain('value="conectar"');
+  });
+
+  it('erro é ligado ao grupo e marca os rádios', () => {
+    const markup = html(
+      <ChoiceCards name="x" legend="X" options={[{ value: 'a', label: 'A' }]} error="Escolha." />,
+    );
+    expect(markup).toContain('aria-describedby="x-erro"');
+    expect(markup).toContain('aria-invalid="true"');
   });
 });

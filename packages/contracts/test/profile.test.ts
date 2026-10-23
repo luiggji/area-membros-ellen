@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { profileInputSchema } from '../src/profile.js';
+import {
+  onboardingGoalSchema,
+  onboardingLocationSchema,
+  onboardingStageSchema,
+  profileInputSchema,
+} from '../src/profile.js';
 
 describe('profileInputSchema', () => {
   it('normaliza campos opcionais vazios para null', () => {
@@ -72,5 +77,28 @@ describe('profileInputSchema', () => {
         bio: 'x'.repeat(501),
       }).success,
     ).toBe(false);
+  });
+});
+
+describe('etapas do onboarding', () => {
+  it('exige cada etapa preenchida, com mensagem em português', () => {
+    const stage = onboardingStageSchema.safeParse({ professional_stage: '' });
+    expect(stage.success ? '' : stage.error.issues[0]?.message).toBe('Escolha uma opção.');
+    const goal = onboardingGoalSchema.safeParse({ main_goal: 'enriquecer' });
+    expect(goal.success ? '' : goal.error.issues[0]?.message).toBe('Escolha um objetivo.');
+    expect(onboardingLocationSchema.safeParse({ city: '', state: 'SP' }).success).toBe(false);
+  });
+
+  it('aceita etapas válidas', () => {
+    expect(onboardingStageSchema.parse({ professional_stage: 'equipe' })).toEqual({
+      professional_stage: 'equipe',
+    });
+    expect(onboardingLocationSchema.parse({ city: ' Ourinhos ', state: 'SP' })).toEqual({
+      city: 'Ourinhos',
+      state: 'SP',
+    });
+    expect(onboardingGoalSchema.parse({ main_goal: 'planejar' })).toEqual({
+      main_goal: 'planejar',
+    });
   });
 });

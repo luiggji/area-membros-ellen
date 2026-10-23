@@ -142,6 +142,58 @@ export function TextAreaField({
   );
 }
 
+export interface ChoiceCardsProps {
+  name: string;
+  legend: string;
+  options: readonly { value: string; label: string; description?: string }[];
+  defaultValue?: string;
+  error?: string;
+}
+
+/**
+ * Escolha única em cartões (onboarding, CF-035): `fieldset` + `legend` + rádios nativos, então
+ * teclado (setas) e leitor de tela funcionam sem JavaScript extra. O cartão inteiro é clicável.
+ */
+export function ChoiceCards({ name, legend, options, defaultValue, error }: ChoiceCardsProps) {
+  const errorId = error ? `${name}-erro` : undefined;
+  return (
+    <fieldset className="flex flex-col gap-3" aria-describedby={errorId}>
+      <legend className="mb-1 text-sm font-medium text-cf-text">{legend}</legend>
+      {options.map((option) => (
+        <label
+          key={option.value}
+          className={cn(
+            'flex min-h-11 cursor-pointer items-start gap-3 rounded-xl border bg-cf-surface p-4',
+            'has-checked:border-cf-primary has-checked:bg-cf-surface-muted',
+            'has-focus-visible:ring-2 has-focus-visible:ring-cf-primary/40',
+            error ? 'border-danger' : 'border-cf-border',
+          )}
+        >
+          <input
+            type="radio"
+            name={name}
+            value={option.value}
+            defaultChecked={option.value === defaultValue}
+            aria-invalid={error ? true : undefined}
+            className="mt-1 accent-cf-primary"
+          />
+          <span className="flex flex-col gap-0.5">
+            <span className="font-medium text-cf-text">{option.label}</span>
+            {option.description ? (
+              <span className="text-sm text-cf-text-secondary">{option.description}</span>
+            ) : null}
+          </span>
+        </label>
+      ))}
+      {error ? (
+        <p id={errorId} className="text-sm text-danger">
+          {error}
+        </p>
+      ) : null}
+    </fieldset>
+  );
+}
+
 /**
  * Aviso de formulário: `danger` (erro, role="alert") ou `info` (confirmação, role="status").
  * Frase curta e verdadeira (COPY_TONE), sem expor detalhe técnico.

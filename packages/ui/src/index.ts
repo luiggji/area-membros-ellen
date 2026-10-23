@@ -31,6 +31,8 @@ export {
   SkipLink,
 } from './components/shells.js';
 export {
+  ChoiceCards,
+  type ChoiceCardsProps,
   Notice,
   SelectField,
   type SelectFieldProps,

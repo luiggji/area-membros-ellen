@@ -1,11 +1,16 @@
-import { connection } from 'next/server';
+import { redirect } from 'next/navigation';
+
+import { getSessionUser } from '@/shared/lib/supabase/session';
 
 /**
- * Área do membro (CF-152): sempre renderizada por requisição, para o nonce da CSP (proxy.ts) chegar aos
- * scripts; página estática aqui ficaria sem nonce e com o JavaScript bloqueado. O layout real
- * entra no CF-030/CF-101 mantendo o `await connection()` (ou outra API dinâmica).
+ * Área do membro:
+ * - exige sessão válida no Auth (CF-030). O proxy já redireciona guardando o destino; esta
+ *   checagem é a defesa em profundidade no servidor;
+ * - renderizada por requisição (ler a sessão é dinâmico), para o nonce da CSP chegar aos scripts
+ *   (CF-152). O shell real do membro entra no CF-101.
  */
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  await connection();
+  const user = await getSessionUser();
+  if (!user) redirect('/entrar');
   return children;
 }

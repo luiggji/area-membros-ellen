@@ -54,7 +54,8 @@ Os modelos estão em `apps/api/.env.example` e `apps/web/.env.example`.
 3. Cadastrar os segredos nos GitHub Environments `staging` e `production` e no host. Produção exige aprovação e só aceita deploy a partir de `main`.
 4. Preencher `SUPABASE_PRODUCTION_REF` em todos os ambientes.
 5. Conferir o `/status` de staging: o card "Ambiente e banco" precisa ficar verde.
-6. Gateway e e-mail em sandbox no staging (CF-043, CF-100). Produção só no go/no-go (CF-126).
+6. **Auth por ambiente (CF-030):** em Authentication → URL Configuration, _Site URL_ = URL do web do ambiente e _Redirect URLs_ com `<url-do-web>/auth/callback`; em Sign In / Providers → Email, confirmação ligada, senha mínima 10 com maiúscula, minúscula e dígito (igual ao `supabase/config.toml`). Sem a Redirect URL, os links de confirmação/recuperação caem na Site URL.
+7. Gateway e e-mail em sandbox no staging (CF-043, CF-100). Produção só no go/no-go (CF-126).
 
 ## Rotação e vazamento
 

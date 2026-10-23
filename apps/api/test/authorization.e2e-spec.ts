@@ -84,6 +84,15 @@ describe('Autorização no servidor (CF-032, e2e)', () => {
     });
   });
 
+  it('/me ignora tentativa de pedir outro usuário (IDOR, CF-033)', async () => {
+    const outro = USERS['token-owner']!.id;
+    const { body } = await as('token-membro')(
+      request(app.getHttpServer()).get(`/api/v1/me?userId=${outro}`).set('X-User-Id', outro),
+    ).expect(200);
+    expect(body.userId).toBe(USERS['token-membro']!.id);
+    expect(body.roles).toEqual(['member']);
+  });
+
   it('comercial não edita preços (403)', async () => {
     await as('token-comercial')(request(app.getHttpServer()).put('/api/v1/exemplo/precos')).expect(
       403,

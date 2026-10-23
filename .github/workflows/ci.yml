@@ -170,7 +170,9 @@ jobs:
       - name: Lint do schema (funções e SQL)
         run: supabase db lint --local --level error --fail-on error
       - name: Testes pgTAP (supabase/tests)
-        run: supabase test db
+        run: |
+          set -o pipefail
+          supabase test db 2>&1 | tee "$RUNNER_TEMP/pgtap.txt"
       - name: Types do schema em dia (CF-156)
         run: |
           supabase gen types typescript --local --schema public > "$RUNNER_TEMP/database.types.ts"
@@ -187,4 +189,14 @@ jobs:
             echo "### Banco (CF-016)"
             echo "Migrations aplicadas do zero em Postgres local:"
             for file in supabase/migrations/*.sql; do echo "- \`$(basename "$file")\`"; done
+            echo ""
+            echo "### Isolamento e RLS (CF-033)"
+            echo "Inventário de PII e matriz: \`supabase/tests/rls/README.md\`."
+            echo '```'
+            if [ -f "$RUNNER_TEMP/pgtap.txt" ]; then
+              grep -E '\.test\.sql|^Files=|^Result:' "$RUNNER_TEMP/pgtap.txt" | sed -E 's#.*/supabase/tests/##'
+            else
+              echo "pgTAP não chegou a rodar"
+            fi
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

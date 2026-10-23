@@ -1,6 +1,7 @@
-import { EmptyState } from '@caixa-forte/ui';
+import { buttonClasses, EmptyState } from '@caixa-forte/ui';
 import { KeyRound } from 'lucide-react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 import { describeRoles } from '@/modules/identity/domain/role-labels';
 import { getSessionRoles } from '@/modules/identity/infrastructure/session-roles';
@@ -38,7 +39,14 @@ export default async function MemberHomePage() {
             <p className="mt-2">Sua área de membro está sendo preparada.</p>
           </>
         }
-        action={<SignOutButton />}
+        action={
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/app/perfil" className={buttonClasses()}>
+              Seu perfil
+            </Link>
+            <SignOutButton />
+          </div>
+        }
       />
     </PublicFrame>
   );

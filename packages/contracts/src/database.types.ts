@@ -19,8 +19,7 @@ export type Database = {
                   Relationships: [
                     
                   ]
-                }
-            "user_roles": {
+                },"user_roles": {
                   Row: {
                     "granted_at": string,"granted_by": string | null,"role": string,"user_id": string
                   }

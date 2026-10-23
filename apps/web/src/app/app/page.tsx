@@ -2,10 +2,14 @@ import { buttonClasses, EmptyState } from '@caixa-forte/ui';
 import { KeyRound } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
+import { nextOnboardingStep } from '@/modules/identity/domain/onboarding';
 import { describeRoles } from '@/modules/identity/domain/role-labels';
 import { getSessionRoles } from '@/modules/identity/infrastructure/session-roles';
+import { loadProfilePage } from '@/modules/identity/infrastructure/supabase-profile';
 import { SignOutButton } from '@/modules/identity/presentation/auth-forms';
+import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 import { getSessionUser } from '@/shared/lib/supabase/session';
 import { PublicFrame } from '@/shared/ui/public-frame';
 
@@ -17,6 +21,10 @@ export const metadata: Metadata = { title: 'Início · Caixa Forte' };
  */
 export default async function MemberHomePage() {
   const [user, roles] = await Promise.all([getSessionUser(), getSessionRoles()]);
+  if (!user) return null; // o layout de /app já redireciona; isto só satisfaz o tipo
+  // Primeiro acesso: o onboarding vem antes do início e retoma onde parou (CF-035).
+  const { profile } = await loadProfilePage(await createSupabaseServerClient(), user.id);
+  if (nextOnboardingStep(profile)) redirect('/app/jornada');
   const access = describeRoles(roles);
   const name = typeof user?.user_metadata.name === 'string' ? user.user_metadata.name : null;
 

@@ -1,6 +1,7 @@
 import type { Database } from '@caixa-forte/contracts';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+import type { OnboardingRepository } from '../application/onboarding-use-cases';
 import type { ProfileRepository } from '../application/profile-use-cases';
 
 type Client = SupabaseClient<Database>;
@@ -69,6 +70,16 @@ export function supabaseProfileRepository(client: Client, userId: string): Profi
         .eq('id', consentId)
         .is('revoked_at', null);
       return !error && count === 1;
+    },
+  };
+}
+
+/** Onboarding grava no próprio perfil; a RLS garante o titular (CF-035). */
+export function supabaseOnboardingRepository(client: Client, userId: string): OnboardingRepository {
+  return {
+    async saveOnboarding(patch) {
+      const { error } = await client.from('user_profiles').update(patch).eq('id', userId);
+      return !error;
     },
   };
 }

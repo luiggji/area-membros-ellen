@@ -1,9 +1,14 @@
-import type { InputHTMLAttributes, ReactNode } from 'react';
+import type {
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from 'react';
 
 import { cn } from '../lib/cn.js';
 
-export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id'> {
-  /** Obrigatório: vira o `id` do input e a base dos ids de ajuda/erro. */
+interface FieldProps {
+  /** Obrigatório: vira o `id` do controle e a base dos ids de ajuda/erro. */
   name: string;
   label: string;
   /** Texto de apoio discreto (ex.: regra da senha). */
@@ -12,32 +17,38 @@ export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   error?: string;
 }
 
-/**
- * Campo de texto (CF-030, style guide: label visível, helper discreto, validação por campo,
- * altura 44px). Ajuda e erro ficam ligados ao input por `aria-describedby`.
- */
-export function TextField({ name, label, helper, error, className, ...input }: TextFieldProps) {
+/** Ids de ajuda/erro e a moldura comum (label visível + erro + ajuda), CF-030/CF-031. */
+function fieldIds({ name, helper, error }: FieldProps) {
   const helperId = helper ? `${name}-ajuda` : undefined;
   const errorId = error ? `${name}-erro` : undefined;
-  const describedBy = [errorId, helperId].filter(Boolean).join(' ') || undefined;
+  return {
+    helperId,
+    errorId,
+    controlProps: {
+      id: name,
+      name,
+      'aria-invalid': error ? true : undefined,
+      'aria-describedby': [errorId, helperId].filter(Boolean).join(' ') || undefined,
+    },
+  };
+}
 
+function FieldShell({
+  name,
+  label,
+  helper,
+  error,
+  helperId,
+  errorId,
+  className,
+  children,
+}: FieldProps & { helperId?: string; errorId?: string; className?: string; children: ReactNode }) {
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label htmlFor={name} className="text-sm font-medium text-cf-text">
         {label}
       </label>
-      <input
-        id={name}
-        name={name}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy}
-        className={cn(
-          'min-h-11 rounded-xl border bg-cf-surface px-4 text-base text-cf-text',
-          'outline-none focus-visible:ring-2 focus-visible:ring-cf-primary/40',
-          error ? 'border-danger' : 'border-cf-border focus-visible:border-cf-primary',
-        )}
-        {...input}
-      />
+      {children}
       {error ? (
         <p id={errorId} className="text-sm text-danger">
           {error}
@@ -49,6 +60,85 @@ export function TextField({ name, label, helper, error, className, ...input }: T
         </p>
       ) : null}
     </div>
+  );
+}
+
+const controlClasses = (error?: string) =>
+  cn(
+    'rounded-xl border bg-cf-surface px-4 text-base text-cf-text',
+    'outline-none focus-visible:ring-2 focus-visible:ring-cf-primary/40',
+    error ? 'border-danger' : 'border-cf-border focus-visible:border-cf-primary',
+  );
+
+export type TextFieldProps = FieldProps &
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'name'>;
+
+/**
+ * Campo de texto (style guide: label visível, helper discreto, validação por campo, altura 44px).
+ * Ajuda e erro ficam ligados ao input por `aria-describedby`.
+ */
+export function TextField({ name, label, helper, error, className, ...input }: TextFieldProps) {
+  const { helperId, errorId, controlProps } = fieldIds({ name, label, helper, error });
+  return (
+    <FieldShell {...{ name, label, helper, error, helperId, errorId, className }}>
+      <input {...controlProps} className={cn('min-h-11', controlClasses(error))} {...input} />
+    </FieldShell>
+  );
+}
+
+export type SelectFieldProps = FieldProps &
+  Omit<SelectHTMLAttributes<HTMLSelectElement>, 'id' | 'name'> & {
+    options: readonly { value: string; label: string }[];
+    /** Primeira opção vazia (ex.: "Selecione"), para campo opcional. */
+    placeholder?: string;
+  };
+
+/** Lista de opções nativa (acessível por teclado e leitor de tela sem esforço extra). */
+export function SelectField({
+  name,
+  label,
+  helper,
+  error,
+  className,
+  options,
+  placeholder,
+  ...select
+}: SelectFieldProps) {
+  const { helperId, errorId, controlProps } = fieldIds({ name, label, helper, error });
+  return (
+    <FieldShell {...{ name, label, helper, error, helperId, errorId, className }}>
+      <select {...controlProps} className={cn('min-h-11', controlClasses(error))} {...select}>
+        {placeholder !== undefined ? <option value="">{placeholder}</option> : null}
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </FieldShell>
+  );
+}
+
+export type TextAreaFieldProps = FieldProps &
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'id' | 'name'>;
+
+export function TextAreaField({
+  name,
+  label,
+  helper,
+  error,
+  className,
+  ...textarea
+}: TextAreaFieldProps) {
+  const { helperId, errorId, controlProps } = fieldIds({ name, label, helper, error });
+  return (
+    <FieldShell {...{ name, label, helper, error, helperId, errorId, className }}>
+      <textarea
+        {...controlProps}
+        className={cn('min-h-28 py-3', controlClasses(error))}
+        {...textarea}
+      />
+    </FieldShell>
   );
 }
 

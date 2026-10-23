@@ -19,6 +19,54 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"consents": {
+                  Row: {
+                    "accepted_at": string,"id": string,"policy_version_id": string,"revoked_at": string | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "accepted_at"?: string,"id"?: string,"policy_version_id": string,"revoked_at"?: string | null,"user_id": string
+                  }
+                  Update: {
+                    "accepted_at"?: string,"id"?: string,"policy_version_id"?: string,"revoked_at"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "consents_policy_version_id_fkey"
+      columns: ["policy_version_id"]
+isOneToOne: false
+      referencedRelation: "policy_versions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"policy_versions": {
+                  Row: {
+                    "body_md": string,"created_at": string,"id": string,"kind": string,"published_at": string | null,"status": string,"title": string,"version": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body_md": string,"created_at"?: string,"id"?: string,"kind": string,"published_at"?: string | null,"status"?: string,"title": string,"version": string
+                  }
+                  Update: {
+                    "body_md"?: string,"created_at"?: string,"id"?: string,"kind"?: string,"published_at"?: string | null,"status"?: string,"title"?: string,"version"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"user_profiles": {
+                  Row: {
+                    "bio": string | null,"city": string | null,"created_at": string,"directory_opt_in": boolean,"id": string,"name": string | null,"professional_stage": string | null,"state": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "bio"?: string | null,"city"?: string | null,"created_at"?: string,"directory_opt_in"?: boolean,"id": string,"name"?: string | null,"professional_stage"?: string | null,"state"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "bio"?: string | null,"city"?: string | null,"created_at"?: string,"directory_opt_in"?: boolean,"id"?: string,"name"?: string | null,"professional_stage"?: string | null,"state"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"user_roles": {
                   Row: {
                     "granted_at": string,"granted_by": string | null,"role": string,"user_id": string

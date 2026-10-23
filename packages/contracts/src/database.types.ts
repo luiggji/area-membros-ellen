@@ -32,12 +32,12 @@ export type Database = {
                   }
                   Relationships: [
                     {
-                      foreignKeyName: "consents_policy_version_id_fkey"
-                      columns: ["policy_version_id"]
-                      isOneToOne: false
-                      referencedRelation: "policy_versions"
-                      referencedColumns: ["id"]
-                    }
+      foreignKeyName: "consents_policy_version_id_fkey"
+      columns: ["policy_version_id"]
+isOneToOne: false
+      referencedRelation: "policy_versions"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"policy_versions": {
                   Row: {

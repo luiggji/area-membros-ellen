@@ -5,14 +5,16 @@
 -- Uma só definição (private.access_of) serve à RLS de conteúdo, à API e ao web.
 -- Aditiva. Rollback: migration compensatória (docs/runbooks/migrations.md).
 
--- Transições permitidas do contrato; o webhook (CF-045) só aplica as que estão aqui.
-create or replace function private.subscription_transition_allowed(from_status text, to_status text)
-returns boolean
-language sql
-immutable
+-- Transições permitidas do contrato; o webhook (CF-045) só aplica as que estão aqui. A lista fica
+-- dentro do trigger: chamar outra função de `private` exigiria USAGE no schema para quem faz o
+-- UPDATE (service_role), e abrir o schema exporia as demais funções.
+create or replace function private.subscription_status_guard()
+returns trigger
+language plpgsql
 set search_path = ''
 as $$
-  select from_status = to_status or (from_status, to_status) in (
+begin
+  if old.status <> new.status and (old.status, new.status) not in (
     ('pending', 'active'), ('pending', 'canceled'),
     ('active', 'past_due'), ('active', 'cancel_at_period_end'), ('active', 'canceled'),
     ('active', 'refunded'), ('active', 'suspended'),
@@ -21,16 +23,7 @@ as $$
     ('cancel_at_period_end', 'active'), ('cancel_at_period_end', 'canceled'),
     ('cancel_at_period_end', 'refunded'),
     ('suspended', 'active'), ('suspended', 'canceled')
-  );
-$$;
-
-create or replace function private.subscription_status_guard()
-returns trigger
-language plpgsql
-set search_path = ''
-as $$
-begin
-  if not private.subscription_transition_allowed(old.status, new.status) then
+  ) then
     raise exception 'transição de assinatura inválida: % → %', old.status, new.status
       using errcode = 'check_violation';
   end if;
@@ -53,7 +46,8 @@ set search_path = ''
 as $$
   select e.source, s.status, coalesce(s.current_period_end, e.valid_to)
   from public.entitlements e
-  left join public.subscriptions s on s.id = e.source_subscription_id
+  -- O contrato precisa ser da mesma pessoa: entitlement apontando para o contrato de outra não vale.
+  left join public.subscriptions s on s.id = e.source_subscription_id and s.user_id = e.user_id
   where e.user_id = p_user
     and e.resource_scope = p_scope
     and e.revoked_at is null

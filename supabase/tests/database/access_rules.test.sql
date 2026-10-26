@@ -1,7 +1,7 @@
 -- CF-046 · Regra única de acesso e máquina de estados da assinatura.
 -- Cada cenário usa uma pessoa fictícia própria (uma assinatura viva por pessoa).
 begin;
-select plan(23);
+select plan(27);
 
 -- Contrato no estado pedido, com fim de período relativo a agora, e o entitlement que ele gera.
 create function pg_temp.assina(pessoa text, estado text, fim interval) returns uuid
@@ -82,6 +82,39 @@ select throws_ok(
   $$ update public.subscriptions set status = 'active' where user_id = tests.user_id('estornada') $$,
   '23514', null, 'estornada não volta a ativa'
 );
+
+-- Entitlement apontando para o contrato de outra pessoa não dá acesso.
+do $$
+declare
+  contrato uuid;
+begin
+  perform tests.create_user('dona');
+  perform tests.create_user('intrusa');
+  insert into public.subscriptions (user_id, price_version_id, status, current_period_end)
+  select tests.user_id('dona'), pv.id, 'active', now() + interval '20 days'
+  from public.price_versions pv join public.plans p on p.id = pv.plan_id
+  where p.code = 'caixa-forte' and pv."interval" = 'month' and pv.is_sellable
+  returning id into contrato;
+  insert into public.entitlements (user_id, source, source_subscription_id)
+  values (tests.user_id('intrusa'), 'subscription', contrato);
+end;
+$$;
+select is(private.has_access(tests.user_id('intrusa')), false, 'contrato de outra pessoa não dá acesso');
+
+-- A API grava como service_role (webhook, admin): a máquina de estados vale para ela também.
+create temporary table alvo as select tests.user_id('atrasada_no_periodo') as atrasada;
+grant select on alvo to service_role;
+set local role service_role;
+select lives_ok(
+  $$ update public.subscriptions set status = 'refunded' where user_id = (select atrasada from alvo) $$,
+  'service_role aplica estorno (past_due → refunded)'
+);
+select throws_ok(
+  $$ update public.subscriptions set status = 'active' where user_id = (select atrasada from alvo) $$,
+  '23514', null, 'service_role não reativa contrato estornado'
+);
+reset role;
+select is(private.has_access(tests.user_id('atrasada_no_periodo')), false, 'estornada pela API: perde o acesso');
 
 -- Consultas expostas
 select tests.authenticate_as_anon();

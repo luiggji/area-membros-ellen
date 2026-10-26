@@ -39,6 +39,7 @@
                           "content.manage",
                           "events.manage",
                           "prices.manage",
+                          "access.grant",
                           "roles.manage",
                           "finance.read",
                           "refunds.manage",
@@ -71,6 +72,136 @@
         "summary": "Papéis e permissões de quem está logado (sem PII)",
         "tags": [
           "identity"
+        ]
+      }
+    },
+    "/api/v1/admin/acessos": {
+      "get": {
+        "operationId": "GrantsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "grants": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "memberEmail": {
+                            "type": "string"
+                          },
+                          "reason": {
+                            "type": "string"
+                          },
+                          "validFrom": {
+                            "type": "string"
+                          },
+                          "validTo": {
+                            "type": "string"
+                          },
+                          "revokedAt": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "memberEmail",
+                          "reason",
+                          "validFrom",
+                          "validTo",
+                          "revokedAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "grants"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão access.grant, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Concessões manuais (mais recentes primeiro)",
+        "tags": [
+          "membership"
+        ]
+      },
+      "post": {
+        "operationId": "GrantsController_grant",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão access.grant, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Conceder acesso pago com validade e motivo (auditado)",
+        "tags": [
+          "membership"
+        ]
+      }
+    },
+    "/api/v1/admin/acessos/{id}/revogar": {
+      "post": {
+        "operationId": "GrantsController_revoke",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão access.grant, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Revogar uma concessão manual ativa (auditado)",
+        "tags": [
+          "membership"
         ]
       }
     },

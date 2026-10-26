@@ -201,14 +201,18 @@ isOneToOne: false
             }[]
                            },
 "manual_access_grants":
-{ Args: never; Returns: { "id": string,"member_email": string,"reason": string,"revoked_at": string,"valid_from": string,"valid_to": string }[] },
+{ Args: Record<PropertyKey, never>; Returns: {
+              "id": string,"member_email": string,"reason": string,"revoked_at": string,"valid_from": string,"valid_to": string
+            }[]
+                           },
 "my_access":
 { Args: { "p_scope"?: string }; Returns: {
               "source": string,"subscription_status": string,"valid_until": string
             }[]
                            },
 "user_id_by_email":
-{ Args: { "p_email": string }; Returns: string }
+{ Args: { "p_email": string }; Returns: string
+                           }
           }
           Enums: {
             [_ in never]: never

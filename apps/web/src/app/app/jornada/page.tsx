@@ -13,7 +13,6 @@ import { loadProfilePage } from '@/modules/identity/infrastructure/supabase-prof
 import { OnboardingStepForm } from '@/modules/identity/presentation/onboarding-step';
 import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 import { getSessionUser } from '@/shared/lib/supabase/session';
-import { PublicFrame } from '@/shared/ui/public-frame';
 
 export const metadata: Metadata = { title: 'Sua jornada · Caixa Forte' };
 
@@ -42,28 +41,26 @@ export default async function JourneyPage({ searchParams }: { searchParams: Sear
   const step = resolveOnboardingStep((await searchParams).etapa, profile);
 
   return (
-    <PublicFrame>
-      <div className="mx-auto flex w-full max-w-xl flex-col gap-8 py-12">
-        {step ? (
-          <>
-            <div className="flex flex-col gap-2">
-              <p className="text-[0.7rem] font-semibold tracking-[0.19em] text-cf-primary uppercase">
-                Etapa {ONBOARDING_STEPS.indexOf(step) + 1} de {ONBOARDING_STEPS.length}
-              </p>
-              <h1 className="font-editorial text-3xl tracking-tight text-cf-text sm:text-4xl">
-                {STEP_COPY[step].title}
-              </h1>
-              <p className="text-cf-text-secondary">{STEP_COPY[step].text}</p>
-            </div>
-            <div className="rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 sm:p-8">
-              <OnboardingStepForm key={step} step={step} profile={profile} />
-            </div>
-          </>
-        ) : (
-          <Summary profile={profile} />
-        )}
-      </div>
-    </PublicFrame>
+    <div className="mx-auto flex w-full max-w-xl flex-col gap-8 py-12">
+      {step ? (
+        <>
+          <div className="flex flex-col gap-2">
+            <p className="text-[0.7rem] font-semibold tracking-[0.19em] text-cf-primary uppercase">
+              Etapa {ONBOARDING_STEPS.indexOf(step) + 1} de {ONBOARDING_STEPS.length}
+            </p>
+            <h1 className="font-editorial text-3xl tracking-tight text-cf-text sm:text-4xl">
+              {STEP_COPY[step].title}
+            </h1>
+            <p className="text-cf-text-secondary">{STEP_COPY[step].text}</p>
+          </div>
+          <div className="rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 sm:p-8">
+            <OnboardingStepForm key={step} step={step} profile={profile} />
+          </div>
+        </>
+      ) : (
+        <Summary profile={profile} />
+      )}
+    </div>
   );
 }
 

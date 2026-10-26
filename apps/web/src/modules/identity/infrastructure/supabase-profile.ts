@@ -17,6 +17,12 @@ export interface PolicyWithConsent {
   consent: { id: string; acceptedAt: string } | null;
 }
 
+/** Nome para a topbar do shell (CF-171); sem nome preenchido, a topbar mostra só a inicial do e-mail. */
+export async function loadDisplayName(client: Client, userId: string): Promise<string | null> {
+  const { data } = await client.from('user_profiles').select('name').eq('id', userId).maybeSingle();
+  return data?.name ?? null;
+}
+
 /** Tudo que a página de perfil precisa, lido com a sessão do titular (RLS). */
 export async function loadProfilePage(client: Client, userId: string) {
   const [profile, policies, consents] = await Promise.all([

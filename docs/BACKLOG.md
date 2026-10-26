@@ -60,6 +60,7 @@ Com a identidade pronta (Onda 3), a ordem passa a ser **produto primeiro**: o ap
 
 | Fase | Issues, na ordem | Observação |
 |---|---|---|
+| A0 — Shell real | #118 CF-171 | Sidebar, "Mais" e barra mobile no `/app` real; cada destino ainda sem tela mostra o estado vazio verdadeiro |
 | A — Assinatura sem checkout | #83 CF-040 → #88 CF-046 → #92 CF-048 → #84 CF-041 → #91 CF-047 → #85 CF-042 | Schema, entitlements e concessão manual destravam o paywall no servidor. Minha Assinatura e comparador de planos mostram estados reais, sem botão de pagar |
 | B — Conteúdo | #94 CF-080 → #95 CF-081 → #96 CF-082 → #97 CF-083 → #98 CF-084 → #99 CF-085 | Player atrás de uma porta de provedor de vídeo; o provedor de produção espera a P-007 |
 | C — Comunidade | #101 CF-090 → #102 CF-091 → #103 CF-092 → #104 CF-093 → #105 CF-094 → #106 CF-095 → #107 CF-096 | — |

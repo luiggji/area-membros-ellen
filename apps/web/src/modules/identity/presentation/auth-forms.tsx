@@ -147,10 +147,10 @@ export function NewPasswordForm() {
   );
 }
 
-export function SignOutButton() {
+export function SignOutButton({ variant = 'secondary' }: { variant?: 'secondary' | 'ghost' }) {
   return (
     <form action={signOutAction}>
-      <Button type="submit" variant="secondary">
+      <Button type="submit" variant={variant}>
         Sair
       </Button>
     </form>

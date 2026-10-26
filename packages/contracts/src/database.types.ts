@@ -39,6 +39,60 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"entitlements": {
+                  Row: {
+                    "created_at": string,"granted_by": string | null,"id": string,"reason": string | null,"resource_scope": string,"revoked_at": string | null,"source": string,"source_subscription_id": string | null,"user_id": string,"valid_from": string,"valid_to": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"granted_by"?: string | null,"id"?: string,"reason"?: string | null,"resource_scope"?: string,"revoked_at"?: string | null,"source": string,"source_subscription_id"?: string | null,"user_id": string,"valid_from"?: string,"valid_to"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"granted_by"?: string | null,"id"?: string,"reason"?: string | null,"resource_scope"?: string,"revoked_at"?: string | null,"source"?: string,"source_subscription_id"?: string | null,"user_id"?: string,"valid_from"?: string,"valid_to"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "entitlements_source_subscription_id_fkey"
+      columns: ["source_subscription_id"]
+isOneToOne: false
+      referencedRelation: "subscriptions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"payments": {
+                  Row: {
+                    "amount_cents": number,"confirmed_at": string | null,"created_at": string,"currency": string,"id": string,"kind": string,"provider": string,"provider_id": string,"status": string,"subscription_id": string | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_cents": number,"confirmed_at"?: string | null,"created_at"?: string,"currency"?: string,"id"?: string,"kind": string,"provider"?: string,"provider_id": string,"status": string,"subscription_id"?: string | null,"user_id": string
+                  }
+                  Update: {
+                    "amount_cents"?: number,"confirmed_at"?: string | null,"created_at"?: string,"currency"?: string,"id"?: string,"kind"?: string,"provider"?: string,"provider_id"?: string,"status"?: string,"subscription_id"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payments_subscription_id_fkey"
+      columns: ["subscription_id"]
+isOneToOne: false
+      referencedRelation: "subscriptions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"plans": {
+                  Row: {
+                    "active": boolean,"code": string,"created_at": string,"description": string | null,"id": string,"name": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active"?: boolean,"code": string,"created_at"?: string,"description"?: string | null,"id"?: string,"name": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "active"?: boolean,"code"?: string,"created_at"?: string,"description"?: string | null,"id"?: string,"name"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"policy_versions": {
                   Row: {
                     "body_md": string,"created_at": string,"id": string,"kind": string,"published_at": string | null,"status": string,"title": string,"version": string
@@ -52,6 +106,46 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"price_versions": {
+                  Row: {
+                    "amount_cents": number,"created_at": string,"currency": string,"effective_at": string,"gateway_price_id": string | null,"id": string,"interval": string,"is_sellable": boolean,"plan_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_cents": number,"created_at"?: string,"currency"?: string,"effective_at"?: string,"gateway_price_id"?: string | null,"id"?: string,"interval": string,"is_sellable"?: boolean,"plan_id": string
+                  }
+                  Update: {
+                    "amount_cents"?: number,"created_at"?: string,"currency"?: string,"effective_at"?: string,"gateway_price_id"?: string | null,"id"?: string,"interval"?: string,"is_sellable"?: boolean,"plan_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "price_versions_plan_id_fkey"
+      columns: ["plan_id"]
+isOneToOne: false
+      referencedRelation: "plans"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"subscriptions": {
+                  Row: {
+                    "created_at": string,"current_period_end": string | null,"id": string,"price_version_id": string,"provider": string,"provider_id": string | null,"renewal_policy": string,"status": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"current_period_end"?: string | null,"id"?: string,"price_version_id": string,"provider"?: string,"provider_id"?: string | null,"renewal_policy"?: string,"status"?: string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"current_period_end"?: string | null,"id"?: string,"price_version_id"?: string,"provider"?: string,"provider_id"?: string | null,"renewal_policy"?: string,"status"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "subscriptions_price_version_id_fkey"
+      columns: ["price_version_id"]
+isOneToOne: false
+      referencedRelation: "price_versions"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"user_profiles": {
                   Row: {
@@ -77,6 +171,20 @@ isOneToOne: false
                   }
                   Update: {
                     "granted_at"?: string,"granted_by"?: string | null,"role"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"webhook_receipts": {
+                  Row: {
+                    "attempts": number,"event_type": string,"id": string,"last_error": string | null,"processed_at": string | null,"processing_status": string,"provider": string,"provider_event_id": string,"received_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "attempts"?: number,"event_type": string,"id"?: string,"last_error"?: string | null,"processed_at"?: string | null,"processing_status"?: string,"provider": string,"provider_event_id": string,"received_at"?: string
+                  }
+                  Update: {
+                    "attempts"?: number,"event_type"?: string,"id"?: string,"last_error"?: string | null,"processed_at"?: string | null,"processing_status"?: string,"provider"?: string,"provider_event_id"?: string,"received_at"?: string
                   }
                   Relationships: [
                     

@@ -23,6 +23,8 @@
 | **D-015** | **21/10/2026 (Luiggi): Supabase cloud.** O projeto já criado atende **development e staging juntos**, só com dados fictícios. **Produção** fica num projeto separado, criado antes do go-live, com o ref registrado em `SUPABASE_PRODUCTION_REF` | Resolve parte da P-014. Descartados: Supabase local via Docker (esta máquina não tem Docker) e um projeto de staging próprio por enquanto. As migrations continuam testadas do zero no Postgres efêmero do CI. Ver `docs/runbooks/ambientes.md` · Issue #15 |
 | **D-016** | **21/10/2026 (Luiggi): Vercel hospeda o web (Next.js).** Sem domínio por enquanto: staging/preview em `*.vercel.app`; produção espera a P-005. O projeto na Vercel ainda não foi criado | Resolve parte da P-014. Ainda em aberto: o host da API NestJS (funções da Vercel ou processo contínuo), a decidir no CF-015 (#29) |
 | **D-017** | **21/10/2026 (Luiggi): Stripe é o gateway** de assinatura (mensal e anual) e de ingresso | Resolve parte da P-001. A validação em sandbox fica no CF-002 (#3): Pix na assinatura recorrente, taxas Pix/cartão, webhooks e chargeback. Taxas e contrato a confirmar com a Ellen. P-002, P-003 e P-004 seguem abertas |
+| **D-018** | **26/10/2026 (Luiggi): Resend é o provedor de e-mail transacional** (cadastro, compra, ingresso) | Resolve parte da P-008. Remetente e domínio autenticado esperam o domínio (P-005). A integração (CF-100, #82) fica para depois do produto (D-019) |
+| **D-019** | **26/10/2026 (Luiggi): produto antes das integrações.** O app interno (menus, conteúdo, comunidade, jornada, ao vivo, admin, planos e Minha Assinatura sem checkout) é construído antes de Stripe, Resend e outbox | Ordem em `BACKLOG.md` §2.1. Enquanto não houver webhook, o acesso pago nasce **só** de concessão manual do owner, auditada (CF-048); pagamento continua ativando acesso apenas por webhook assinado e idempotente quando o gateway entrar (mandamento 3). Nenhuma tela mostra botão de pagar sem ação |
 
 ## B. Diretrizes e referências em avaliação
 | ID | Posição atual | Observação |
@@ -65,7 +67,7 @@
 | P-005 | Domínio da plataforma independente e destino futuro no site Ellen Conrado | Ellen + Luiggi | Antes do DNS de produção |
 | P-006 | Logomarca definitiva, fonte oficial, **fotografias reais autorizadas**, paleta HEX exata e titularidade das artes. *20/10/2026: logo, fontes e paleta recebidas no Brand V2 (D-014); faltam fotos reais, master vetorial do símbolo, registro de marca e homologação final* | Ellen | Antes de publicar marca comercial final |
 | P-007 | Provedor de vídeo, armazenamento/DRM equivalente e custo mensal | Luiggi + Ellen | Antes do player de produção |
-| P-008 | Provedor de e-mail transacional, remetente e domínio autenticado | Luiggi | Antes dos ingressos reais |
+| P-008 | Provedor de e-mail transacional, remetente e domínio autenticado. *26/10/2026: provedor = Resend (D-018); faltam remetente e domínio autenticado* | Luiggi | Antes dos ingressos reais |
 | P-009 | Conteúdo efetivamente disponível e calendário editorial prometido | Ellen | Antes da primeira venda |
 | P-010 | Local, data definitiva, capacidade, consumo e política de recepção Café | Ellen + comercial | Antes de anunciar evento |
 | P-011 | Quem poderá validar check-in presencial: comercial e owner confirmados; eventuais temporários? | Ellen | Antes do evento |

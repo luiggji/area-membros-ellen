@@ -54,6 +54,18 @@
 
 > Ordem recomendada pelo PRD: **ENG/Auth/Security → Billing/Events → Learning → Community → Planning/Dashboard → QA/Launch**. Nenhum P1/P2 pode atrasar um P0 sem aprovação expressa.
 
+### 2.1 Trilha produto antes das integrações (D-019, 26/10/2026)
+
+Com a identidade pronta (Onda 3), a ordem passa a ser **produto primeiro**: o app interno fica completo e navegável com dados reais do banco antes de Stripe, Resend e outbox. Acesso pago nasce só de concessão manual do owner, auditada (CF-048), até o webhook existir. As ondas continuam como agrupamento; esta lista manda na ordem.
+
+| Fase | Issues, na ordem | Observação |
+|---|---|---|
+| A — Assinatura sem checkout | #83 CF-040 → #88 CF-046 → #92 CF-048 → #84 CF-041 → #91 CF-047 → #85 CF-042 | Schema, entitlements e concessão manual destravam o paywall no servidor. Minha Assinatura e comparador de planos mostram estados reais, sem botão de pagar |
+| B — Conteúdo | #94 CF-080 → #95 CF-081 → #96 CF-082 → #97 CF-083 → #98 CF-084 → #99 CF-085 | Player atrás de uma porta de provedor de vídeo; o provedor de produção espera a P-007 |
+| C — Comunidade | #101 CF-090 → #102 CF-091 → #103 CF-092 → #104 CF-093 → #105 CF-094 → #106 CF-095 → #107 CF-096 | — |
+| D — Jornada, ao vivo, admin e home | #108 CF-102 → #109 CF-103 → #110 CF-104 → #111 CF-107 → #112 CF-105 → #114 CF-101 → #115 CF-111 | Home (CF-101) por último, com cursos, comunidade e jornada já reais |
+| Depois — Integrações | #82 CF-100 (Resend, D-018) → #86 CF-043 → #87 CF-045 → #89 CF-160 → #90 CF-044 → #93 CF-049 → #113 CF-106 → Onda 5 (Café) | Gateway Stripe (D-017) e e-mail entram sobre o produto pronto. #100 CF-086 (conteúdo real) depende da Ellen (P-009) |
+
 ---
 
 ## 3. Backlog por onda
@@ -129,18 +141,18 @@
 ### Onda 4 — Receita: assinaturas (M2)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 4.1 | CF-100 | P0 | Provedor de e-mail e templates transacionais (signup, compra, ingresso) com retry/log | CF-012 | `feat/<issue>-email-transacional` | M | P-008 | — |
-| 4.2 | CF-040 | P0 | Schema `plans`, `price_versions`, `subscriptions`, `payments`, `entitlements`, `webhook_receipts` + seed dos planos de referência R$89/R$790 (CF-154) | CF-016, CF-002 | `feat/<issue>-schema-billing` | M | P-001 | — |
-| 4.3 | CF-041 | P0 | CRUD owner de planos e versões de preço (novas vendas, sem retroatividade) | CF-040, CF-032 | `feat/<issue>-crud-planos` | M | — | — |
-| 4.4 | CF-042 | P0 | Landing pública e comparador de planos com checkout | CF-020, CF-041, CF-003 | `feat/<issue>-landing-planos` | M | P-002 | — |
-| 4.5 | CF-043 | P0 | Adapter do gateway + checkout assinatura mensal | CF-040, CF-002 | `feat/<issue>-gateway-mensal` | L | P-001 | — |
-| 4.6 | CF-045 | P0 | Webhook autenticado, idempotente, com reconciliação | CF-043 | `feat/<issue>-webhook-idempotente` | M | P-001 | — |
-| 4.7 | CF-046 | P0 | Máquina de estados e regra de acesso por entitlement | CF-045, CF-032 | `feat/<issue>-entitlements` | M | — | — |
-| 4.8 | **CF-160 (novo)** | P0 | Outbox + worker idempotente para e-mails e emissões pós-pagamento. *Justificativa: PRD §7.5; erro de e-mail não pode reverter pagamento nem duplicar envio.* | CF-045, CF-100 | `feat/<issue>-outbox-worker` | M | P-014 | — |
-| 4.9 | CF-044 | P0 | Plano anual 12x **ou bloqueio explícito se não suportado** | CF-043, CF-003 | `feat/<issue>-plano-anual` | M | P-002 | — |
-| 4.10 | CF-047 | P0 | Minha Assinatura: estado, cobranças, instruções de gestão | CF-046 | `feat/<issue>-minha-assinatura` | S | — | — |
-| 4.11 | CF-048 | P0 | Concessões manuais com expiração e auditoria (owner-only) | CF-046, CF-161 | `feat/<issue>-concessao-manual` | S | — | — |
-| 4.12 | CF-049 | P0 | Testes de falha, estorno, renovação, chargeback e corrida | CF-045, CF-046 | `test/<issue>-billing-cenarios` | M | P-002 | — |
+| 4.1 | CF-100 | P0 | Provedor de e-mail e templates transacionais (signup, compra, ingresso) com retry/log | CF-012 | `feat/<issue>-email-transacional` | M | P-008 | #82 |
+| 4.2 | CF-040 | P0 | Schema `plans`, `price_versions`, `subscriptions`, `payments`, `entitlements`, `webhook_receipts` + seed dos planos de referência R$89/R$790 (CF-154) | CF-016, CF-002 | `feat/<issue>-schema-billing` | M | P-001 | #83 |
+| 4.3 | CF-041 | P0 | CRUD owner de planos e versões de preço (novas vendas, sem retroatividade) | CF-040, CF-032 | `feat/<issue>-crud-planos` | M | — | #84 |
+| 4.4 | CF-042 | P0 | Landing pública e comparador de planos com checkout | CF-020, CF-041, CF-003 | `feat/<issue>-landing-planos` | M | P-002 | #85 |
+| 4.5 | CF-043 | P0 | Adapter do gateway + checkout assinatura mensal | CF-040, CF-002 | `feat/<issue>-gateway-mensal` | L | P-001 | #86 |
+| 4.6 | CF-045 | P0 | Webhook autenticado, idempotente, com reconciliação | CF-043 | `feat/<issue>-webhook-idempotente` | M | P-001 | #87 |
+| 4.7 | CF-046 | P0 | Máquina de estados e regra de acesso por entitlement | CF-045, CF-032 | `feat/<issue>-entitlements` | M | — | #88 |
+| 4.8 | **CF-160 (novo)** | P0 | Outbox + worker idempotente para e-mails e emissões pós-pagamento. *Justificativa: PRD §7.5; erro de e-mail não pode reverter pagamento nem duplicar envio.* | CF-045, CF-100 | `feat/<issue>-outbox-worker` | M | P-014 | #89 |
+| 4.9 | CF-044 | P0 | Plano anual 12x **ou bloqueio explícito se não suportado** | CF-043, CF-003 | `feat/<issue>-plano-anual` | M | P-002 | #90 |
+| 4.10 | CF-047 | P0 | Minha Assinatura: estado, cobranças, instruções de gestão | CF-046 | `feat/<issue>-minha-assinatura` | S | — | #91 |
+| 4.11 | CF-048 | P0 | Concessões manuais com expiração e auditoria (owner-only) | CF-046, CF-161 | `feat/<issue>-concessao-manual` | S | — | #92 |
+| 4.12 | CF-049 | P0 | Testes de falha, estorno, renovação, chargeback e corrida | CF-045, CF-046 | `test/<issue>-billing-cenarios` | M | P-002 | #93 |
 
 > 🎨 **Entrega visual da onda:** landing pública com comparador de planos, checkout sandbox, tela de "aguardando confirmação", Minha Assinatura com cada estado (ativa, pendente, expirada), admin de planos/preços e preview dos e-mails transacionais.
 
@@ -169,40 +181,40 @@
 ### Onda 6 — Conteúdo e biblioteca (M4) — em paralelo com a Onda 5
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 6.1 | CF-080 | P0 | Schema trilhas/cursos/módulos/aulas e status (`rascunho`/`agendada`/`publicada`) | CF-016 | `feat/<issue>-schema-conteudo` | M | — | — |
-| 6.2 | CF-081 | P0 | CMS owner: criar/editar/publicar/agendar sem deploy | CF-080, CF-032 | `feat/<issue>-cms-conteudo` | L | — | — |
-| 6.3 | CF-082 | P0 | Catálogo e filtros básicos (publicados vs programados) | CF-081, CF-020 | `feat/<issue>-catalogo-cursos` | M | — | — |
-| 6.4 | CF-083 | P0 | Player de vídeo autenticado com provedor protegido | CF-082, CF-046 | `feat/<issue>-player-protegido` | L | P-007 | — |
-| 6.5 | CF-084 | P0 | Progresso por membro, conclusão e "continuar aula" | CF-083 | `feat/<issue>-progresso-aulas` | M | — | — |
-| 6.6 | CF-085 | P0 | Biblioteca de materiais privados com acesso temporário | CF-046, CF-016, CF-162 | `feat/<issue>-cofre-materiais` | M | — | — |
-| 6.7 | CF-086 | P0 | Publicar a primeira onda de aulas e recursos reais (operação de conteúdo) | CF-081, CF-006 | `docs/<issue>-primeira-onda-conteudo` | M | P-009 | — |
+| 6.1 | CF-080 | P0 | Schema trilhas/cursos/módulos/aulas e status (`rascunho`/`agendada`/`publicada`) | CF-016 | `feat/<issue>-schema-conteudo` | M | — | #94 |
+| 6.2 | CF-081 | P0 | CMS owner: criar/editar/publicar/agendar sem deploy | CF-080, CF-032 | `feat/<issue>-cms-conteudo` | L | — | #95 |
+| 6.3 | CF-082 | P0 | Catálogo e filtros básicos (publicados vs programados) | CF-081, CF-020 | `feat/<issue>-catalogo-cursos` | M | — | #96 |
+| 6.4 | CF-083 | P0 | Player de vídeo autenticado com provedor protegido | CF-082, CF-046 | `feat/<issue>-player-protegido` | L | P-007 | #97 |
+| 6.5 | CF-084 | P0 | Progresso por membro, conclusão e "continuar aula" | CF-083 | `feat/<issue>-progresso-aulas` | M | — | #98 |
+| 6.6 | CF-085 | P0 | Biblioteca de materiais privados com acesso temporário | CF-046, CF-016, CF-162 | `feat/<issue>-cofre-materiais` | M | — | #99 |
+| 6.7 | CF-086 | P0 | Publicar a primeira onda de aulas e recursos reais (operação de conteúdo) | CF-081, CF-006 | `docs/<issue>-primeira-onda-conteudo` | M | P-009 | #100 |
 
 > 🎨 **Entrega visual da onda:** catálogo de cursos (publicados × programados), página do curso, player com "continuar aula" e progresso, biblioteca de materiais e editor de conteúdo (CMS) no admin.
 
 ### Onda 7 — Comunidade e networking (M5)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 7.1 | CF-090 | P0 | Perfis públicos opt-in para o diretório (contato privado por padrão) | CF-031, CF-046 | `feat/<issue>-perfil-diretorio` | M | — | — |
-| 7.2 | CF-091 | P0 | Busca cidade/UF/áreas, paginada e com rate limit | CF-090 | `feat/<issue>-busca-diretorio` | M | — | — |
-| 7.3 | CF-092 | P0 | CRUD de grupos temáticos no admin | CF-032, CF-016 | `feat/<issue>-crud-grupos` | S | — | — |
-| 7.4 | CF-093 | P0 | Aderir a grupo e feed de publicações | CF-092, CF-046 | `feat/<issue>-feed-grupos` | M | — | — |
-| 7.5 | CF-094 | P0 | Publicar/editar/excluir posts próprios e comentar (XSS neutralizado) | CF-093 | `feat/<issue>-posts-comentarios` | M | — | — |
-| 7.6 | CF-095 | P0 | Denúncias e moderação owner (privada, auditada) | CF-094, CF-032, CF-161 | `feat/<issue>-moderacao` | M | — | — |
-| 7.7 | CF-096 | P0 | Regras da comunidade e aviso contra sigilo de clientes | CF-094, CF-003 | `feat/<issue>-regras-comunidade` | S | P-012 | — |
+| 7.1 | CF-090 | P0 | Perfis públicos opt-in para o diretório (contato privado por padrão) | CF-031, CF-046 | `feat/<issue>-perfil-diretorio` | M | — | #101 |
+| 7.2 | CF-091 | P0 | Busca cidade/UF/áreas, paginada e com rate limit | CF-090 | `feat/<issue>-busca-diretorio` | M | — | #102 |
+| 7.3 | CF-092 | P0 | CRUD de grupos temáticos no admin | CF-032, CF-016 | `feat/<issue>-crud-grupos` | S | — | #103 |
+| 7.4 | CF-093 | P0 | Aderir a grupo e feed de publicações | CF-092, CF-046 | `feat/<issue>-feed-grupos` | M | — | #104 |
+| 7.5 | CF-094 | P0 | Publicar/editar/excluir posts próprios e comentar (XSS neutralizado) | CF-093 | `feat/<issue>-posts-comentarios` | M | — | #105 |
+| 7.6 | CF-095 | P0 | Denúncias e moderação owner (privada, auditada) | CF-094, CF-032, CF-161 | `feat/<issue>-moderacao` | M | — | #106 |
+| 7.7 | CF-096 | P0 | Regras da comunidade e aviso contra sigilo de clientes | CF-094, CF-003 | `feat/<issue>-regras-comunidade` | S | P-012 | #107 |
 
 > 🎨 **Entrega visual da onda:** diretório com busca por cidade/UF/área, perfil público opt-in, lista de grupos, feed com posts e comentários, fluxo de denúncia e fila de moderação no admin.
 
 ### Onda 8 — Jornada, home, ao vivo e administração (M6)
 | Ordem | CF-ID | Pri | Título | Dependências | Branch sugerida | Tam | Decisão pendente | Issue # |
 |---|---|---|---|---|---|---|---|---|
-| 8.1 | CF-102 | P0 | Diagnóstico inicial (5–10 perguntas) e recomendações determinísticas | CF-035, CF-016 | `feat/<issue>-diagnostico` | M | — | — |
-| 8.2 | CF-103 | P0 | Objetivo de 90 dias e 3 tarefas de 30 dias (privados) | CF-102 | `feat/<issue>-planejamento-metas` | M | — | — |
-| 8.3 | CF-104 | P0 | Calendário/admin de encontros ao vivo com link protegido | CF-032, CF-020 | `feat/<issue>-encontros-ao-vivo` | M | — | — |
-| 8.4 | CF-107 | P0 | Ajuda e canal de suporte operacional | CF-020 | `feat/<issue>-ajuda-suporte` | S | — | — |
-| 8.5 | CF-105 | P0 | Painel administrativo (owner) e painel limitado do comercial | CF-032, CF-071, CF-081 | `feat/<issue>-painel-admin` | L | — | — |
-| 8.6 | CF-106 | P0 | Relatórios por período: aquisição, recebimentos, retenção (café vs online) | CF-045, CF-071 | `feat/<issue>-relatorios` | M | — | — |
-| 8.7 | CF-101 | P0 | Home híbrida minimalista v1.1 com dados reais e estados vazios | CF-084, CF-094, CF-035, CF-021, CF-022 | `feat/<issue>-home-minimalista` | M | — | — |
-| 8.8 | CF-111 | P0 | QA de estados da home e navegação progressiva | CF-101 | `test/<issue>-qa-estados-home` | S | — | — |
+| 8.1 | CF-102 | P0 | Diagnóstico inicial (5–10 perguntas) e recomendações determinísticas | CF-035, CF-016 | `feat/<issue>-diagnostico` | M | — | #108 |
+| 8.2 | CF-103 | P0 | Objetivo de 90 dias e 3 tarefas de 30 dias (privados) | CF-102 | `feat/<issue>-planejamento-metas` | M | — | #109 |
+| 8.3 | CF-104 | P0 | Calendário/admin de encontros ao vivo com link protegido | CF-032, CF-020 | `feat/<issue>-encontros-ao-vivo` | M | — | #110 |
+| 8.4 | CF-107 | P0 | Ajuda e canal de suporte operacional | CF-020 | `feat/<issue>-ajuda-suporte` | S | — | #111 |
+| 8.5 | CF-105 | P0 | Painel administrativo (owner) e painel limitado do comercial | CF-032, CF-071, CF-081 | `feat/<issue>-painel-admin` | L | — | #112 |
+| 8.6 | CF-106 | P0 | Relatórios por período: aquisição, recebimentos, retenção (café vs online) | CF-045, CF-071 | `feat/<issue>-relatorios` | M | — | #113 |
+| 8.7 | CF-101 | P0 | Home híbrida minimalista v1.1 com dados reais e estados vazios | CF-084, CF-094, CF-035, CF-021, CF-022 | `feat/<issue>-home-minimalista` | M | — | #114 |
+| 8.8 | CF-111 | P0 | QA de estados da home e navegação progressiva | CF-101 | `test/<issue>-qa-estados-home` | S | — | #115 |
 
 > 🎨 **Entrega visual da onda:** home minimalista definitiva com dados reais (1 hero + 1 jornada + ≤3 cursos + ≤2 auxiliares), diagnóstico, metas de 90/30 dias, calendário ao vivo, ajuda, painel admin e relatórios.
 

@@ -1,8 +1,19 @@
 import { Role } from '@caixa-forte/contracts';
 
-/** Verifica o access token do Supabase Auth e devolve o id do usuário, ou `null` se inválido. */
+/**
+ * Nível de autenticação da sessão (claim `aal` do Supabase Auth): `aal2` = segundo fator (MFA)
+ * verificado nesta sessão. Exigido para qualquer permissão administrativa (CF-034).
+ */
+export type AssuranceLevel = 'aal1' | 'aal2';
+
+export interface VerifiedToken {
+  userId: string;
+  aal: AssuranceLevel;
+}
+
+/** Verifica o access token do Supabase Auth; `null` se inválido, expirado ou de sessão encerrada. */
 export interface AccessTokenVerifier {
-  verify(token: string): Promise<string | null>;
+  verify(token: string): Promise<VerifiedToken | null>;
 }
 
 /** Papéis do usuário (`user_roles`, CF-032). */
@@ -17,4 +28,5 @@ export const ROLE_REPOSITORY = Symbol('ROLE_REPOSITORY');
 export interface Principal {
   userId: string;
   roles: Role[];
+  aal: AssuranceLevel;
 }

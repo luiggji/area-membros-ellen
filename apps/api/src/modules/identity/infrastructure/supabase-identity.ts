@@ -1,15 +1,34 @@
 import { Role, roleSchema } from '@caixa-forte/contracts';
 
 import { SupabaseAdmin } from '../../../shared/supabase/supabase.module';
-import { AccessTokenVerifier, RoleRepository } from '../application/ports';
+import {
+  AccessTokenVerifier,
+  AssuranceLevel,
+  RoleRepository,
+  VerifiedToken,
+} from '../application/ports';
+
+/**
+ * Lê o claim `aal` de um token JÁ validado pelo Auth (getUser confere assinatura, expiração e
+ * sessão). Qualquer coisa diferente de `aal2` conta como `aal1`.
+ */
+export function assuranceLevelOf(token: string): AssuranceLevel {
+  try {
+    const payload = JSON.parse(Buffer.from(token.split('.')[1] ?? '', 'base64url').toString());
+    return payload.aal === 'aal2' ? 'aal2' : 'aal1';
+  } catch {
+    return 'aal1';
+  }
+}
 
 /** `getUser(token)` valida o JWT no Auth (assinatura, expiração e sessão), não só decodifica. */
 export class SupabaseAccessTokenVerifier implements AccessTokenVerifier {
   constructor(private readonly client: SupabaseAdmin) {}
 
-  async verify(token: string): Promise<string | null> {
+  async verify(token: string): Promise<VerifiedToken | null> {
     const { data, error } = await this.client.auth.getUser(token);
-    return error || !data.user ? null : data.user.id;
+    if (error || !data.user) return null;
+    return { userId: data.user.id, aal: assuranceLevelOf(token) };
   }
 }
 
@@ -32,7 +51,7 @@ export class SupabaseRoleRepository implements RoleRepository {
 
 /** Dev sem Supabase: ninguém autentica (rotas protegidas respondem 401). */
 export class UnconfiguredAccessTokenVerifier implements AccessTokenVerifier {
-  async verify(): Promise<string | null> {
+  async verify(): Promise<VerifiedToken | null> {
     return null;
   }
 }

@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { type CookieToSet, refreshSession } from '@/shared/lib/supabase/proxy-session';
-import { buildCsp, createNonce } from '@/shared/security/csp';
+import { buildCsp, createNonce, isPrivatePath } from '@/shared/security/csp';
 
 function withCookies(response: NextResponse, cookies: CookieToSet[]): NextResponse {
   for (const { name, value, options } of cookies) response.cookies.set(name, value, options);
@@ -10,8 +10,8 @@ function withCookies(response: NextResponse, cookies: CookieToSet[]): NextRespon
 
 /**
  * Área privada (/app, /admin):
- * - sessão renovada a cada requisição (CF-030); sem sessão, /app manda para o login guardando o
- *   destino. /admin restringe por papel no CF-034;
+ * - sessão renovada a cada requisição (CF-030); sem sessão, /app e /admin mandam para o login
+ *   guardando o destino. Papel e MFA do /admin são decididos no layout dele (CF-034);
  * - CSP com nonce (CF-152): o Next lê o nonce do header da requisição e o aplica aos próprios
  *   scripts; as páginas daqui são dinâmicas, senão ficariam sem nonce;
  * - `private, no-store` (CF-163). As rotas públicas recebem a CSP estática do next.config.ts.
@@ -20,7 +20,7 @@ export async function proxy(request: NextRequest) {
   const { user, cookies } = await refreshSession(request);
   const { pathname, search } = request.nextUrl;
 
-  if (!user && (pathname === '/app' || pathname.startsWith('/app/'))) {
+  if (!user && isPrivatePath(pathname)) {
     const login = new URL('/entrar', request.url);
     login.searchParams.set('next', `${pathname}${search}`);
     return withCookies(NextResponse.redirect(login), cookies);

@@ -27,8 +27,9 @@ function bearer(request: Request): string | undefined {
 }
 
 /**
- * Autorização no servidor (CF-032): 401 sem token válido; 403 sem a permissão exigida. Os papéis
- * vêm do banco a cada requisição, nunca do cliente nem de claims editáveis.
+ * Autorização no servidor (CF-032/CF-034): 401 sem token válido; 403 sem a permissão exigida; 403
+ * `mfa_required` com a permissão mas sem segundo fator nesta sessão. Os papéis vêm do banco a cada
+ * requisição, nunca do cliente nem de claims editáveis.
  */
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
@@ -47,6 +48,8 @@ export class AuthorizationGuard implements CanActivate {
       context.getClass(),
     ]);
     if (permission && !can(principal.roles, permission)) throw new ForbiddenException();
+    // Toda permissão é administrativa (membro não tem nenhuma): exige MFA verificado (CF-034).
+    if (permission && principal.aal !== 'aal2') throw new ForbiddenException('mfa_required');
 
     request.principal = principal;
     return true;
@@ -66,7 +69,9 @@ export const RequirePermission = (permission: Permission) =>
   applyDecorators(
     SetMetadata(PERMISSION_KEY, permission),
     Authenticated(),
-    ApiForbiddenResponse({ description: `Sem a permissão ${permission}` }),
+    ApiForbiddenResponse({
+      description: `Sem a permissão ${permission}, ou sem MFA (mfa_required)`,
+    }),
   );
 
 /** Quem está chamando, já verificado pelo guard. */

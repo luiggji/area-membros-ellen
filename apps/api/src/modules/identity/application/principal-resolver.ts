@@ -18,8 +18,8 @@ export class PrincipalResolver {
 
   async resolve(token: string | undefined): Promise<Principal | null> {
     if (!token) return null;
-    const userId = await this.verifier.verify(token);
-    if (!userId) return null;
-    return { userId, roles: await this.roles.rolesOf(userId) };
+    const verified = await this.verifier.verify(token);
+    if (!verified) return null;
+    return { ...verified, roles: await this.roles.rolesOf(verified.userId) };
   }
 }

@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { describeRoles } from '@/modules/identity/domain/role-labels';
-import { loadAdminGate } from '@/modules/identity/infrastructure/admin-gate';
+import { requireAdminPanel } from '@/modules/identity/presentation/admin-guards';
 import { PublicFrame } from '@/shared/ui/public-frame';
 
 export const metadata: Metadata = { title: 'Painel da equipe · Caixa Forte' };
@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: 'Painel da equipe · Caixa Forte' };
  * inscrições, moderação) chegam com o CF-105 e os módulos; nada aqui é número inventado.
  */
 export default async function AdminHomePage() {
-  const { roles } = await loadAdminGate();
+  const { roles } = await requireAdminPanel();
   return (
     <PublicFrame>
       <EmptyState

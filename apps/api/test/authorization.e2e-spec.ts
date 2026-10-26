@@ -42,6 +42,7 @@ const USERS: Record<string, { id: string; roles: Role[]; aal?: 'aal1' | 'aal2' }
   'token-comercial': {
     id: '00000000-0000-4000-8000-000000000002',
     roles: ['commercial', 'member'],
+    aal: 'aal2',
   },
   'token-tecnico': { id: '00000000-0000-4000-8000-000000000003', roles: ['tech', 'member'] },
   'token-membro': { id: '00000000-0000-4000-8000-000000000004', roles: ['member'] },
@@ -106,10 +107,11 @@ describe('Autorização no servidor (CF-032, e2e)', () => {
     expect(body.roles).toEqual(['member']);
   });
 
-  it('comercial não edita preços (403)', async () => {
-    await as('token-comercial')(request(app.getHttpServer()).put('/api/v1/exemplo/precos')).expect(
-      403,
-    );
+  it('comercial não edita preços (403), e o motivo não é MFA', async () => {
+    const { body } = await as('token-comercial')(
+      request(app.getHttpServer()).put('/api/v1/exemplo/precos'),
+    ).expect(403);
+    expect(body.message).not.toBe('mfa_required');
   });
 
   it('técnico não acessa financeiro por padrão (403)', async () => {

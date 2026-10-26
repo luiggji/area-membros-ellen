@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
-import { loadAdminGate } from '@/modules/identity/infrastructure/admin-gate';
+import { requireStaff } from '@/modules/identity/presentation/admin-guards';
 import { AuthCard } from '@/modules/identity/presentation/auth-card';
 import { MfaEnrollment, MfaVerification } from '@/modules/identity/presentation/mfa-forms';
 import { PublicFrame } from '@/shared/ui/public-frame';
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: 'Verificação em duas etapas · Caix
 
 /** Segundo fator da equipe (CF-034): cadastrar o app autenticador ou digitar o código. */
 export default async function AdminMfaPage() {
-  const { access, verifiedFactorId } = await loadAdminGate();
+  const { access, verifiedFactorId } = await requireStaff();
   if (access === 'allow') redirect('/admin');
 
   return (

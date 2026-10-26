@@ -54,18 +54,12 @@ describe('verificação do código', () => {
     expect(calls).toEqual([`verify:${FACTOR}:123456`]);
   });
 
-  it('código errado mantém o QR/chave na tela para tentar de novo', async () => {
+  it('código errado vira mensagem, sem devolver chave nem QR', async () => {
     const result = await confirmCode(
-      { factorId: FACTOR, code: '000000', qrCode: 'qr', secret: 'ABC' },
+      { factorId: FACTOR, code: '000000' },
       fakeMfa({ valid: false }).mfa,
     );
-    expect(result).toEqual({
-      status: 'error',
-      message: MFA_MESSAGES.invalidCode,
-      factorId: FACTOR,
-      qrCode: 'qr',
-      secret: 'ABC',
-    });
+    expect(result).toEqual({ status: 'error', message: MFA_MESSAGES.invalidCode });
   });
 
   it('código malformado ou fator inválido nem chega ao Auth', async () => {

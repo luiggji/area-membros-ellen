@@ -20,25 +20,17 @@ function CodeForm({
   factorId,
   state,
   action,
-  extra,
   label,
 }: {
   factorId: string;
   state: MfaState;
   action: (form: FormData) => void;
-  extra?: { qrCode: string; secret: string };
   label: string;
 }) {
   return (
     <form action={action} className="flex flex-col gap-5" noValidate>
       {state.status === 'error' ? <Notice tone="danger">{state.message}</Notice> : null}
       <input type="hidden" name="factorId" value={factorId} />
-      {extra ? (
-        <>
-          <input type="hidden" name="qrCode" value={extra.qrCode} />
-          <input type="hidden" name="secret" value={extra.secret} />
-        </>
-      ) : null}
       <TextField
         name="code"
         label="Código de 6 dígitos do app autenticador"
@@ -61,13 +53,11 @@ export function MfaEnrollment() {
   const [starting, startTransition] = useTransition();
   const [verified, confirm] = useActionState(confirmCodeAction, { status: 'idle' });
 
-  // Depois de um código errado, o QR e a chave voltam no estado da action.
-  const current = verified.status === 'error' && verified.factorId ? verified : enrollment;
-
-  if (current.status !== 'enrolling' && !(current.status === 'error' && current.factorId)) {
+  // O QR e a chave ficam só no estado do navegador; a action recebe apenas fator e código.
+  if (enrollment.status !== 'enrolling') {
     return (
       <div className="flex flex-col gap-5">
-        {current.status === 'error' ? <Notice tone="danger">{current.message}</Notice> : null}
+        {enrollment.status === 'error' ? <Notice tone="danger">{enrollment.message}</Notice> : null}
         <ol className="list-decimal space-y-2 pl-5 text-sm text-cf-text-secondary">
           <li>
             Instale um app autenticador (Google Authenticator, Microsoft Authenticator, 1Password…).
@@ -90,11 +80,7 @@ export function MfaEnrollment() {
     );
   }
 
-  const { factorId, qrCode, secret } = current as {
-    factorId: string;
-    qrCode: string;
-    secret: string;
-  };
+  const { factorId, qrCode, secret } = enrollment;
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-start gap-4 sm:flex-row">
@@ -118,7 +104,6 @@ export function MfaEnrollment() {
         factorId={factorId}
         state={verified}
         action={confirm}
-        extra={{ qrCode, secret }}
         label="Ativar verificação em duas etapas"
       />
     </div>

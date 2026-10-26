@@ -12,7 +12,7 @@ export interface MfaGateway {
 export type MfaState =
   | { status: 'idle'; message?: string }
   | { status: 'enrolling'; factorId: string; qrCode: string; secret: string; message?: string }
-  | { status: 'error'; message: string; factorId?: string; qrCode?: string; secret?: string }
+  | { status: 'error'; message: string }
   | { status: 'redirect'; to: string };
 
 export const MFA_MESSAGES = {
@@ -30,18 +30,13 @@ export async function startEnrollment(mfa: MfaGateway): Promise<MfaState> {
 }
 
 /**
- * Confirma o código (no cadastro ou no login da equipe). Em erro, devolve o QR/chave de novo
- * para quem ainda está cadastrando não precisar recomeçar.
+ * Confirma o código (no cadastro ou no login da equipe). Só recebe fator e código: o QR e a chave
+ * ficam no navegador e não voltam ao servidor.
  */
 export async function confirmCode(
-  input: { factorId?: unknown; code?: unknown; qrCode?: unknown; secret?: unknown },
+  input: { factorId?: unknown; code?: unknown },
   mfa: MfaGateway,
 ): Promise<MfaState> {
-  const keep = {
-    ...(typeof input.factorId === 'string' && { factorId: input.factorId }),
-    ...(typeof input.qrCode === 'string' && { qrCode: input.qrCode }),
-    ...(typeof input.secret === 'string' && { secret: input.secret }),
-  };
   const code = typeof input.code === 'string' ? input.code.replace(/\s/g, '') : input.code;
   if (
     typeof input.factorId !== 'string' ||
@@ -49,7 +44,7 @@ export async function confirmCode(
     !isTotpCode(code) ||
     !(await mfa.verify(input.factorId, code))
   ) {
-    return { status: 'error', message: MFA_MESSAGES.invalidCode, ...keep };
+    return { status: 'error', message: MFA_MESSAGES.invalidCode };
   }
   return { status: 'redirect', to: '/admin' };
 }

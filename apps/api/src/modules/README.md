@@ -17,6 +17,8 @@ Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (uni
 
 **Autorização (CF-032):** rota protegida usa `@Authenticated()` (só login) ou `@RequirePermission('prices.manage')` (`modules/identity/presentation/authorization`). O guard valida o access token do Supabase no Auth e lê os papéis em `user_roles` a cada requisição: 401 sem sessão, 403 sem a permissão. Toda permissão exige sessão `aal2` (MFA, CF-034): token só com senha recebe 403 `mfa_required`; `@Authenticated()` não exige. Matriz papel → permissão em `@caixa-forte/contracts` (`permissions.ts`). Quem chama: `@CurrentPrincipal()`.
 
+**Paywall (CF-046):** rota de conteúdo pago usa `@RequireAccess()` (`modules/membership/presentation/access`): login + acesso vigente consultado no banco a cada requisição (`access_of_user` → `private.access_of`, a mesma regra da RLS e do web). Sem acesso: 403 `subscription_required`. Papel de equipe não abre paywall. Regra: assinatura `active`; `past_due`/`cancel_at_period_end` só até o fim do período pago; concessão manual até `valid_to`.
+
 **Módulo não lançado (CF-158):** controller com `@RequireFeature('<flag>')` (`shared/http/feature-flag.guard`) responde 404 enquanto a flag estiver desligada no ambiente. Catálogo em `@caixa-forte/contracts` (`FEATURE_FLAGS`).
 
 **Dado público mudou (CF-163):** depois de persistir preço, evento/lote ou catálogo, injete `WEB_CACHE` (`shared/cache/web-cache.module`) e chame `revalidate(['prices'])`: o web renova as páginas públicas daquela tag.

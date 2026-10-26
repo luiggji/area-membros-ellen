@@ -20,10 +20,6 @@ export const memberSectionStates: Readonly<Record<string, MemberSectionState>> =
     description:
       'Os grupos temáticos aparecem aqui quando forem criados. A comunidade não tem mensagens privadas.',
   },
-  assinatura: {
-    title: 'As assinaturas ainda não estão abertas',
-    description: 'Quando abrirem, você acompanha aqui o seu plano, as cobranças e como alterar.',
-  },
   conexoes: {
     title: 'O diretório de membros ainda não abriu',
     description:

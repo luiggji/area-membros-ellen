@@ -195,7 +195,16 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "access_of_user":
+{ Args: { "p_scope"?: string,"p_user": string }; Returns: {
+              "source": string,"subscription_status": string,"valid_until": string
+            }[]
+                           },
+"my_access":
+{ Args: { "p_scope"?: string }; Returns: {
+              "source": string,"subscription_status": string,"valid_until": string
+            }[]
+                           }
           }
           Enums: {
             [_ in never]: never

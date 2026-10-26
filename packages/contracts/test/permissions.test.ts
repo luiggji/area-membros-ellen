@@ -42,6 +42,13 @@ describe('matriz de permissões (critérios de aceite do CF-032)', () => {
     }
   });
 
+  it('só o owner concede acesso pago manualmente (CF-048)', () => {
+    expect(can(['owner'], 'access.grant')).toBe(true);
+    for (const role of ['commercial', 'tech', 'member'] as const) {
+      expect(can([role], 'access.grant'), role).toBe(false);
+    }
+  });
+
   it('membro não tem nenhuma permissão administrativa', () => {
     expect(permissionsFor(['member'])).toEqual([]);
     expect(can(['member'], 'admin.access')).toBe(false);

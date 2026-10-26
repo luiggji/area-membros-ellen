@@ -11,6 +11,7 @@ export const PERMISSIONS = [
   'content.manage', // cursos, materiais, regras de conteúdo
   'events.manage', // edições, lotes e capacidade do Café
   'prices.manage', // planos e price_versions (novas compras)
+  'access.grant', // concessão manual de acesso pago, com validade e motivo (CF-048)
   'roles.manage', // conceder/revogar papéis da equipe
   'finance.read', // relatórios financeiros e de conversão
   'refunds.manage', // reembolso delegado ao gateway
@@ -30,6 +31,7 @@ const MATRIX: Record<Role, readonly Permission[]> = {
     'content.manage',
     'events.manage',
     'prices.manage',
+    'access.grant',
     'roles.manage',
     'finance.read',
     'refunds.manage',

@@ -8,7 +8,7 @@ begin
   perform tests.create_user('ellen');
   perform tests.create_user('ana');
   perform tests.create_user('nao_confirmada');
-  update auth.users set email_confirmed_at = now() where id = tests.user_id('ana');
+  update auth.users set email_confirmed_at = now() where email = 'ana@teste.local';
   insert into public.user_roles (user_id, role) values (tests.user_id('ellen'), 'owner');
   insert into public.entitlements (user_id, source, reason, valid_to, granted_by)
   values (tests.user_id('ana'), 'manual', 'cortesia de teste', now() + interval '30 days', tests.user_id('ellen'));

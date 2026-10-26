@@ -27,11 +27,22 @@ class ExampleAdminController {
   }
 }
 
-const USERS: Record<string, { id: string; roles: Role[] }> = {
-  'token-owner': { id: '00000000-0000-4000-8000-000000000001', roles: ['owner', 'member'] },
+const USERS: Record<string, { id: string; roles: Role[]; aal?: 'aal1' | 'aal2' }> = {
+  'token-owner': {
+    id: '00000000-0000-4000-8000-000000000001',
+    roles: ['owner', 'member'],
+    aal: 'aal2',
+  },
+  // Mesma owner, mas numa sessão sem o segundo fator (CF-034).
+  'token-owner-sem-mfa': {
+    id: '00000000-0000-4000-8000-000000000001',
+    roles: ['owner', 'member'],
+    aal: 'aal1',
+  },
   'token-comercial': {
     id: '00000000-0000-4000-8000-000000000002',
     roles: ['commercial', 'member'],
+    aal: 'aal2',
   },
   'token-tecnico': { id: '00000000-0000-4000-8000-000000000003', roles: ['tech', 'member'] },
   'token-membro': { id: '00000000-0000-4000-8000-000000000004', roles: ['member'] },
@@ -46,7 +57,10 @@ describe('Autorização no servidor (CF-032, e2e)', () => {
       controllers: [ExampleAdminController],
     })
       .overrideProvider(ACCESS_TOKEN_VERIFIER)
-      .useValue({ verify: async (token: string) => USERS[token]?.id ?? null })
+      .useValue({
+        verify: async (token: string) =>
+          USERS[token] ? { userId: USERS[token].id, aal: USERS[token].aal ?? 'aal1' } : null,
+      })
       .overrideProvider(ROLE_REPOSITORY)
       .useValue({
         rolesOf: async (id: string) => Object.values(USERS).find((u) => u.id === id)?.roles ?? [],
@@ -93,10 +107,11 @@ describe('Autorização no servidor (CF-032, e2e)', () => {
     expect(body.roles).toEqual(['member']);
   });
 
-  it('comercial não edita preços (403)', async () => {
-    await as('token-comercial')(request(app.getHttpServer()).put('/api/v1/exemplo/precos')).expect(
-      403,
-    );
+  it('comercial não edita preços (403), e o motivo não é MFA', async () => {
+    const { body } = await as('token-comercial')(
+      request(app.getHttpServer()).put('/api/v1/exemplo/precos'),
+    ).expect(403);
+    expect(body.message).not.toBe('mfa_required');
   });
 
   it('técnico não acessa financeiro por padrão (403)', async () => {
@@ -109,6 +124,17 @@ describe('Autorização no servidor (CF-032, e2e)', () => {
     await as('token-membro')(request(app.getHttpServer()).put('/api/v1/exemplo/precos')).expect(
       403,
     );
+  });
+
+  it('owner sem MFA nesta sessão: 403 mfa_required (CF-034)', async () => {
+    const { body } = await as('token-owner-sem-mfa')(
+      request(app.getHttpServer()).put('/api/v1/exemplo/precos'),
+    ).expect(403);
+    expect(body.message).toBe('mfa_required');
+  });
+
+  it('/me não exige MFA (só login)', async () => {
+    await as('token-owner-sem-mfa')(request(app.getHttpServer()).get('/api/v1/me')).expect(200);
   });
 
   it('owner edita preços e vê financeiro', async () => {

@@ -15,7 +15,7 @@ Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (uni
 
 **OpenAPI (CF-151):** toda rota anota a resposta com o schema zod do contrato, ex. `@ApiOkResponse({ schema: contractSchema(healthResponseSchema) })`, e o PR inclui o `docs/api/openapi.json` regenerado (`pnpm openapi:export`). O CI falha se o arquivo divergir do código. Swagger UI em `/api/v1/docs` fora de produção.
 
-**Autorização (CF-032):** rota protegida usa `@Authenticated()` (só login) ou `@RequirePermission('prices.manage')` (`modules/identity/presentation/authorization`). O guard valida o access token do Supabase no Auth e lê os papéis em `user_roles` a cada requisição: 401 sem sessão, 403 sem a permissão. Matriz papel → permissão em `@caixa-forte/contracts` (`permissions.ts`). Quem chama: `@CurrentPrincipal()`.
+**Autorização (CF-032):** rota protegida usa `@Authenticated()` (só login) ou `@RequirePermission('prices.manage')` (`modules/identity/presentation/authorization`). O guard valida o access token do Supabase no Auth e lê os papéis em `user_roles` a cada requisição: 401 sem sessão, 403 sem a permissão. Toda permissão exige sessão `aal2` (MFA, CF-034): token só com senha recebe 403 `mfa_required`; `@Authenticated()` não exige. Matriz papel → permissão em `@caixa-forte/contracts` (`permissions.ts`). Quem chama: `@CurrentPrincipal()`.
 
 **Módulo não lançado (CF-158):** controller com `@RequireFeature('<flag>')` (`shared/http/feature-flag.guard`) responde 404 enquanto a flag estiver desligada no ambiente. Catálogo em `@caixa-forte/contracts` (`FEATURE_FLAGS`).
 

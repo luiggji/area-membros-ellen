@@ -41,14 +41,14 @@ isOneToOne: false
                   ]
                 },"entitlements": {
                   Row: {
-                    "created_at": string,"granted_by": string | null,"id": string,"reason": string | null,"resource_scope": string,"revoked_at": string | null,"source": string,"source_subscription_id": string | null,"user_id": string,"valid_from": string,"valid_to": string | null
+                    "created_at": string,"granted_by": string | null,"id": string,"reason": string | null,"resource_scope": string,"revoked_at": string | null,"revoked_by": string | null,"source": string,"source_subscription_id": string | null,"user_id": string,"valid_from": string,"valid_to": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"granted_by"?: string | null,"id"?: string,"reason"?: string | null,"resource_scope"?: string,"revoked_at"?: string | null,"source": string,"source_subscription_id"?: string | null,"user_id": string,"valid_from"?: string,"valid_to"?: string | null
+                    "created_at"?: string,"granted_by"?: string | null,"id"?: string,"reason"?: string | null,"resource_scope"?: string,"revoked_at"?: string | null,"revoked_by"?: string | null,"source": string,"source_subscription_id"?: string | null,"user_id": string,"valid_from"?: string,"valid_to"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"granted_by"?: string | null,"id"?: string,"reason"?: string | null,"resource_scope"?: string,"revoked_at"?: string | null,"source"?: string,"source_subscription_id"?: string | null,"user_id"?: string,"valid_from"?: string,"valid_to"?: string | null
+                    "created_at"?: string,"granted_by"?: string | null,"id"?: string,"reason"?: string | null,"resource_scope"?: string,"revoked_at"?: string | null,"revoked_by"?: string | null,"source"?: string,"source_subscription_id"?: string | null,"user_id"?: string,"valid_from"?: string,"valid_to"?: string | null
                   }
                   Relationships: [
                     {
@@ -200,11 +200,15 @@ isOneToOne: false
               "source": string,"subscription_status": string,"valid_until": string
             }[]
                            },
+"manual_access_grants":
+{ Args: never; Returns: { "id": string,"member_email": string,"reason": string,"revoked_at": string,"valid_from": string,"valid_to": string }[] },
 "my_access":
 { Args: { "p_scope"?: string }; Returns: {
               "source": string,"subscription_status": string,"valid_until": string
             }[]
-                           }
+                           },
+"user_id_by_email":
+{ Args: { "p_email": string }; Returns: string }
           }
           Enums: {
             [_ in never]: never

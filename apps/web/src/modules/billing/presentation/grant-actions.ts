@@ -25,9 +25,14 @@ export async function grantAccessAction(
   return result;
 }
 
-export async function revokeGrantAction(form: FormData): Promise<void> {
+/** Revoga e recarrega a lista; se a API recusar (sessão sem MFA, já revogada), diz isso. */
+export async function revokeGrantAction(
+  _state: { error?: string },
+  form: FormData,
+): Promise<{ error?: string }> {
   await requireGrantPermission();
   const id = form.get('id');
-  if (typeof id === 'string') await grantsApi.revoke(id);
+  const revoked = typeof id === 'string' && (await grantsApi.revoke(id));
   revalidatePath('/admin/acessos');
+  return revoked ? {} : { error: 'Não foi possível revogar. Recarregue a página e tente de novo.' };
 }

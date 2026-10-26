@@ -1,8 +1,7 @@
 import type { AccessGrant } from '@caixa-forte/contracts';
-import { Button } from '@caixa-forte/ui';
 
 import { GRANT_STATUS_LABELS, grantStatus } from '../domain/grant-status';
-import { revokeGrantAction } from './grant-actions';
+import { RevokeGrantButton } from './revoke-grant-button';
 
 const date = new Intl.DateTimeFormat('pt-BR', {
   dateStyle: 'short',
@@ -39,12 +38,7 @@ export function GrantList({ grants }: { grants: AccessGrant[] }) {
                 <td className="py-3 pe-4 text-cf-text">{GRANT_STATUS_LABELS[status]}</td>
                 <td className="py-3 text-end">
                   {status === 'active' || status === 'scheduled' ? (
-                    <form action={revokeGrantAction}>
-                      <input type="hidden" name="id" value={grant.id} />
-                      <Button type="submit" variant="ghost">
-                        Revogar
-                      </Button>
-                    </form>
+                    <RevokeGrantButton id={grant.id} />
                   ) : null}
                 </td>
               </tr>

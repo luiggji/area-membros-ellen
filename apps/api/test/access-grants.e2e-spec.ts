@@ -23,6 +23,7 @@ const USERS: Record<string, { id: string; roles: Role[]; aal: 'aal1' | 'aal2' }>
     roles: ['commercial'],
     aal: 'aal2',
   },
+  'token-tecnico': { id: '00000000-0000-4000-8000-000000000024', roles: ['tech'], aal: 'aal2' },
   'token-membro': { id: '00000000-0000-4000-8000-000000000023', roles: ['member'], aal: 'aal2' },
 };
 const GRANT_ID = '5f0e8c3a-2b1d-4c6e-9a7f-0d1e2f3a4b5c';
@@ -126,6 +127,23 @@ describe('Concessões manuais (CF-048, e2e)', () => {
     await post(`/${GRANT_ID}/revogar`, 'token-owner').expect(404);
     await post('/nao-e-uuid/revogar', 'token-owner').expect(400);
     await post(`/${GRANT_ID}/revogar`, 'token-comercial').expect(403);
+  });
+
+  it('sem token: 401; técnico: 403; owner sem MFA: 403 também em listar e revogar', async () => {
+    await request(app.getHttpServer()).get('/api/v1/admin/acessos').expect(401);
+    await request(app.getHttpServer())
+      .post(`/api/v1/admin/acessos/${GRANT_ID}/revogar`)
+      .expect(401);
+    await post('', 'token-tecnico', valid).expect(403);
+    const lista = await request(app.getHttpServer())
+      .get('/api/v1/admin/acessos')
+      .set('Authorization', 'Bearer token-owner-sem-mfa')
+      .expect(403);
+    expect(lista.body.message).toBe('mfa_required');
+    const revogar = await post(`/${GRANT_ID}/revogar`, 'token-owner-sem-mfa').expect(403);
+    expect(revogar.body.message).toBe('mfa_required');
+    await post(`/${GRANT_ID}/revogar`, 'token-membro').expect(403);
+    expect(state.revoked.size).toBe(0);
   });
 
   it('lista só para quem tem a permissão', async () => {

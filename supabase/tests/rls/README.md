@@ -2,16 +2,17 @@
 
 Rodam no job `database` do CI (`supabase test db`), em Postgres local efêmero e com usuários fictícios.
 
-| Arquivo                         | O que garante                                                                                               |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `../000_setup.test.sql`         | instala os helpers no schema `tests` (só no banco de teste)                                                 |
-| `00_rls_obrigatoria.test.sql`   | **toda tabela em `public` tem RLS** e toda view usa `security_invoker`. Vale para qualquer migration futura |
-| `01_modelo_isolamento.test.sql` | modelo A × B × anônimo para copiar em cada tabela com PII (CF-033)                                          |
-| `02_user_roles.test.sql`        | papéis: member automático e auditado, ninguém se promove pela API pública (CF-032)                          |
-| `03_profiles_consents.test.sql` | perfil só do titular; aceite só de versão publicada, imutável e com revogação única (CF-031)                |
-| `04_onboarding.test.sql`        | onboarding grava só no próprio perfil e não liga o diretório (CF-035)                                       |
-| `05_idor_cruzado.test.sql`      | IDOR: B e um operador comercial contra os dados de A em todas as tabelas com PII (CF-033)                   |
-| `06_inventario_pii.test.sql`    | **toda tabela em `public` está classificada**: tabela nova derruba o CI até ganhar classificação e testes   |
+| Arquivo                         | O que garante                                                                                                               |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `../000_setup.test.sql`         | instala os helpers no schema `tests` (só no banco de teste)                                                                 |
+| `00_rls_obrigatoria.test.sql`   | **toda tabela em `public` tem RLS** e toda view usa `security_invoker`. Vale para qualquer migration futura                 |
+| `01_modelo_isolamento.test.sql` | modelo A × B × anônimo para copiar em cada tabela com PII (CF-033)                                                          |
+| `02_user_roles.test.sql`        | papéis: member automático e auditado, ninguém se promove pela API pública (CF-032)                                          |
+| `03_profiles_consents.test.sql` | perfil só do titular; aceite só de versão publicada, imutável e com revogação única (CF-031)                                |
+| `04_onboarding.test.sql`        | onboarding grava só no próprio perfil e não liga o diretório (CF-035)                                                       |
+| `05_idor_cruzado.test.sql`      | IDOR: B e um operador comercial contra os dados de A em todas as tabelas com PII (CF-033)                                   |
+| `06_inventario_pii.test.sql`    | **toda tabela em `public` está classificada**: tabela nova derruba o CI até ganhar classificação e testes                   |
+| `07_billing.test.sql`           | vitrine só com planos ativos e preços vendáveis; contrato, pagamentos e acessos só do titular; webhooks invisíveis (CF-040) |
 
 ## Helpers
 

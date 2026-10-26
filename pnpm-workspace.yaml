@@ -28,8 +28,11 @@ blockExoticSubdeps: true
 # sem versão corrigida e fora do código de produção; revisar a cada atualização do Dependabot.
 # @nestjs/swagger 11.4.7 fixa js-yaml 5.3.0 (GHSA-r3ph-w7gj-g6xm, moderada, em produção). A 5.4.x é
 # minor compatível. Remover quando o swagger depender de versão corrigida (CF-151).
+# @nestjs/platform-express 11.2.8 fixa multer 2.4.0 (GHSA-q7qp-rjg7-q26m, alta, DoS). A 2.5.x é minor
+# compatível. Remover quando o Nest depender de versão corrigida (#76).
 overrides:
   '@nestjs/swagger>js-yaml': 5.4.3
+  '@nestjs/platform-express>multer': 2.5.0
 
 auditConfig:
   ignoreGhsas:

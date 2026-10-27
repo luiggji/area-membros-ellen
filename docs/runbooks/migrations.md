@@ -10,7 +10,11 @@
    - `enable row level security`;
    - policies;
    - teste pgTAP em `supabase/tests/` cobrindo usuário A × B, anônimo e expirado (CF-155).
-4. Funções em `private` (fora da API), com `set search_path = ''`.
+4. Funções em `private` (fora da API), com `set search_path = ''`. Desde o CF-080 elas nascem
+   **sem EXECUTE** (default privileges do papel das migrations). Se uma policy precisar chamar a
+   função como `authenticated`, conceda o `execute` explicitamente e inclua o nome na lista fechada
+   de `supabase/tests/database/fundacao.test.sql`; função criada por outro papel é pega por esse
+   teste. Nunca exponha a `authenticated` uma função que receba outro usuário como argumento.
 5. Abrir PR. O job **`database`** do CI:
    - valida o nome e as regras (`.github/scripts/check-migrations.mjs`);
    - sobe um Postgres local do Supabase;

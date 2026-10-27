@@ -6,14 +6,15 @@
 -- aula aberta. Escrita só pela API (CMS, CF-081). Horários em UTC.
 -- Aditiva. Rollback: migration compensatória (docs/runbooks/migrations.md).
 
--- Visível agora? Publicado, ou agendado com a data já alcançada.
+-- Visível agora? Publicado ou agendado, e com a data (se houver) já alcançada: um item marcado
+-- como publicado com data futura também espera a data, nunca é liberado cedo.
 create or replace function private.content_visible(p_status text, p_publish_at timestamptz)
 returns boolean
 language sql
 stable
 set search_path = ''
 as $$
-  select p_status = 'published' or (p_status = 'scheduled' and p_publish_at <= now());
+  select p_status in ('published', 'scheduled') and (p_publish_at is null or p_publish_at <= now());
 $$;
 
 -- Colunas comuns de publicação, repetidas por tabela (check explícito em cada uma).

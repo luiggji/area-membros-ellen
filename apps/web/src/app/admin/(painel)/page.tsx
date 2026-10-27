@@ -12,13 +12,14 @@ export const metadata: Metadata = { title: 'Painel da equipe · Caixa Forte' };
 
 /** Ferramentas já existentes, cada uma atrás da sua permissão (a API confere de novo). */
 const TOOLS: { href: string; label: string; permission: Permission }[] = [
+  { href: '/admin/conteudo', label: 'Conteúdo', permission: 'content.manage' },
   { href: '/admin/planos', label: 'Planos e preços', permission: 'prices.manage' },
   { href: '/admin/acessos', label: 'Acessos concedidos', permission: 'access.grant' },
 ];
 
 /**
  * Entrada do painel (CF-034): prova a portaria (equipe + MFA) e lista só as ferramentas que o
- * papel pode usar. O resto (eventos, conteúdo, moderação) chega com o CF-105 e os módulos.
+ * papel pode usar. O resto (eventos, moderação) chega com o CF-105 e os módulos.
  */
 export default async function AdminHomePage() {
   const { roles } = await requireAdminPanel();

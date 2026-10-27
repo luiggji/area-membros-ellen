@@ -13,6 +13,7 @@ Rodam no job `database` do CI (`supabase test db`), em Postgres local efêmero e
 | `05_idor_cruzado.test.sql`      | IDOR: B e um operador comercial contra os dados de A em todas as tabelas com PII (CF-033)                                   |
 | `06_inventario_pii.test.sql`    | **toda tabela em `public` está classificada**: tabela nova derruba o CI até ganhar classificação e testes                   |
 | `07_billing.test.sql`           | vitrine só com planos ativos e preços vendáveis; contrato, pagamentos e acessos só do titular; webhooks invisíveis (CF-040) |
+| `08_content.test.sql`           | conteúdo: rascunho e agendado futuro invisíveis, cascata trilha → aula, paywall do conteúdo no banco (CF-080)               |
 
 ## Helpers
 

@@ -39,6 +39,46 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"course_modules": {
+                  Row: {
+                    "course_id": string,"created_at": string,"id": string,"order_index": number,"publish_at": string | null,"status": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "course_id": string,"created_at"?: string,"id"?: string,"order_index"?: number,"publish_at"?: string | null,"status"?: string,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "course_id"?: string,"created_at"?: string,"id"?: string,"order_index"?: number,"publish_at"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "course_modules_course_id_fkey"
+      columns: ["course_id"]
+isOneToOne: false
+      referencedRelation: "courses"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"courses": {
+                  Row: {
+                    "created_at": string,"id": string,"order_index": number,"publish_at": string | null,"slug": string,"status": string,"summary": string | null,"title": string,"track_id": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"order_index"?: number,"publish_at"?: string | null,"slug": string,"status"?: string,"summary"?: string | null,"title": string,"track_id"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"order_index"?: number,"publish_at"?: string | null,"slug"?: string,"status"?: string,"summary"?: string | null,"title"?: string,"track_id"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "courses_track_id_fkey"
+      columns: ["track_id"]
+isOneToOne: false
+      referencedRelation: "tracks"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"entitlements": {
                   Row: {
                     "created_at": string,"granted_by": string | null,"id": string,"reason": string | null,"resource_scope": string,"revoked_at": string | null,"revoked_by": string | null,"source": string,"source_subscription_id": string | null,"user_id": string,"valid_from": string,"valid_to": string | null
@@ -56,6 +96,46 @@ isOneToOne: false
       columns: ["source_subscription_id"]
 isOneToOne: false
       referencedRelation: "subscriptions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"lesson_contents": {
+                  Row: {
+                    "body_md": string | null,"lesson_id": string,"media_ref": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body_md"?: string | null,"lesson_id": string,"media_ref"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "body_md"?: string | null,"lesson_id"?: string,"media_ref"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "lesson_contents_lesson_id_fkey"
+      columns: ["lesson_id"]
+isOneToOne: true
+      referencedRelation: "lessons"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"lessons": {
+                  Row: {
+                    "created_at": string,"duration_minutes": number | null,"id": string,"is_free": boolean,"kind": string,"module_id": string,"order_index": number,"publish_at": string | null,"status": string,"summary": string | null,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"duration_minutes"?: number | null,"id"?: string,"is_free"?: boolean,"kind"?: string,"module_id": string,"order_index"?: number,"publish_at"?: string | null,"status"?: string,"summary"?: string | null,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"duration_minutes"?: number | null,"id"?: string,"is_free"?: boolean,"kind"?: string,"module_id"?: string,"order_index"?: number,"publish_at"?: string | null,"status"?: string,"summary"?: string | null,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "lessons_module_id_fkey"
+      columns: ["module_id"]
+isOneToOne: false
+      referencedRelation: "course_modules"
       referencedColumns: ["id"]
     }
                   ]
@@ -146,6 +226,20 @@ isOneToOne: false
       referencedRelation: "price_versions"
       referencedColumns: ["id"]
     }
+                  ]
+                },"tracks": {
+                  Row: {
+                    "created_at": string,"id": string,"order_index": number,"publish_at": string | null,"slug": string,"status": string,"summary": string | null,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"order_index"?: number,"publish_at"?: string | null,"slug": string,"status"?: string,"summary"?: string | null,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"order_index"?: number,"publish_at"?: string | null,"slug"?: string,"status"?: string,"summary"?: string | null,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
                   ]
                 },"user_profiles": {
                   Row: {

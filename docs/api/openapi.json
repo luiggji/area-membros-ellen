@@ -205,6 +205,208 @@
         ]
       }
     },
+    "/api/v1/admin/planos": {
+      "get": {
+        "operationId": "PlansController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plans": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "prices": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "interval": {
+                                  "type": "string",
+                                  "enum": [
+                                    "month",
+                                    "year"
+                                  ]
+                                },
+                                "amountCents": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "currency": {
+                                  "type": "string"
+                                },
+                                "isSellable": {
+                                  "type": "boolean"
+                                },
+                                "effectiveAt": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "interval",
+                                "amountCents",
+                                "currency",
+                                "isSellable",
+                                "effectiveAt"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "code",
+                          "name",
+                          "description",
+                          "active",
+                          "prices"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "plans"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão prices.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Planos com o histórico de preços",
+        "tags": [
+          "billing"
+        ]
+      },
+      "post": {
+        "operationId": "PlansController_create",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão prices.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar plano (auditado)",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/api/v1/admin/planos/{id}": {
+      "patch": {
+        "operationId": "PlansController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão prices.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar nome, descrição ou ativar/desativar plano (auditado)",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/api/v1/admin/planos/{id}/precos": {
+      "post": {
+        "operationId": "PlansController_publishPrice",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão prices.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Publicar preço novo para novas vendas (auditado)",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
     "/api/v1/health": {
       "get": {
         "operationId": "HealthController_handle",

@@ -19,7 +19,7 @@ Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (uni
 
 **Paywall (CF-046):** rota de conteúdo pago usa `@RequireAccess()` (`modules/membership/presentation/access`): login + acesso vigente consultado no banco a cada requisição (`access_of_user` → `private.access_of`, a mesma regra da RLS e do web). Sem acesso: 403 `subscription_required`. Papel de equipe não abre paywall. Regra: assinatura `active`; `past_due`/`cancel_at_period_end` só até o fim do período pago; concessão manual até `valid_to`.
 
-**Entrada validada (CF-048):** corpo com `@Body(new ZodPipe(schema))` (`shared/http/zod-pipe`), usando o schema de `@caixa-forte/contracts` que o web também usa. Erro: 400 `invalid_body` com `fields` (uma mensagem por campo, sem ecoar valor). Concessão manual: `/admin/acessos` (owner, `access.grant`); a trilha é trigger no banco, na mesma transação.
+**Entrada validada (CF-048):** corpo com `@Body(new ZodPipe(schema))` (`shared/http/zod-pipe`), usando o schema de `@caixa-forte/contracts` que o web também usa. Erro: 400 `invalid_body` com `fields` (uma mensagem por campo, sem ecoar valor). Concessão manual: `/admin/acessos` (owner, `access.grant`); a trilha é trigger no banco, na mesma transação. Catálogo (CF-041): `/admin/planos` (`prices.manage`) grava por `save_plan`/`publish_price_version`, que escrevem e auditam na mesma transação; preço novo tira o anterior de venda sem tocar contratos vigentes.
 
 **Módulo não lançado (CF-158):** controller com `@RequireFeature('<flag>')` (`shared/http/feature-flag.guard`) responde 404 enquanto a flag estiver desligada no ambiente. Catálogo em `@caixa-forte/contracts` (`FEATURE_FLAGS`).
 

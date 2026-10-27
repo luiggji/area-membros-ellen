@@ -210,6 +210,12 @@ isOneToOne: false
               "source": string,"subscription_status": string,"valid_until": string
             }[]
                            },
+"publish_price_version":
+{ Args: { "p_actor": string,"p_amount_cents": number,"p_interval": string,"p_plan_id": string }; Returns: string
+                           },
+"save_plan":
+{ Args: { "p_active": boolean,"p_actor": string,"p_code": string,"p_description": string,"p_id"?: string,"p_name": string }; Returns: string
+                           },
 "user_id_by_email":
 { Args: { "p_email": string }; Returns: string
                            }

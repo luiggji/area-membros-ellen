@@ -153,6 +153,7 @@ $$;
 -- Schema private: as policies chamam funções daqui. Antes de abrir `usage`, fecha o EXECUTE
 -- padrão de todas as funções do schema e libera só as que as policies usam.
 revoke execute on all functions in schema private from public;
+alter default privileges in schema private revoke execute on functions from public;
 grant usage on schema private to authenticated;
 grant execute on function private.content_visible(text, timestamptz) to authenticated;
 grant execute on function private.course_visible(uuid) to authenticated;

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AuditModule } from './modules/audit/audit.module';
+import { BillingModule } from './modules/billing/billing.module';
 import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { MembershipModule } from './modules/membership/membership.module';
@@ -21,6 +22,7 @@ import { SupabaseModule } from './shared/supabase/supabase.module';
     AuditModule,
     IdentityModule,
     MembershipModule,
+    BillingModule,
     HealthModule,
   ],
 })

@@ -1,7 +1,7 @@
 -- CF-041 · Planos e preços pelo owner: preço novo não muda contrato vigente; trilha junto da
 -- escrita; funções só para a API (service_role).
 begin;
-select plan(15);
+select plan(18);
 
 do $$
 begin
@@ -38,6 +38,14 @@ select throws_ok(
 select throws_ok(
   $$ select public.publish_price_version(gen_random_uuid(), 'month', 1000, (select ellen from alvo)) $$,
   'P0002', null, 'plano inexistente'
+);
+select throws_ok(
+  $$ select public.publish_price_version((select plano from alvo), 'month', 50, (select ellen from alvo)) $$,
+  '23514', null, 'abaixo de R$ 1,00 é recusado também no banco'
+);
+select throws_ok(
+  $$ select public.publish_price_version((select plano from alvo), 'month', 9900, null) $$,
+  '23502', null, 'publicar sem autor é recusado'
 );
 reset role;
 
@@ -102,6 +110,10 @@ select throws_ok(
 select throws_ok(
   $$ select public.save_plan('gratis', 'Grátis', null, true, null) $$,
   '42501', null, 'membro não cria plano'
+);
+select throws_ok(
+  $$ select public.save_plan('x', 'Grátis', null, true, null, (select plano from alvo)) $$,
+  '42501', null, 'membro não edita plano'
 );
 
 select * from finish();

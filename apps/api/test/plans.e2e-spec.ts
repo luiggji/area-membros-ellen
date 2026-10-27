@@ -151,6 +151,20 @@ describe('Planos e preços (CF-041, e2e)', () => {
     );
     expect(semMfa.body.message).toBe('mfa_required');
     await request(app.getHttpServer()).get('/api/v1/admin/planos').expect(401);
+    await request(app.getHttpServer())
+      .get('/api/v1/admin/planos')
+      .set('Authorization', 'Bearer token-comercial')
+      .expect(403);
+    await send('post', '', 'token-comercial', {
+      code: 'novo',
+      name: 'Novo',
+      description: '',
+    }).expect(403);
+    await send('patch', `/${PLAN_ID}`, 'token-tecnico', {
+      name: 'X',
+      description: '',
+      active: false,
+    }).expect(403);
     expect(state.calls).toEqual([]);
   });
 });

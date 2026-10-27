@@ -17,6 +17,10 @@ declare
   before_row public.plans;
   saved public.plans;
 begin
+  -- Toda alteração de catálogo tem autor na trilha.
+  if p_actor is null then
+    raise exception 'autor obrigatório' using errcode = 'not_null_violation';
+  end if;
   if p_id is null then
     insert into public.plans (code, name, description, active)
     values (p_code, btrim(p_name), nullif(btrim(p_description), ''), p_active)
@@ -61,6 +65,13 @@ declare
   previous public.price_versions;
   created uuid;
 begin
+  if p_actor is null then
+    raise exception 'autor obrigatório' using errcode = 'not_null_violation';
+  end if;
+  -- Mesmos limites do contrato (R$ 1,00 a R$ 100.000,00), para qualquer chamador.
+  if p_amount_cents < 100 or p_amount_cents > 10000000 then
+    raise exception 'valor fora dos limites' using errcode = 'check_violation';
+  end if;
   -- Trava o plano: duas publicações simultâneas não deixam duas versões vendáveis.
   perform 1 from public.plans where id = p_plan_id for update;
   if not found then

@@ -3,8 +3,10 @@ import { Controller, Get, Inject, NotFoundException, Param } from '@nestjs/commo
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { contractSchema } from '../../../shared/http/openapi';
-import { Authenticated } from '../../identity/presentation/authorization';
+import { Principal } from '../../identity/application/ports';
+import { Authenticated, CurrentPrincipal } from '../../identity/presentation/authorization';
 import { CATALOG_READER, CatalogReader, findCourse, listCatalog } from '../application/catalog';
+import { PROGRESS_STORE, ProgressStore } from '../application/progress';
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -15,7 +17,10 @@ const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 @ApiTags('learning')
 @Controller('cursos')
 export class CatalogController {
-  constructor(@Inject(CATALOG_READER) private readonly reader: CatalogReader) {}
+  constructor(
+    @Inject(CATALOG_READER) private readonly reader: CatalogReader,
+    @Inject(PROGRESS_STORE) private readonly progress: ProgressStore,
+  ) {}
 
   @Get()
   @Authenticated()
@@ -27,10 +32,16 @@ export class CatalogController {
 
   @Get(':slug')
   @Authenticated()
-  @ApiOperation({ summary: 'Curso com módulos e aulas liberados (sem o conteúdo das aulas)' })
+  @ApiOperation({ summary: 'Curso com aulas liberadas e o progresso de quem vê (sem conteúdo)' })
   @ApiOkResponse({ schema: contractSchema(courseDetailSchema) })
-  async course(@Param('slug') slug: string): Promise<CourseDetail> {
-    const course = SLUG.test(slug) ? await findCourse(this.reader, slug, new Date()) : null;
+  async course(
+    @Param('slug') slug: string,
+    @CurrentPrincipal() principal: Principal,
+  ): Promise<CourseDetail> {
+    const deps = { reader: this.reader, progress: this.progress };
+    const course = SLUG.test(slug)
+      ? await findCourse(deps, slug, principal.userId, new Date())
+      : null;
     if (!course) throw new NotFoundException('course_not_found');
     return course;
   }

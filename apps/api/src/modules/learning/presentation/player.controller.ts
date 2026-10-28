@@ -1,6 +1,15 @@
-import { LessonView, lessonViewSchema } from '@caixa-forte/contracts';
 import {
+  LessonProgress,
+  lessonProgressSchema,
+  LessonView,
+  lessonViewSchema,
+  SaveProgressRequest,
+  saveProgressRequestSchema,
+} from '@caixa-forte/contracts';
+import {
+  Body,
   Controller,
+  ForbiddenException,
   Get,
   GoneException,
   Header,
@@ -8,6 +17,7 @@ import {
   NotFoundException,
   Param,
   ParseUUIDPipe,
+  Put,
   Redirect,
   ServiceUnavailableException,
   UnauthorizedException,
@@ -15,6 +25,7 @@ import {
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { contractSchema } from '../../../shared/http/openapi';
+import { ZodPipe } from '../../../shared/http/zod-pipe';
 import { Principal } from '../../identity/application/ports';
 import { Authenticated, CurrentPrincipal } from '../../identity/presentation/authorization';
 import { ACCESS_READER, AccessReader } from '../../membership/application/ports';
@@ -23,10 +34,12 @@ import {
   LessonReader,
   MEDIA_TOKENS,
   MediaTokens,
+  saveProgress,
   VIDEO_PROVIDER,
   VideoProvider,
   viewLesson,
 } from '../application/player';
+import { PROGRESS_STORE, ProgressStore } from '../application/progress';
 
 /**
  * Player (CF-083). A aula sai inteira só para quem tem acesso pago vigente ou quando é aberta; o
@@ -40,6 +53,7 @@ export class PlayerController {
     @Inject(ACCESS_READER) private readonly access: AccessReader,
     @Inject(VIDEO_PROVIDER) private readonly video: VideoProvider,
     @Inject(MEDIA_TOKENS) private readonly tokens: MediaTokens,
+    @Inject(PROGRESS_STORE) private readonly progress: ProgressStore,
   ) {}
 
   @Get('aulas/:id')
@@ -55,10 +69,28 @@ export class PlayerController {
       access: this.access,
       video: this.video,
       tokens: this.tokens,
+      progress: this.progress,
     };
     const view = await viewLesson(deps, id, principal.userId, new Date());
     if (!view) throw new NotFoundException('lesson_not_found');
     return view;
+  }
+
+  /** Progresso de quem está logado (CF-084): só em aula liberada que a pessoa pode estudar. */
+  @Put('aulas/:id/progresso')
+  @Authenticated()
+  @ApiOperation({ summary: 'Gravar posição do vídeo e conclusão da aula (no próprio nome)' })
+  @ApiOkResponse({ schema: contractSchema(lessonProgressSchema) })
+  async saveProgress(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body(new ZodPipe(saveProgressRequestSchema)) body: SaveProgressRequest,
+    @CurrentPrincipal() principal: Principal,
+  ): Promise<LessonProgress> {
+    const deps = { lessons: this.lessons, access: this.access, progress: this.progress };
+    const result = await saveProgress(deps, id, principal.userId, body, new Date());
+    if (result === 'not_found') throw new NotFoundException('lesson_not_found');
+    if (result === 'forbidden') throw new ForbiddenException('subscription_required');
+    return result;
   }
 
   /**

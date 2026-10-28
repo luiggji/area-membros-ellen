@@ -1,4 +1,5 @@
 import { type CourseDetail, LESSON_KINDS } from '@caixa-forte/contracts';
+import { CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 type Lesson = CourseDetail['modules'][number]['lessons'][number];
@@ -42,12 +43,21 @@ export function CourseOutline({ modules }: { modules: CourseDetail['modules'] })
                     key={lesson.id}
                     className="flex min-h-11 flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3 text-sm"
                   >
-                    <Link
-                      href={`/app/aulas/${lesson.id}`}
-                      className="text-cf-text underline-offset-4 hover:text-cf-primary hover:underline"
-                    >
-                      {lesson.title}
-                    </Link>
+                    <span className="flex items-baseline gap-2">
+                      {lesson.completed && (
+                        <CheckCircle2
+                          aria-hidden
+                          className="size-4 shrink-0 translate-y-0.5 text-cf-primary"
+                        />
+                      )}
+                      <Link
+                        href={`/app/aulas/${lesson.id}`}
+                        className="text-cf-text underline-offset-4 hover:text-cf-primary hover:underline"
+                      >
+                        {lesson.title}
+                        {lesson.completed && <span className="sr-only"> (concluída)</span>}
+                      </Link>
+                    </span>
                     <span className="text-cf-text-secondary">
                       {lessonFacts(lesson)}
                       {lesson.isFree && (

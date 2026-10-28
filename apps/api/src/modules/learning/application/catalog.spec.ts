@@ -56,7 +56,11 @@ const modules: CatalogModuleRow[] = [
     title: 'Módulo 1',
     orderIndex: 1,
     status: 'published',
-    lessons: [lesson(12, 'published', 2), lesson(11, 'published', 1), lesson(13, 'scheduled')],
+    lessons: [
+      lesson(12, 'published', 2),
+      lesson(11, 'published', 1),
+      { ...lesson(13, 'scheduled'), publishAt: soon },
+    ],
   },
 ];
 

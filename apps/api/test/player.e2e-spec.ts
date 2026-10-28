@@ -13,6 +13,8 @@ import {
   MEDIA_TOKENS,
   VIDEO_PROVIDER,
 } from '../src/modules/learning/application/player';
+import { PROGRESS_STORE, ProgressStore } from '../src/modules/learning/application/progress';
+import { applyProgress, ProgressRow } from '../src/modules/learning/domain/progress';
 import { HmacMediaTokens } from '../src/modules/learning/infrastructure/hmac-media-tokens';
 import { ACCESS_READER } from '../src/modules/membership/application/ports';
 import { configureApp } from '../src/shared/http/configure-app';
@@ -42,6 +44,19 @@ const tokens = new HmacMediaTokens(Buffer.alloc(32, 9));
 const provider = {
   configured: true,
   playbackUrl: async (ref: string) => `https://provedor.test/${ref}?assinatura=curta`,
+};
+
+// Progresso em memória, por pessoa e aula (o isolamento real é a RLS + o filtro por user_id).
+const saved = new Map<string, ProgressRow>();
+const progress: ProgressStore = {
+  forLessons: async (userId, ids) => ids.flatMap((id) => saved.get(`${userId}:${id}`) ?? []),
+  save: async (userId, lessonId, change, now) => {
+    const key = `${userId}:${lessonId}`;
+    const next = applyProgress(saved.get(key) ?? null, change, now);
+    const row = { lessonId, ...next, updatedAt: now.toISOString() };
+    saved.set(key, row);
+    return row;
+  },
 };
 
 describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
@@ -85,6 +100,8 @@ describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
       .useValue(provider)
       .overrideProvider(MEDIA_TOKENS)
       .useValue(tokens)
+      .overrideProvider(PROGRESS_STORE)
+      .useValue(progress)
       .compile();
     app = moduleRef.createNestApplication();
     configureApp(app, {
@@ -102,6 +119,11 @@ describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
   afterAll(async () => {
     await app.close();
   });
+
+  const put = (path: string, token: string | null, body: object) => {
+    const req = request(app.getHttpServer()).put(`/api/v1${path}`).send(body);
+    return token ? req.set('Authorization', `Bearer ${token}`) : req;
+  };
 
   const get = (path: string, token?: string) => {
     const req = request(app.getHttpServer()).get(`/api/v1${path}`);
@@ -163,5 +185,38 @@ describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
     await get('/aulas/6f7a8b9c-0d1e-4f2a-8b3c-4d5e6f7a8b9c', 'token-assinante').expect(404);
     // Aula aberta, mas o módulo está em rascunho: continua fora do ar.
     await get(`/aulas/${HIDDEN}`, 'token-visitante').expect(404);
+  });
+
+  it('progresso (CF-084): posição e conclusão persistem para quem gravou, e só para ele', async () => {
+    saved.clear();
+    await put(`/aulas/${PAID}/progresso`, 'token-assinante', { positionSeconds: 95 }).expect(200, {
+      positionSeconds: 95,
+      completedAt: null,
+    });
+    const done = await put(`/aulas/${PAID}/progresso`, 'token-assinante', {
+      completed: true,
+    }).expect(200);
+    expect(done.body.positionSeconds).toBe(95);
+    expect(done.body.completedAt).toEqual(expect.any(String));
+    const view = await get(`/aulas/${PAID}`, 'token-assinante').expect(200);
+    expect(view.body.progress).toEqual(done.body);
+
+    // Outro membro: na aula aberta vê o próprio progresso (vazio), nunca o do assinante.
+    await put(`/aulas/${OPEN}/progresso`, 'token-assinante', { positionSeconds: 10 }).expect(200);
+    const other = await get(`/aulas/${OPEN}`, 'token-visitante').expect(200);
+    expect(other.body.progress).toBeNull();
+  });
+
+  it('progresso: sem acesso 403; aula fora do ar 404; corpo inválido 400; sem sessão 401', async () => {
+    saved.clear();
+    expect(
+      (await put(`/aulas/${PAID}/progresso`, 'token-visitante', { completed: true }).expect(403))
+        .body.message,
+    ).toBe('subscription_required');
+    await put(`/aulas/${HIDDEN}/progresso`, 'token-visitante', { completed: true }).expect(404);
+    await put(`/aulas/${PAID}/progresso`, 'token-assinante', {}).expect(400);
+    await put(`/aulas/${PAID}/progresso`, 'token-assinante', { positionSeconds: -5 }).expect(400);
+    await put(`/aulas/${PAID}/progresso`, null, { completed: true }).expect(401);
+    expect(saved.size).toBe(0);
   });
 });

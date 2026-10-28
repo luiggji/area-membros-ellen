@@ -8,7 +8,12 @@ import { SUPABASE_ADMIN, SupabaseAdmin } from '../../shared/supabase/supabase.mo
 import { CATALOG_READER, CatalogReader } from './application/catalog';
 import { CONTENT_ADMIN_STORE, ContentAdminStore } from './application/content-admin';
 import { LESSON_READER, LessonReader, MEDIA_TOKENS, VIDEO_PROVIDER } from './application/player';
+import { PROGRESS_STORE, ProgressStore } from './application/progress';
 import { HmacMediaTokens } from './infrastructure/hmac-media-tokens';
+import {
+  SupabaseProgressStore,
+  UnconfiguredProgressStore,
+} from './infrastructure/supabase-progress';
 import {
   SupabaseCatalogReader,
   UnconfiguredCatalogReader,
@@ -26,7 +31,7 @@ import { CatalogController } from './presentation/catalog.controller';
 import { ContentAdminController } from './presentation/content-admin.controller';
 import { PlayerController } from './presentation/player.controller';
 
-/** Conteúdo: editor da owner (CF-081/CF-172), catálogo (CF-082) e player (CF-083). */
+/** Conteúdo: editor (CF-081/CF-172), catálogo (CF-082), player (CF-083) e progresso (CF-084). */
 @Module({
   controllers: [ContentAdminController, CatalogController, PlayerController],
   providers: [
@@ -47,6 +52,12 @@ import { PlayerController } from './presentation/player.controller';
       inject: [SUPABASE_ADMIN],
       useFactory: (client: SupabaseAdmin | null): LessonReader =>
         client ? new SupabaseLessonReader(client) : new UnconfiguredLessonReader(),
+    },
+    {
+      provide: PROGRESS_STORE,
+      inject: [SUPABASE_ADMIN],
+      useFactory: (client: SupabaseAdmin | null): ProgressStore =>
+        client ? new SupabaseProgressStore(client) : new UnconfiguredProgressStore(),
     },
     // Provedor de vídeo ainda não escolhido (P-007): o adaptador real entra aqui.
     { provide: VIDEO_PROVIDER, useClass: UnconfiguredVideoProvider },

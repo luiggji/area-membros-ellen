@@ -1,13 +1,33 @@
-import { Notice } from '@caixa-forte/ui';
+import { buttonClasses, Notice } from '@caixa-forte/ui';
+import type { CourseDetail } from '@caixa-forte/contracts';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { availabilityText } from '@/modules/learning/domain/catalog-view';
+import { courseProgressText } from '@/modules/learning/domain/course-progress';
 import { loadCourse } from '@/modules/learning/infrastructure/catalog-api';
 import { CourseOutline } from '@/modules/learning/presentation/course-outline';
 
 type Props = { params: Promise<{ slug: string }> };
+
+/** Por onde seguir e quanto já foi concluído (CF-084): só números de progresso real. */
+function CourseProgress({ course }: { course: CourseDetail }) {
+  const text = courseProgressText(course.modules);
+  if (course.availability !== 'available' || (!text && !course.resume)) return null;
+  return (
+    <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:gap-6">
+      {course.resume && (
+        <Link href={`/app/aulas/${course.resume.lessonId}`} className={buttonClasses()}>
+          {course.resume.state === 'start'
+            ? 'Começar o curso'
+            : `Continuar: ${course.resume.title}`}
+        </Link>
+      )}
+      {text && <p className="text-sm text-cf-text-secondary">{text}</p>}
+    </div>
+  );
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const course = await loadCourse((await params).slug);
@@ -39,6 +59,7 @@ export default async function CoursePage({ params }: Props) {
               {course.title}
             </h1>
             {course.summary && <p className="text-cf-text-secondary">{course.summary}</p>}
+            <CourseProgress course={course} />
           </header>
           {course.availability === 'scheduled' ? (
             <Notice>

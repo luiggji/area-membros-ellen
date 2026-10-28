@@ -31,6 +31,8 @@ export const catalogLessonSchema = z.object({
   kind: z.enum(['video', 'text']),
   durationMinutes: z.number().int().nullable(),
   isFree: z.boolean(),
+  /** Concluída por quem está vendo (CF-084). */
+  completed: z.boolean(),
 });
 
 export const catalogModuleSchema = z.object({
@@ -39,8 +41,20 @@ export const catalogModuleSchema = z.object({
   lessons: z.array(catalogLessonSchema),
 });
 
+/**
+ * Por onde seguir no curso (CF-084): `start` = nenhuma aula começada; `continue` = a aula mexida
+ * mais recentemente e não concluída (ou a primeira não concluída). `null` = tudo concluído.
+ */
+export const courseResumeSchema = z.object({
+  lessonId: z.uuid(),
+  title: z.string(),
+  state: z.enum(['start', 'continue']),
+});
+export type CourseResume = z.infer<typeof courseResumeSchema>;
+
 /** Página do curso: estrutura visível (módulos e aulas liberados), sem o conteúdo das aulas. */
 export const courseDetailSchema = catalogCourseSchema.extend({
   modules: z.array(catalogModuleSchema),
+  resume: courseResumeSchema.nullable(),
 });
 export type CourseDetail = z.infer<typeof courseDetailSchema>;

@@ -1,7 +1,9 @@
-import { LessonView } from '@caixa-forte/contracts';
+import { LessonProgress, LessonView, SaveProgressRequest } from '@caixa-forte/contracts';
 
 import { AccessReader } from '../../membership/application/ports';
+import { ProgressRow } from '../domain/progress';
 import { isReleased, Publication } from '../domain/publication';
+import { ProgressStore } from './progress';
 
 /** Aula com o caminho de publicação (módulo, curso, trilha) e o conteúdo protegido. */
 export interface LessonRecord extends Publication {
@@ -55,7 +57,29 @@ export interface PlayerDeps {
   access: AccessReader;
   video: VideoProvider;
   tokens: MediaTokens;
+  progress: ProgressStore;
 }
+
+/**
+ * Aula liberada no caminho (aula, módulo, curso, trilha) e se quem vê pode estudá-la (acesso pago
+ * vigente ou aula aberta). Fora do ar → `null`.
+ */
+async function lessonAccess(
+  deps: Pick<PlayerDeps, 'lessons' | 'access'>,
+  lessonId: string,
+  viewerId: string,
+  now: Date,
+): Promise<{ lesson: LessonRecord; granted: boolean } | null> {
+  const lesson = await deps.lessons.lesson(lessonId);
+  if (!lesson) return null;
+  const path = [lesson, lesson.module, lesson.course, ...(lesson.track ? [lesson.track] : [])];
+  if (!path.every((item) => isReleased(item, now))) return null;
+  const granted = lesson.isFree || (await deps.access.accessOf(viewerId, 'caixa_forte')) !== null;
+  return { lesson, granted };
+}
+
+const toProgress = (row: ProgressRow | undefined): LessonProgress | null =>
+  row ? { positionSeconds: row.positionSeconds, completedAt: row.completedAt } : null;
 
 /**
  * Aula no player (CF-083). Fora do ar (rascunho, agendada antes da data, curso/módulo/trilha não
@@ -68,12 +92,9 @@ export async function viewLesson(
   viewerId: string,
   now: Date,
 ): Promise<LessonView | null> {
-  const lesson = await deps.lessons.lesson(lessonId);
-  if (!lesson) return null;
-  const path = [lesson, lesson.module, lesson.course, ...(lesson.track ? [lesson.track] : [])];
-  if (!path.every((item) => isReleased(item, now))) return null;
-
-  const granted = lesson.isFree || (await deps.access.accessOf(viewerId, 'caixa_forte')) !== null;
+  const found = await lessonAccess(deps, lessonId, viewerId, now);
+  if (!found) return null;
+  const { lesson, granted } = found;
   const base = {
     id: lesson.id,
     title: lesson.title,
@@ -85,7 +106,7 @@ export async function viewLesson(
     moduleTitle: lesson.module.title,
   };
   if (!granted) {
-    return { ...base, access: 'subscription_required', bodyMd: null, video: null };
+    return { ...base, access: 'subscription_required', bodyMd: null, video: null, progress: null };
   }
 
   let video: LessonView['video'] = null;
@@ -95,5 +116,23 @@ export async function viewLesson(
     const token = deps.tokens.issue({ mediaRef: lesson.mediaRef, viewerId }, expiresAt);
     video = { state: 'ready', path: `/midia/${token}`, expiresAt: expiresAt.toISOString() };
   }
-  return { ...base, access: 'granted', bodyMd: lesson.bodyMd, video };
+  const [row] = await deps.progress.forLessons(viewerId, [lesson.id]);
+  return { ...base, access: 'granted', bodyMd: lesson.bodyMd, video, progress: toProgress(row) };
+}
+
+/**
+ * Grava o progresso de quem vê (CF-084), só em aula liberada que a pessoa pode estudar: fora do ar
+ * → `not_found`; sem acesso pago e não aberta → `forbidden`. Sempre no próprio nome.
+ */
+export async function saveProgress(
+  deps: Pick<PlayerDeps, 'lessons' | 'access' | 'progress'>,
+  lessonId: string,
+  viewerId: string,
+  change: SaveProgressRequest,
+  now: Date,
+): Promise<LessonProgress | 'not_found' | 'forbidden'> {
+  const found = await lessonAccess(deps, lessonId, viewerId, now);
+  if (!found) return 'not_found';
+  if (!found.granted) return 'forbidden';
+  return toProgress(await deps.progress.save(viewerId, lessonId, change, now))!;
 }

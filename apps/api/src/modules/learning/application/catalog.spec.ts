@@ -7,6 +7,7 @@ import {
   findCourse,
   listCatalog,
 } from './catalog';
+import { ProgressStore } from './progress';
 
 const now = new Date('2026-10-28T12:00:00.000Z');
 const soon = '2026-11-03T12:00:00.000Z';
@@ -74,6 +75,18 @@ function reader(rows: CatalogCourseRow[]): CatalogReader {
   };
 }
 
+const done = '2026-10-27T12:00:00.000Z';
+const progress: ProgressStore = {
+  forLessons: async (userId, ids) =>
+    userId === 'membro-1' && ids.includes(id(11))
+      ? [{ lessonId: id(11), positionSeconds: 0, completedAt: done, updatedAt: done }]
+      : [],
+  save: async () => {
+    throw new Error('não usado');
+  },
+};
+const deps = (rows: CatalogCourseRow[]) => ({ reader: reader(rows), progress });
+
 describe('catálogo do membro', () => {
   it('lista disponíveis e programados na ordem da owner; rascunho fica de fora', async () => {
     const catalog = await listCatalog(
@@ -91,27 +104,56 @@ describe('catálogo do membro', () => {
   });
 
   it('página do curso: só módulos e aulas liberados, na ordem, sem conteúdo', async () => {
-    const detail = await findCourse(reader([course('gestao', 0, 'published')]), 'gestao', now);
+    const detail = await findCourse(
+      deps([course('gestao', 0, 'published')]),
+      'gestao',
+      'outro',
+      now,
+    );
     expect(detail?.modules).toEqual([
       {
         id: id(1),
         title: 'Módulo 1',
         lessons: [
-          { id: id(11), title: 'Aula 11', kind: 'video', durationMinutes: 10, isFree: false },
-          { id: id(12), title: 'Aula 12', kind: 'video', durationMinutes: 10, isFree: false },
+          {
+            id: id(11),
+            title: 'Aula 11',
+            kind: 'video',
+            durationMinutes: 10,
+            isFree: false,
+            completed: false,
+          },
+          {
+            id: id(12),
+            title: 'Aula 12',
+            kind: 'video',
+            durationMinutes: 10,
+            isFree: false,
+            completed: false,
+          },
         ],
       },
     ]);
   });
 
+  it('progresso de quem vê: aula concluída marcada e continua na próxima; outro membro não vê', async () => {
+    const rows = [course('gestao', 0, 'published')];
+    const mine = await findCourse(deps(rows), 'gestao', 'membro-1', now);
+    expect(mine?.modules[0]?.lessons.map((l) => l.completed)).toEqual([true, false]);
+    expect(mine?.resume).toEqual({ lessonId: id(12), title: 'Aula 12', state: 'continue' });
+    const other = await findCourse(deps(rows), 'gestao', 'outro', now);
+    expect(other?.modules[0]?.lessons.map((l) => l.completed)).toEqual([false, false]);
+    expect(other?.resume).toEqual({ lessonId: id(11), title: 'Aula 11', state: 'start' });
+  });
+
   it('curso programado mostra a data e nenhuma aula; rascunho e inexistente: null', async () => {
     const rows = [course('breve', 0, 'scheduled', soon), course('rascunho', 1, 'draft')];
-    expect(await findCourse(reader(rows), 'breve', now)).toMatchObject({
+    expect(await findCourse(deps(rows), 'breve', 'outro', now)).toMatchObject({
       availability: 'scheduled',
       availableAt: soon,
       modules: [],
     });
-    expect(await findCourse(reader(rows), 'rascunho', now)).toBeNull();
-    expect(await findCourse(reader(rows), 'nao-existe', now)).toBeNull();
+    expect(await findCourse(deps(rows), 'rascunho', 'outro', now)).toBeNull();
+    expect(await findCourse(deps(rows), 'nao-existe', 'outro', now)).toBeNull();
   });
 });

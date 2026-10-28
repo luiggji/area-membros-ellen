@@ -70,16 +70,74 @@ export const updateModuleRequestSchema = z
   .superRefine(requireDateWhenScheduled);
 export type UpdateModuleRequest = z.infer<typeof updateModuleRequestSchema>;
 
+/** Tipos de aula (espelha o check de `lessons.kind`, CF-080). */
+export const LESSON_KINDS = { video: 'Vídeo', text: 'Texto' } as const;
+export type LessonKind = keyof typeof LESSON_KINDS;
+
+const kindSchema = z.enum(['video', 'text'], { error: 'Escolha o tipo da aula.' });
+
+export const createLessonRequestSchema = z.object({ title: titleSchema, kind: kindSchema });
+export type CreateLessonRequest = z.infer<typeof createLessonRequestSchema>;
+
+/** Aula aberta (`isFree`): o conteúdo fica liberado para quem está logado, mesmo sem assinatura. */
+export const updateLessonRequestSchema = z
+  .object({
+    title: titleSchema,
+    summary: summarySchema,
+    kind: kindSchema,
+    durationMinutes: z
+      .number({ error: 'Duração em minutos.' })
+      .int('Duração em minutos inteiros.')
+      .min(1, 'Duração de 1 a 600 minutos.')
+      .max(600, 'Duração de 1 a 600 minutos.')
+      .nullable(),
+    isFree: z.boolean(),
+    orderIndex: orderSchema,
+    ...publicationShape,
+  })
+  .superRefine(requireDateWhenScheduled);
+export type UpdateLessonRequest = z.infer<typeof updateLessonRequestSchema>;
+
+/**
+ * Conteúdo protegido da aula: texto em Markdown e a referência opaca da mídia no provedor
+ * (P-007). Nunca um link: o player (CF-083) pede ao provedor uma URL assinada e de vida curta.
+ */
+export const lessonContentRequestSchema = z.object({
+  bodyMd: z.string().trim().max(50_000, 'Texto com até 50.000 caracteres.'),
+  mediaRef: z
+    .string()
+    .trim()
+    .max(500, 'Referência com até 500 caracteres.')
+    .regex(
+      /^[A-Za-z0-9._:-]*$/,
+      'Use só o identificador da mídia no provedor (letras, números, ponto, hífen, dois-pontos ou sublinhado), não um link.',
+    ),
+});
+export type LessonContentRequest = z.infer<typeof lessonContentRequestSchema>;
+
 const publicationOut = {
   orderIndex: z.number().int(),
   status: statusSchema,
   publishAt: z.string().nullable(),
 };
 
+export const adminLessonSchema = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  summary: z.string().nullable(),
+  kind: kindSchema,
+  durationMinutes: z.number().int().nullable(),
+  isFree: z.boolean(),
+  bodyMd: z.string().nullable(),
+  mediaRef: z.string().nullable(),
+  ...publicationOut,
+});
+export type AdminLesson = z.infer<typeof adminLessonSchema>;
+
 export const adminModuleSchema = z.object({
   id: z.uuid(),
   title: z.string(),
-  lessonCount: z.number().int(),
+  lessons: z.array(adminLessonSchema),
   ...publicationOut,
 });
 

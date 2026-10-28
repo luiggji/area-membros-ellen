@@ -7,6 +7,28 @@ import { FileStorage, StoredObject } from '../application/file-storage';
 const HEAD_BYTES = 16;
 
 /**
+ * Lê só os primeiros `count` bytes e cancela o resto: se o Storage ignorar o `Range` e mandar o
+ * arquivo inteiro, a API não carrega 25 MB na memória.
+ */
+async function firstBytes(body: ReadableStream<Uint8Array>, count: number): Promise<Uint8Array> {
+  const reader = body.getReader();
+  const out = new Uint8Array(count);
+  let filled = 0;
+  try {
+    while (filled < count) {
+      const { done, value } = await reader.read();
+      if (done || !value) break;
+      const take = value.subarray(0, count - filled);
+      out.set(take, filled);
+      filled += take.length;
+    }
+  } finally {
+    await reader.cancel().catch(() => undefined);
+  }
+  return out.subarray(0, filled);
+}
+
+/**
  * Bucket privado de materiais no Supabase Storage, com a chave de serviço (só no servidor). O
  * bucket também barra tipo e tamanho por conta própria (provisionado por `pnpm storage:setup`).
  * Erros saem só com o nome: a mensagem pode trazer o caminho.
@@ -37,8 +59,10 @@ export class SupabaseFileStorage implements FileStorage {
     const head = await this.fetchFn(await this.signedUrl(key, 30, 'verificacao'), {
       headers: { Range: `bytes=0-${HEAD_BYTES - 1}` },
     });
-    if (!head.ok) throw new Error(`storage: falha ao ler o arquivo (HTTP ${head.status})`);
-    const bytes = new Uint8Array(await head.arrayBuffer()).subarray(0, HEAD_BYTES);
+    if (!head.ok || !head.body) {
+      throw new Error(`storage: falha ao ler o arquivo (HTTP ${head.status})`);
+    }
+    const bytes = await firstBytes(head.body, HEAD_BYTES);
     return { sizeBytes: info.size ?? 0, mimeType: info.contentType ?? '', head: bytes };
   }
 

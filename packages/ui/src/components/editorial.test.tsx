@@ -57,6 +57,20 @@ describe('CourseCard', () => {
     expect(markup).toContain('Em preparação');
   });
 
+  it('rótulo do estado pode trazer a data verdadeira', () => {
+    const markup = html(
+      <CourseCard
+        title="T"
+        summary="S"
+        status="programado"
+        statusText="Programado para 03/11/2026"
+        href="/x"
+      />,
+    );
+    expect(markup).toContain('Programado para 03/11/2026');
+    expect(markup).not.toContain('Em preparação');
+  });
+
   it('curso indisponível não vira link e mostra o motivo', () => {
     const markup = card('indisponivel');
     expect(markup).not.toContain('<a ');

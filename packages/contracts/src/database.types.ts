@@ -81,14 +81,14 @@ isOneToOne: false
                   ]
                 },"directory_profiles": {
                   Row: {
-                    "areas": string[],"bio": string | null,"city": string | null,"created_at": string,"display_name": string,"links": string[],"state": string | null,"updated_at": string,"user_id": string
+                    "areas": (string)[],"bio": string | null,"city": string | null,"created_at": string,"display_name": string,"links": (string)[],"state": string | null,"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "areas"?: string[],"bio"?: string | null,"city"?: string | null,"created_at"?: string,"display_name": string,"links"?: string[],"state"?: string | null,"updated_at"?: string,"user_id": string
+                    "areas"?: (string)[],"bio"?: string | null,"city"?: string | null,"created_at"?: string,"display_name": string,"links"?: (string)[],"state"?: string | null,"updated_at"?: string,"user_id": string
                   }
                   Update: {
-                    "areas"?: string[],"bio"?: string | null,"city"?: string | null,"created_at"?: string,"display_name"?: string,"links"?: string[],"state"?: string | null,"updated_at"?: string,"user_id"?: string
+                    "areas"?: (string)[],"bio"?: string | null,"city"?: string | null,"created_at"?: string,"display_name"?: string,"links"?: (string)[],"state"?: string | null,"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     

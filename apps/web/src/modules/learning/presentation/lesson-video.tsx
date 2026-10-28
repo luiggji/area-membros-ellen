@@ -4,12 +4,24 @@ import { PlayCircle } from 'lucide-react';
 
 import { publicEnv } from '@/shared/config/env';
 
+import { ResumableVideo } from './resumable-video';
+
 /**
  * Vídeo da aula (CF-083): o `src` é o link assinado e temporário da API, que redireciona ao
- * provedor. Sem provedor configurado (P-007), um estado honesto no lugar do player, sem player
- * falso.
+ * provedor, e retoma da última posição (CF-084). Sem provedor configurado (P-007), um estado
+ * honesto no lugar do player, sem player falso.
  */
-export function LessonVideo({ video, title }: { video: Video; title: string }) {
+export function LessonVideo({
+  video,
+  title,
+  lessonId,
+  startAt,
+}: {
+  video: Video;
+  title: string;
+  lessonId: string;
+  startAt: number;
+}) {
   if (video.state === 'pending') {
     return (
       <EditorialArt
@@ -20,16 +32,11 @@ export function LessonVideo({ video, title }: { video: Video; title: string }) {
     );
   }
   return (
-    <video
-      controls
-      playsInline
-      preload="metadata"
-      controlsList="nodownload"
-      aria-label={`Vídeo da aula ${title}`}
+    <ResumableVideo
       src={`${publicEnv.NEXT_PUBLIC_API_URL}${video.path}`}
-      className="aspect-video w-full rounded-card bg-cf-sidebar"
-    >
-      Seu navegador não reproduz este vídeo.
-    </video>
+      title={title}
+      lessonId={lessonId}
+      startAt={startAt}
+    />
   );
 }

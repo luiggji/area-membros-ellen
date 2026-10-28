@@ -1,11 +1,14 @@
 import { LESSON_KINDS } from '@caixa-forte/contracts';
 import { buttonClasses, Card, Notice } from '@caixa-forte/ui';
-import { Crown } from 'lucide-react';
+import { ArrowRight, Crown } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { nextLesson } from '@/modules/learning/domain/course-progress';
+import { loadCourse } from '@/modules/learning/infrastructure/catalog-api';
 import { loadLesson } from '@/modules/learning/infrastructure/lesson-api';
+import { CompleteButton } from '@/modules/learning/presentation/complete-button';
 import { LessonBody } from '@/modules/learning/presentation/lesson-body';
 import { LessonVideo } from '@/modules/learning/presentation/lesson-video';
 
@@ -21,7 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 /**
  * Player (CF-083): vídeo e texto só chegam da API para quem tem acesso pago ou quando a aula é
- * aberta. Sem acesso, a tela diz por quê e leva à assinatura; nada do conteúdo vem junto.
+ * aberta. Sem acesso, a tela diz por quê e leva à assinatura; nada do conteúdo vem junto. Com
+ * acesso: conclusão, retomada do vídeo e próxima aula (CF-084).
  */
 export default async function LessonPage({ params }: Props) {
   const lesson = await loadLesson((await params).id);
@@ -33,6 +37,10 @@ export default async function LessonPage({ params }: Props) {
       </div>
     );
   }
+
+  // Próxima aula liberada, na ordem do curso (a página do curso já traz essa estrutura).
+  const course = lesson.access === 'granted' ? await loadCourse(lesson.course.slug) : null;
+  const next = course && course !== 'not_found' ? nextLesson(course.modules, lesson.id) : null;
 
   const facts = [
     LESSON_KINDS[lesson.kind],
@@ -77,7 +85,14 @@ export default async function LessonPage({ params }: Props) {
         </Card>
       ) : (
         <>
-          {lesson.video && <LessonVideo video={lesson.video} title={lesson.title} />}
+          {lesson.video && (
+            <LessonVideo
+              video={lesson.video}
+              title={lesson.title}
+              lessonId={lesson.id}
+              startAt={lesson.progress?.positionSeconds ?? 0}
+            />
+          )}
           {lesson.bodyMd ? (
             <LessonBody source={lesson.bodyMd} />
           ) : (
@@ -87,6 +102,22 @@ export default async function LessonPage({ params }: Props) {
               </p>
             )
           )}
+          <footer className="flex flex-col gap-4 border-t border-cf-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <CompleteButton
+              lessonId={lesson.id}
+              courseSlug={lesson.course.slug}
+              completed={Boolean(lesson.progress?.completedAt)}
+            />
+            {next && (
+              <Link
+                href={`/app/aulas/${next.id}`}
+                className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-cf-primary hover:text-cf-primary-hover"
+              >
+                Próxima aula: {next.title}
+                <ArrowRight aria-hidden className="size-4" />
+              </Link>
+            )}
+          </footer>
         </>
       )}
     </article>

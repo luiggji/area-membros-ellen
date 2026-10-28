@@ -20,4 +20,13 @@ describe('texto da aula na tela', () => {
     expect(html).not.toContain('<script');
     expect(html).toContain('&lt;script&gt;');
   });
+
+  it('link e imagem em Markdown saem como texto, sem href nem src', () => {
+    const html = renderToStaticMarkup(
+      <LessonBody source={'[clique](javascript:alert(1)) ![x](https://exemplo.test/x.png)'} />,
+    );
+    expect(html).not.toContain('href');
+    expect(html).not.toContain('<img');
+    expect(html).toContain('[clique](javascript:alert(1))');
+  });
 });

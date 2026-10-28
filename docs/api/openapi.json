@@ -992,6 +992,9 @@
                                 },
                                 "isFree": {
                                   "type": "boolean"
+                                },
+                                "completed": {
+                                  "type": "boolean"
                                 }
                               },
                               "required": [
@@ -999,7 +1002,8 @@
                                 "title",
                                 "kind",
                                 "durationMinutes",
-                                "isFree"
+                                "isFree",
+                                "completed"
                               ],
                               "additionalProperties": false
                             }
@@ -1012,6 +1016,33 @@
                         ],
                         "additionalProperties": false
                       }
+                    },
+                    "resume": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "lessonId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "start",
+                            "continue"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "lessonId",
+                        "title",
+                        "state"
+                      ],
+                      "additionalProperties": false
                     }
                   },
                   "required": [
@@ -1020,7 +1051,8 @@
                     "summary",
                     "availability",
                     "availableAt",
-                    "modules"
+                    "modules",
+                    "resume"
                   ],
                   "additionalProperties": false
                 }
@@ -1036,7 +1068,7 @@
             "bearer": []
           }
         ],
-        "summary": "Curso com módulos e aulas liberados (sem o conteúdo das aulas)",
+        "summary": "Curso com aulas liberadas e o progresso de quem vê (sem conteúdo)",
         "tags": [
           "learning"
         ]
@@ -1163,6 +1195,26 @@
                           "additionalProperties": false
                         }
                       ]
+                    },
+                    "progress": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "positionSeconds": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        },
+                        "completedAt": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "positionSeconds",
+                        "completedAt"
+                      ],
+                      "additionalProperties": false
                     }
                   },
                   "required": [
@@ -1176,7 +1228,8 @@
                     "moduleTitle",
                     "access",
                     "bodyMd",
-                    "video"
+                    "video",
+                    "progress"
                   ],
                   "additionalProperties": false
                 }
@@ -1193,6 +1246,61 @@
           }
         ],
         "summary": "Aula no player: conteúdo e vídeo só com acesso ou aula aberta",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/aulas/{id}/progresso": {
+      "put": {
+        "operationId": "PlayerController_saveProgress",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "positionSeconds": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "completedAt": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "positionSeconds",
+                    "completedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sem sessão válida"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gravar posição do vídeo e conclusão da aula (no próprio nome)",
         "tags": [
           "learning"
         ]

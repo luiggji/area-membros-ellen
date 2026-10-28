@@ -141,7 +141,10 @@ export class MaterialsAdminController {
       new Date(),
     );
     if (!deleted) throw new NotFoundException('material_not_found');
-    await this.record(principal, 'material.deleted', id, { title: deleted.title });
+    await this.record(principal, 'material.deleted', id, {
+      title: deleted.title,
+      fileRemoved: deleted.fileRemoved,
+    });
     return { id };
   }
 }

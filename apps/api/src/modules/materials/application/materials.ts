@@ -134,9 +134,14 @@ export async function deleteMaterial(
   deps: { store: MaterialStore; storage: FileStorage },
   id: string,
   now: Date,
-): Promise<{ title: string } | null> {
+): Promise<{ title: string; fileRemoved: boolean } | null> {
   const deleted = await deps.store.softDelete(id, now);
   if (!deleted) return null;
-  await deps.storage.remove(deleted.storageKey);
-  return { title: deleted.title };
+  // Falha do Storage não desfaz a exclusão nem impede a auditoria: o arquivo continua privado e
+  // sem link (o registro já está excluído); `fileRemoved: false` fica na trilha para a limpeza.
+  const fileRemoved = await deps.storage.remove(deleted.storageKey).then(
+    () => true,
+    () => false,
+  );
+  return { title: deleted.title, fileRemoved };
 }

@@ -115,8 +115,22 @@ describe('Cofre de materiais', () => {
 
   it('exclusão lógica tira o arquivo do bucket; inexistente: null', async () => {
     const d = deps();
-    expect(await deleteMaterial(d, ID, new Date())).toEqual({ title: 'Modelo de contrato' });
+    expect(await deleteMaterial(d, ID, new Date())).toEqual({
+      title: 'Modelo de contrato',
+      fileRemoved: true,
+    });
     expect(d.calls).toEqual([['remove', `${ID}.pdf`]]);
     expect(await deleteMaterial(d, 'outro', new Date())).toBeNull();
+  });
+
+  it('Storage fora do ar na exclusão: excluído mesmo assim, com a pendência registrada', async () => {
+    const d = deps();
+    d.storage.remove = async () => {
+      throw new Error('storage: falha ao remover (StorageApiError)');
+    };
+    expect(await deleteMaterial(d, ID, new Date())).toEqual({
+      title: 'Modelo de contrato',
+      fileRemoved: false,
+    });
   });
 });

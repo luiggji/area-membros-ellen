@@ -231,7 +231,8 @@ export function CourseCover({ icon, tone = 0 }: { icon?: ReactNode; tone?: numbe
 
 /**
  * Card de curso: título, resumo de até 2 linhas e estado verdadeiro. Curso indisponível não vira
- * link — o motivo aparece no próprio card.
+ * link — o motivo aparece no próprio card. `statusText` troca o rótulo padrão por um mais preciso
+ * (ex.: "Programado para 03/11/2026").
  */
 export function CourseCard({
   title,
@@ -240,6 +241,7 @@ export function CourseCard({
   href,
   linkAs: LinkAs = 'a',
   cover,
+  statusText,
 }: {
   title: string;
   summary: string;
@@ -247,6 +249,7 @@ export function CourseCard({
   href: string;
   linkAs?: LinkComponent;
   cover?: ReactNode;
+  statusText?: string;
 }) {
   const body = (
     <>
@@ -255,7 +258,9 @@ export function CourseCard({
         <h3 className="font-editorial text-xl leading-snug text-cf-text">{title}</h3>
         <p className="line-clamp-2 text-sm text-cf-text-secondary">{summary}</p>
         {status !== 'disponivel' && (
-          <p className="mt-auto pt-2 text-xs font-medium text-cf-primary">{statusLabel[status]}</p>
+          <p className="mt-auto pt-2 text-xs font-medium text-cf-primary">
+            {statusText ?? statusLabel[status]}
+          </p>
         )}
       </div>
     </>

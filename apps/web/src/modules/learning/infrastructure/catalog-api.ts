@@ -4,6 +4,7 @@ import {
   type CourseDetail,
   courseDetailSchema,
 } from '@caixa-forte/contracts';
+import { cache } from 'react';
 
 import { callApi } from '@/shared/lib/api/authenticated-api';
 
@@ -15,11 +16,16 @@ export async function loadCatalog(): Promise<Catalog | null> {
   return parsed.success ? parsed.data : null;
 }
 
-/** Curso pelo endereço: `not_found` quando não está no catálogo; `null` quando falhou. */
-export async function loadCourse(slug: string): Promise<CourseDetail | 'not_found' | null> {
+/**
+ * Curso pelo endereço: `not_found` quando não está no catálogo; `null` quando falhou. Uma
+ * chamada por requisição (a página e o título usam a mesma).
+ */
+export const loadCourse = cache(async function loadCourse(
+  slug: string,
+): Promise<CourseDetail | 'not_found' | null> {
   const response = await callApi(`/cursos/${encodeURIComponent(slug)}`);
   if (response.status === 404) return 'not_found';
   if (!response.ok) return null;
   const parsed = courseDetailSchema.safeParse(await response.json());
   return parsed.success ? parsed.data : null;
-}
+});

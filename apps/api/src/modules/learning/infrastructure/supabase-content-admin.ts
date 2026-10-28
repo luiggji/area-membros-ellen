@@ -4,11 +4,13 @@ import {
   CreateCourseRequest,
   CreateLessonRequest,
   CreateModuleRequest,
+  CreateTrackRequest,
   LessonContentRequest,
   LessonKind,
   UpdateCourseRequest,
   UpdateLessonRequest,
   UpdateModuleRequest,
+  UpdateTrackRequest,
 } from '@caixa-forte/contracts';
 
 import { SupabaseAdmin } from '../../../shared/supabase/supabase.module';
@@ -32,6 +34,10 @@ export class SupabaseContentAdminStore implements ContentAdminStore {
   constructor(private readonly client: SupabaseAdmin) {}
 
   async tree(): Promise<AdminContent> {
+    const tracks = await this.client
+      .from('tracks')
+      .select('id, slug, title, summary, order_index, status, publish_at, created_at');
+    if (tracks.error) throw new Error(`tracks: falha ao listar (${tracks.error.code})`);
     const { data, error } = await this.client
       .from('courses')
       .select(
@@ -39,6 +45,15 @@ export class SupabaseContentAdminStore implements ContentAdminStore {
       );
     if (error) throw new Error(`courses: falha ao listar (${error.code})`);
     return {
+      tracks: [...tracks.data].sort(byOrder).map((track) => ({
+        id: track.id,
+        slug: track.slug,
+        title: track.title,
+        summary: track.summary,
+        orderIndex: track.order_index,
+        status: track.status as ContentStatus,
+        publishAt: track.publish_at,
+      })),
       courses: [...data].sort(byOrder).map((course) => ({
         id: course.id,
         slug: course.slug,
@@ -87,12 +102,36 @@ export class SupabaseContentAdminStore implements ContentAdminStore {
         title: input.title,
         summary: input.summary || null,
         order_index: input.orderIndex,
+        track_id: input.trackId,
         status: input.status,
         publish_at: input.publishAt,
       })
       .eq('id', id)
       .select('id');
     return toWrite(data, error, 'courses.update');
+  }
+
+  async createTrack(input: CreateTrackRequest): Promise<ContentWrite> {
+    const { data, error } = await this.client
+      .from('tracks')
+      .insert({ slug: input.slug, title: input.title, summary: input.summary || null })
+      .select('id');
+    return toWrite(data, error, 'tracks.insert');
+  }
+
+  async updateTrack(id: string, input: UpdateTrackRequest): Promise<ContentWrite> {
+    const { data, error } = await this.client
+      .from('tracks')
+      .update({
+        title: input.title,
+        summary: input.summary || null,
+        order_index: input.orderIndex,
+        status: input.status,
+        publish_at: input.publishAt,
+      })
+      .eq('id', id)
+      .select('id');
+    return toWrite(data, error, 'tracks.update');
   }
 
   async createModule(courseId: string, input: CreateModuleRequest): Promise<ContentWrite> {
@@ -159,7 +198,15 @@ export class SupabaseContentAdminStore implements ContentAdminStore {
 /** Dev sem Supabase: nada para listar; escrever falha alto em vez de fingir sucesso. */
 export class UnconfiguredContentAdminStore implements ContentAdminStore {
   async tree(): Promise<AdminContent> {
-    return { courses: [] };
+    return { tracks: [], courses: [] };
+  }
+
+  async createTrack(): Promise<ContentWrite> {
+    this.fail();
+  }
+
+  async updateTrack(): Promise<ContentWrite> {
+    this.fail();
   }
 
   private fail(): never {

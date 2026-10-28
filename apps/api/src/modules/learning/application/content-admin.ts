@@ -3,19 +3,23 @@ import {
   CreateCourseRequest,
   CreateLessonRequest,
   CreateModuleRequest,
+  CreateTrackRequest,
   LessonContentRequest,
   UpdateCourseRequest,
   UpdateLessonRequest,
   UpdateModuleRequest,
+  UpdateTrackRequest,
 } from '@caixa-forte/contracts';
 
 /** Resultado de escrita no conteúdo (CF-081/CF-172). */
 export type ContentWrite =
   { status: 'ok'; id: string } | { status: 'not_found' } | { status: 'duplicate' };
 
-/** Estrutura editável pela owner: cursos, módulos e aulas em qualquer estado (inclusive rascunho). */
+/** Estrutura editável pela owner: trilhas, cursos, módulos e aulas em qualquer estado. */
 export interface ContentAdminStore {
   tree(): Promise<AdminContent>;
+  createTrack(input: CreateTrackRequest): Promise<ContentWrite>;
+  updateTrack(id: string, input: UpdateTrackRequest): Promise<ContentWrite>;
   createCourse(input: CreateCourseRequest): Promise<ContentWrite>;
   updateCourse(id: string, input: UpdateCourseRequest): Promise<ContentWrite>;
   createModule(courseId: string, input: CreateModuleRequest): Promise<ContentWrite>;

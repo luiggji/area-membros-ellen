@@ -94,7 +94,7 @@ export function seedTarget(env) {
 }
 
 /** Cria cada persona; e-mail já cadastrado conta como sucesso (idempotente). */
-function adminHeaders(serviceKey) {
+export function adminHeaders(serviceKey) {
   return {
     apikey: serviceKey,
     'content-type': 'application/json',

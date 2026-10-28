@@ -28,7 +28,10 @@ const dateTime = new Intl.DateTimeFormat('pt-BR', {
 });
 
 /** Nomes amigáveis das dependências checadas pela API (health). */
-const dependencyLabels: Record<string, string> = { audit_log: 'Audit log (CF-161)' };
+const dependencyLabels: Record<string, string> = {
+  audit_log: 'Audit log (CF-161)',
+  storage: 'Arquivos privados (CF-162)',
+};
 
 function apiCard(health: ApiHealth): {
   tone: StatusTone;

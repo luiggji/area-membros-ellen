@@ -37,6 +37,11 @@ const envSchema = z
     WEB_REVALIDATE_URL: optionalText.pipe(z.url().optional()),
     /** Segredo compartilhado com o web para pedir revalidação. Nunca em NEXT_PUBLIC_*. */
     REVALIDATE_SECRET: optionalText.pipe(z.string().min(32).optional()),
+    /**
+     * Segredo dos links de vídeo do player (CF-083), 32+ caracteres. Sem ele, cada processo sorteia
+     * o seu (links valem só até reiniciar); com mais de uma instância, definir o mesmo em todas.
+     */
+    MEDIA_SIGNING_SECRET: optionalText.pipe(z.string().min(32).optional()),
     // Supabase: opcionais em dev até a hospedagem ser escolhida (P-014); obrigatórios fora dele.
     SUPABASE_URL: optionalText.pipe(z.url().optional()),
     /** Segredo: só na API, nunca em variável NEXT_PUBLIC_*. */

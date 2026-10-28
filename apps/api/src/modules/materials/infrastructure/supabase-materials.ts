@@ -1,8 +1,9 @@
 import { SupabaseAdmin } from '../../../shared/supabase/supabase.module';
+import { catalogState } from '../../learning/domain/publication';
 import { MaterialRow, MaterialStore, NewMaterial } from '../application/materials';
 
 const COLUMNS =
-  'id, title, description, subject, version, license, revised_on, storage_key, file_name, mime_type, size_bytes, status, published_at, courses(slug, title)';
+  'id, title, description, subject, version, license, revised_on, storage_key, file_name, mime_type, size_bytes, status, published_at, courses(slug, title, status, publish_at, tracks(status, publish_at))';
 
 type Record = {
   id: string;
@@ -18,10 +19,30 @@ type Record = {
   size_bytes: number;
   status: string;
   published_at: string | null;
-  courses: { slug: string; title: string } | null;
+  courses: {
+    slug: string;
+    title: string;
+    status: string;
+    publish_at: string | null;
+    tracks: { status: string; publish_at: string | null } | null;
+  } | null;
 };
 
-const toRow = (record: Record): MaterialRow => ({
+/**
+ * Curso associado só aparece se estiver no catálogo (disponível ou programado): material publicado
+ * não revela título de curso em rascunho.
+ */
+function visibleCourse(course: Record['courses'], now: Date) {
+  if (!course) return null;
+  const track = course.tracks
+    ? { status: course.tracks.status, publishAt: course.tracks.publish_at }
+    : null;
+  return catalogState({ status: course.status, publishAt: course.publish_at }, track, now)
+    ? { slug: course.slug, title: course.title }
+    : null;
+}
+
+const toRow = (record: Record, now: Date): MaterialRow => ({
   id: record.id,
   title: record.title,
   description: record.description,
@@ -29,7 +50,7 @@ const toRow = (record: Record): MaterialRow => ({
   version: record.version,
   license: record.license,
   revisedOn: record.revised_on,
-  course: record.courses,
+  course: visibleCourse(record.courses, now),
   storageKey: record.storage_key,
   fileName: record.file_name,
   mimeType: record.mime_type,
@@ -47,7 +68,8 @@ export class SupabaseMaterialStore implements MaterialStore {
     if (scope === 'published') query = query.eq('status', 'published');
     const { data, error } = await query.order('subject').order('title');
     if (error) throw new Error(`materiais: falha ao listar (${error.code})`);
-    return data.map(toRow);
+    const now = new Date();
+    return data.map((record) => toRow(record, now));
   }
 
   async create(material: NewMaterial): Promise<{ id: string } | 'course_not_found'> {

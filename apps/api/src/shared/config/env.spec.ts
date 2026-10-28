@@ -2,6 +2,8 @@ import { describe, expect, it } from '@jest/globals';
 
 import { validateEnv } from './env';
 
+const MEDIA_SECRET = 'm'.repeat(32);
+
 describe('validateEnv (CF-012)', () => {
   it('sobe em dev sem Supabase enquanto a hospedagem não é escolhida', () => {
     const env = validateEnv({});
@@ -23,6 +25,7 @@ describe('validateEnv (CF-012)', () => {
       APP_ENV: 'production',
       SUPABASE_URL: 'https://prodref.supabase.co',
       SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+      MEDIA_SIGNING_SECRET: MEDIA_SECRET,
       SUPABASE_PRODUCTION_REF: 'prodref',
     };
     expect(validateEnv(prod).API_DOCS_ENABLED).toBe(false);
@@ -72,6 +75,7 @@ describe('validateEnv (CF-012)', () => {
         APP_ENV: 'staging',
         SUPABASE_URL: 'https://prodref.supabase.co',
         SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+        MEDIA_SIGNING_SECRET: MEDIA_SECRET,
         SUPABASE_PRODUCTION_REF: 'prodref',
       }),
     ).toThrow(/apontando para o banco de produção/);
@@ -83,11 +87,23 @@ describe('validateEnv (CF-012)', () => {
     ).toThrow(/SUPABASE_SERVICE_ROLE_KEY/);
   });
 
+  it('exige o segredo dos links de vídeo fora de dev (CF-083)', () => {
+    expect(() =>
+      validateEnv({
+        APP_ENV: 'staging',
+        SUPABASE_URL: 'https://stagingref.supabase.co',
+        SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+      }),
+    ).toThrow(/MEDIA_SIGNING_SECRET/);
+    expect(validateEnv({}).MEDIA_SIGNING_SECRET).toBeUndefined();
+  });
+
   it('aceita staging no próprio projeto', () => {
     const env = validateEnv({
       APP_ENV: 'staging',
       SUPABASE_URL: 'https://stagingref.supabase.co',
       SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+      MEDIA_SIGNING_SECRET: MEDIA_SECRET,
       SUPABASE_PRODUCTION_REF: 'prodref',
     });
     expect(env.APP_ENV).toBe('staging');

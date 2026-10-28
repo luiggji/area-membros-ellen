@@ -47,6 +47,15 @@ describe('buildCsp', () => {
     expect(directive(csp, 'connect-src')).toBe("connect-src 'self' https://api.exemplo.test");
   });
 
+  it('vídeo do player: media-src com a app e a API, só pela origem', () => {
+    expect(directive(buildCsp(base), 'media-src')).toBe(
+      "media-src 'self' https://api.exemplo.test",
+    );
+    expect(directive(buildCsp({ ...base, apiUrl: undefined }), 'media-src')).toBe(
+      "media-src 'self'",
+    );
+  });
+
   it('unsafe-eval só em dev; upgrade-insecure-requests só fora de dev', () => {
     expect(buildCsp({ ...base, isDev: true })).toContain("'unsafe-eval'");
     expect(buildCsp({ ...base, isDev: true })).not.toContain('upgrade-insecure-requests');

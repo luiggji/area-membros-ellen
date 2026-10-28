@@ -1,8 +1,14 @@
-import { Module } from '@nestjs/common';
+import { randomBytes } from 'node:crypto';
 
+import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import { Env } from '../../shared/config/env';
 import { SUPABASE_ADMIN, SupabaseAdmin } from '../../shared/supabase/supabase.module';
 import { CATALOG_READER, CatalogReader } from './application/catalog';
 import { CONTENT_ADMIN_STORE, ContentAdminStore } from './application/content-admin';
+import { LESSON_READER, LessonReader, MEDIA_TOKENS, VIDEO_PROVIDER } from './application/player';
+import { HmacMediaTokens } from './infrastructure/hmac-media-tokens';
 import {
   SupabaseCatalogReader,
   UnconfiguredCatalogReader,
@@ -11,12 +17,18 @@ import {
   SupabaseContentAdminStore,
   UnconfiguredContentAdminStore,
 } from './infrastructure/supabase-content-admin';
+import {
+  SupabaseLessonReader,
+  UnconfiguredLessonReader,
+  UnconfiguredVideoProvider,
+} from './infrastructure/supabase-lesson-reader';
 import { CatalogController } from './presentation/catalog.controller';
 import { ContentAdminController } from './presentation/content-admin.controller';
+import { PlayerController } from './presentation/player.controller';
 
-/** Conteúdo: editor da owner (CF-081/CF-172) e catálogo do membro (CF-082). */
+/** Conteúdo: editor da owner (CF-081/CF-172), catálogo (CF-082) e player (CF-083). */
 @Module({
-  controllers: [ContentAdminController, CatalogController],
+  controllers: [ContentAdminController, CatalogController, PlayerController],
   providers: [
     {
       provide: CONTENT_ADMIN_STORE,
@@ -29,6 +41,22 @@ import { ContentAdminController } from './presentation/content-admin.controller'
       inject: [SUPABASE_ADMIN],
       useFactory: (client: SupabaseAdmin | null): CatalogReader =>
         client ? new SupabaseCatalogReader(client) : new UnconfiguredCatalogReader(),
+    },
+    {
+      provide: LESSON_READER,
+      inject: [SUPABASE_ADMIN],
+      useFactory: (client: SupabaseAdmin | null): LessonReader =>
+        client ? new SupabaseLessonReader(client) : new UnconfiguredLessonReader(),
+    },
+    // Provedor de vídeo ainda não escolhido (P-007): o adaptador real entra aqui.
+    { provide: VIDEO_PROVIDER, useClass: UnconfiguredVideoProvider },
+    {
+      provide: MEDIA_TOKENS,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService<Env, true>) => {
+        const secret = config.get('MEDIA_SIGNING_SECRET', { infer: true });
+        return new HmacMediaTokens(secret ? Buffer.from(secret) : randomBytes(32));
+      },
     },
   ],
 })

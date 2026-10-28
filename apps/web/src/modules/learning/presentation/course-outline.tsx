@@ -1,4 +1,5 @@
 import { type CourseDetail, LESSON_KINDS } from '@caixa-forte/contracts';
+import Link from 'next/link';
 
 type Lesson = CourseDetail['modules'][number]['lessons'][number];
 
@@ -12,7 +13,7 @@ function lessonFacts(lesson: Lesson): string {
     .join(' · ');
 }
 
-/** Módulos e aulas liberados do curso, na ordem (CF-082). As aulas abrem no player (CF-083). */
+/** Módulos e aulas liberados do curso, na ordem (CF-082); cada aula abre no player (CF-083). */
 export function CourseOutline({ modules }: { modules: CourseDetail['modules'] }) {
   if (modules.length === 0) {
     return (
@@ -41,7 +42,12 @@ export function CourseOutline({ modules }: { modules: CourseDetail['modules'] })
                     key={lesson.id}
                     className="flex min-h-11 flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3 text-sm"
                   >
-                    <span className="text-cf-text">{lesson.title}</span>
+                    <Link
+                      href={`/app/aulas/${lesson.id}`}
+                      className="text-cf-text underline-offset-4 hover:text-cf-primary hover:underline"
+                    >
+                      {lesson.title}
+                    </Link>
                     <span className="text-cf-text-secondary">
                       {lessonFacts(lesson)}
                       {lesson.isFree && (

@@ -29,6 +29,11 @@ const USERS: Record<string, { id: string; roles: Role[]; aal: 'aal1' | 'aal2' }>
     roles: ['commercial'],
     aal: 'aal2',
   },
+  'token-tecnico': {
+    id: '00000000-0000-4000-8000-000000000075',
+    roles: ['tech'],
+    aal: 'aal2',
+  },
   'token-assinante': { id: '00000000-0000-4000-8000-000000000073', roles: ['member'], aal: 'aal1' },
   'token-visitante': { id: '00000000-0000-4000-8000-000000000074', roles: ['member'], aal: 'aal1' },
 };
@@ -51,9 +56,13 @@ const material: MaterialRow = {
   publishedAt: '2026-10-21T12:00:00.000Z',
 };
 
+const DRAFT = '1c7a6d2f-4d2b-4d66-8e1f-2a3b4c5d6e7f';
+const draft: MaterialRow = { ...material, id: DRAFT, status: 'draft', publishedAt: null };
+
 const state = { head: PDF, removed: [] as string[], created: [] as unknown[] };
 const store: MaterialStore = {
-  list: async () => [material],
+  // Respeita o escopo como o banco: rascunho só na lista da owner; excluído em nenhuma.
+  list: async (scope) => (scope === 'published' ? [material] : [material, draft]),
   create: async (input) => {
     state.created.push(input);
     return { id: ID };
@@ -217,6 +226,45 @@ describe('Cofre de materiais (CF-085, e2e)', () => {
       .expect(403);
     expect(noMfa.body.message).toBe('mfa_required');
     await call('delete', `/admin/materiais/${ID}`, 'token-assinante').expect(403);
+    expect(state.removed).toEqual([]);
+  });
+
+  it('rascunho não baixa nem aparece para o membro (404); a owner vê o rascunho', async () => {
+    await call('post', `/materiais/${DRAFT}/download`, 'token-assinante').expect(404);
+    const member = await call('get', '/materiais', 'token-assinante').expect(200);
+    expect(member.body.materials.map((m: { id: string }) => m.id)).toEqual([ID]);
+    const owner = await call('get', '/admin/materiais', 'token-owner').expect(200);
+    expect(owner.body.materials.map((m: { id: string }) => m.id)).toEqual([ID, DRAFT]);
+  });
+
+  it('toda rota do admin: comercial, técnico e assinante 403; owner sem MFA mfa_required', async () => {
+    const create = {
+      key: `${ID}.pdf`,
+      fileName: 'a.pdf',
+      title: 'Título',
+      description: '',
+      subject: 'Assunto',
+      version: '1',
+      license: '',
+      revisedOn: null,
+      courseId: null,
+    };
+    for (const token of ['token-comercial', 'token-tecnico', 'token-assinante']) {
+      await call('get', '/admin/materiais', token).expect(403);
+      await call('post', '/admin/materiais', token).send(create).expect(403);
+      await call('patch', `/admin/materiais/${ID}`, token).send({ status: 'draft' }).expect(403);
+      await call('delete', `/admin/materiais/${ID}`, token).expect(403);
+    }
+    const withoutMfa = [
+      () => call('post', '/admin/materiais', 'token-owner-sem-mfa').send(create),
+      () =>
+        call('patch', `/admin/materiais/${ID}`, 'token-owner-sem-mfa').send({ status: 'draft' }),
+      () => call('delete', `/admin/materiais/${ID}`, 'token-owner-sem-mfa'),
+    ];
+    for (const send of withoutMfa) {
+      expect((await send().expect(403)).body.message).toBe('mfa_required');
+    }
+    expect(state.created).toEqual([]);
     expect(state.removed).toEqual([]);
   });
 });

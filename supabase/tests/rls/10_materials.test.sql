@@ -2,7 +2,7 @@
 -- visitante); só a API. Chave do arquivo só no formato gerado pelo servidor; publicado exige data;
 -- excluído volta a rascunho.
 begin;
-select plan(9);
+select plan(11);
 
 select ok(tests.create_user('ana') is not null, 'cria a assinante A (fictícia, com acesso)');
 select ok(tests.create_user('carla') is not null, 'cria a operadora comercial C (fictícia)');
@@ -20,6 +20,12 @@ select throws_ok(
      values ('Forjado', 'X', '0b6f5c1e-3c1a-4c55-9d0e-1f2a3b4c5d6f.pdf', 'f.pdf', 'application/pdf', 1) $$,
   '42501', null, 'assinante não cria material'
 );
+
+select throws_ok(
+  $$ update public.materials set status = 'draft' $$,
+  '42501', null, 'assinante não altera material'
+);
+select throws_ok($$ delete from public.materials $$, '42501', null, 'assinante não apaga material');
 
 select tests.authenticate_as('carla');
 select throws_ok($$ select 1 from public.materials $$, '42501', null, 'comercial não lê materiais direto');

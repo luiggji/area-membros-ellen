@@ -21,6 +21,7 @@ const SUBSCRIBER = '00000000-0000-4000-8000-000000000061';
 const VISITOR = '00000000-0000-4000-8000-000000000062';
 const PAID = '4d5e6f7a-8b9c-4d0e-8f1a-2b3c4d5e6f7a';
 const OPEN = '5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b';
+const HIDDEN = '7a8b9c0d-1e2f-4a3b-8c4d-5e6f7a8b9c0d';
 const published = { status: 'published', publishAt: null };
 const lesson = (id: string, isFree: boolean): LessonRecord => ({
   ...published,
@@ -69,7 +70,16 @@ describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
       .overrideProvider(LESSON_READER)
       .useValue({
         lesson: async (id: string) =>
-          id === PAID ? lesson(PAID, false) : id === OPEN ? lesson(OPEN, true) : null,
+          id === PAID
+            ? lesson(PAID, false)
+            : id === OPEN
+              ? lesson(OPEN, true)
+              : id === HIDDEN
+                ? {
+                    ...lesson(HIDDEN, true),
+                    module: { status: 'draft', publishAt: null, title: 'M' },
+                  }
+                : null,
       })
       .overrideProvider(VIDEO_PROVIDER)
       .useValue(provider)
@@ -119,7 +129,10 @@ describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
       { mediaRef: 'video-1', viewerId: SUBSCRIBER },
       new Date(Date.now() - 1000),
     );
-    expect((await get(`/midia/${expired}`).expect(410)).body.message).toBe('media_token_expired');
+    const gone = await get(`/midia/${expired}`).expect(410);
+    expect(gone.body.message).toBe('media_token_expired');
+    expect(gone.headers['cache-control']).toBe('no-store');
+    expect(gone.headers['referrer-policy']).toBe('no-referrer');
     const valid = tokens.issue(
       { mediaRef: 'video-1', viewerId: SUBSCRIBER },
       new Date(Date.now() + 60_000),
@@ -129,7 +142,8 @@ describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
       JSON.stringify({ r: 'outro-video', u: VISITOR, e: Date.now() + 60_000 }),
     ).toString('base64url');
     await get(`/midia/${forged}.${signature}`).expect(401);
-    await get('/midia/qualquer-coisa').expect(401);
+    const invalid = await get('/midia/qualquer-coisa').expect(401);
+    expect(invalid.headers['cache-control']).toBe('no-store');
   });
 
   it('provedor ainda não configurado: vídeo pendente e link responde 503', async () => {
@@ -147,5 +161,7 @@ describe('Player com paywall e vídeo assinado (CF-083, e2e)', () => {
     await get(`/aulas/${PAID}`).expect(401);
     await get('/aulas/nao-e-uuid', 'token-assinante').expect(400);
     await get('/aulas/6f7a8b9c-0d1e-4f2a-8b3c-4d5e6f7a8b9c', 'token-assinante').expect(404);
+    // Aula aberta, mas o módulo está em rascunho: continua fora do ar.
+    await get(`/aulas/${HIDDEN}`, 'token-visitante').expect(404);
   });
 });

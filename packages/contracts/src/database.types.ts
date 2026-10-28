@@ -119,6 +119,26 @@ isOneToOne: true
       referencedColumns: ["id"]
     }
                   ]
+                },"lesson_progress": {
+                  Row: {
+                    "completed_at": string | null,"created_at": string,"last_position_seconds": number,"lesson_id": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "completed_at"?: string | null,"created_at"?: string,"last_position_seconds"?: number,"lesson_id": string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "completed_at"?: string | null,"created_at"?: string,"last_position_seconds"?: number,"lesson_id"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "lesson_progress_lesson_id_fkey"
+      columns: ["lesson_id"]
+isOneToOne: false
+      referencedRelation: "lessons"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"lessons": {
                   Row: {
                     "created_at": string,"duration_minutes": number | null,"id": string,"is_free": boolean,"kind": string,"module_id": string,"order_index": number,"publish_at": string | null,"status": string,"summary": string | null,"title": string,"updated_at": string

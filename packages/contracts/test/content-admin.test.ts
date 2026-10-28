@@ -3,13 +3,15 @@ import { describe, expect, it } from 'vitest';
 import {
   createCourseRequestSchema,
   createLessonRequestSchema,
+  createTrackRequestSchema,
   lessonContentRequestSchema,
   updateCourseRequestSchema,
   updateLessonRequestSchema,
   updateModuleRequestSchema,
+  updateTrackRequestSchema,
 } from '../src/content-admin.js';
 
-const base = { title: 'Gestão do escritório', summary: '', orderIndex: 0 };
+const base = { title: 'Gestão do escritório', summary: '', orderIndex: 0, trackId: null };
 
 describe('editor de conteúdo: cursos e módulos (CF-081)', () => {
   it('endereço do curso em kebab-case, normalizado', () => {
@@ -104,6 +106,30 @@ describe('editor de conteúdo: aulas e conteúdo (CF-172)', () => {
     ).toBe(false);
     expect(
       lessonContentRequestSchema.safeParse({ bodyMd: 'x'.repeat(50_001), mediaRef: '' }).success,
+    ).toBe(false);
+  });
+});
+
+describe('editor de conteúdo: trilhas (CF-173)', () => {
+  it('trilha: endereço normalizado; agendada exige data; curso aceita trilha ou avulso', () => {
+    expect(
+      createTrackRequestSchema.parse({ title: 'Comece aqui', slug: ' Comece-Aqui ', summary: '' }),
+    ).toMatchObject({ slug: 'comece-aqui' });
+    const track = {
+      title: 'Comece aqui',
+      summary: '',
+      orderIndex: 0,
+      status: 'scheduled',
+      publishAt: null,
+    };
+    expect(updateTrackRequestSchema.safeParse(track).success).toBe(false);
+    expect(
+      updateCourseRequestSchema.safeParse({
+        ...base,
+        trackId: 'nao-e-uuid',
+        status: 'draft',
+        publishAt: null,
+      }).success,
     ).toBe(false);
   });
 });

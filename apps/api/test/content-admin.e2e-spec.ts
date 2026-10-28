@@ -29,12 +29,21 @@ const USERS: Record<string, { id: string; roles: Role[]; aal: 'aal1' | 'aal2' }>
   'token-membro': { id: '00000000-0000-4000-8000-000000000043', roles: ['member'], aal: 'aal2' },
 };
 const COURSE = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
+const TRACK = '4d5e6f7a-8b9c-4d0e-8f1a-2b3c4d5e6f70';
 const MODULE = '2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e';
 const LESSON = '3c4d5e6f-7a8b-4c9d-8e1f-2a3b4c5d6e7f';
 
 const state = { calls: [] as unknown[][] };
 const store: ContentAdminStore = {
-  tree: async () => ({ courses: [] }),
+  tree: async () => ({ tracks: [], courses: [] }),
+  createTrack: async (input) => {
+    state.calls.push(['createTrack', input]);
+    return input.slug === 'ja-existe' ? { status: 'duplicate' } : { status: 'ok', id: TRACK };
+  },
+  updateTrack: async (id, input) => {
+    state.calls.push(['updateTrack', id, input]);
+    return id === TRACK ? { status: 'ok', id } : { status: 'not_found' };
+  },
   createCourse: async (input) => {
     state.calls.push(['createCourse', input]);
     return input.slug === 'ja-existe' ? { status: 'duplicate' } : { status: 'ok', id: COURSE };
@@ -128,6 +137,7 @@ describe('Editor de conteúdo: cursos, módulos e aulas (CF-081/CF-172, e2e)', (
       title: 'Gestão',
       summary: '',
       orderIndex: 1,
+      trackId: TRACK,
       status: 'scheduled',
       publishAt: '2026-11-03T12:00:00.000Z',
     };
@@ -226,6 +236,42 @@ describe('Editor de conteúdo: cursos, módulos e aulas (CF-081/CF-172, e2e)', (
       kind: 'video',
     }).expect(403);
     expect(state.calls).toEqual([]);
+  });
+
+  it('owner cria e agenda trilha; endereço repetido 409 track_slug_taken; trilha inexistente 404', async () => {
+    await send('post', '/trilhas', 'token-owner', {
+      title: 'Comece aqui',
+      slug: 'Comece-Aqui',
+      summary: '',
+    }).expect(201, { id: TRACK });
+    expect(state.calls[0]).toEqual([
+      'createTrack',
+      { title: 'Comece aqui', slug: 'comece-aqui', summary: '' },
+    ]);
+    const dup = await send('post', '/trilhas', 'token-owner', {
+      title: 'Outra',
+      slug: 'ja-existe',
+      summary: '',
+    }).expect(409);
+    expect(dup.body.message).toBe('track_slug_taken');
+    const track = {
+      title: 'Comece aqui',
+      summary: '',
+      orderIndex: 0,
+      status: 'scheduled',
+      publishAt: '2026-11-03T12:00:00.000Z',
+    };
+    await send('patch', `/trilhas/${TRACK}`, 'token-owner', track).expect(200, { id: TRACK });
+    await send('patch', `/trilhas/${COURSE}`, 'token-owner', track).expect(404);
+    await send('post', '/trilhas', 'token-comercial', {
+      title: 'X1',
+      slug: 'x',
+      summary: '',
+    }).expect(403);
+    const noMfa = await send('patch', `/trilhas/${TRACK}`, 'token-owner-sem-mfa', track).expect(
+      403,
+    );
+    expect(noMfa.body.message).toBe('mfa_required');
   });
 
   it('comercial e membro: 403; owner sem MFA: 403 mfa_required; sem token: 401; nada gravado', async () => {

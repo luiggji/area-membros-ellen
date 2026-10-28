@@ -36,17 +36,19 @@ function requireDateWhenScheduled<T extends { status: ContentStatus; publishAt: 
   }
 }
 
+const slugSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(
+    /^[a-z0-9]+(-[a-z0-9]+)*$/,
+    'Use letras minúsculas, números e hífen (ex.: gestao-do-escritorio).',
+  )
+  .max(80, 'Endereço com até 80 caracteres.');
+
 export const createCourseRequestSchema = z.object({
   title: titleSchema,
-  slug: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .regex(
-      /^[a-z0-9]+(-[a-z0-9]+)*$/,
-      'Use letras minúsculas, números e hífen (ex.: gestao-do-escritorio).',
-    )
-    .max(80, 'Endereço com até 80 caracteres.'),
+  slug: slugSchema,
   summary: summarySchema,
 });
 export type CreateCourseRequest = z.infer<typeof createCourseRequestSchema>;
@@ -57,10 +59,30 @@ export const updateCourseRequestSchema = z
     title: titleSchema,
     summary: summarySchema,
     orderIndex: orderSchema,
+    /** Trilha do curso (CF-173); `null` = curso avulso. */
+    trackId: z.uuid({ error: 'Trilha inválida.' }).nullable(),
     ...publicationShape,
   })
   .superRefine(requireDateWhenScheduled);
 export type UpdateCourseRequest = z.infer<typeof updateCourseRequestSchema>;
+
+/** Trilhas (CF-173): agrupam cursos; trilha fora do ar esconde os cursos dela no catálogo. */
+export const createTrackRequestSchema = z.object({
+  title: titleSchema,
+  slug: slugSchema,
+  summary: summarySchema,
+});
+export type CreateTrackRequest = z.infer<typeof createTrackRequestSchema>;
+
+export const updateTrackRequestSchema = z
+  .object({
+    title: titleSchema,
+    summary: summarySchema,
+    orderIndex: orderSchema,
+    ...publicationShape,
+  })
+  .superRefine(requireDateWhenScheduled);
+export type UpdateTrackRequest = z.infer<typeof updateTrackRequestSchema>;
 
 export const createModuleRequestSchema = z.object({ title: titleSchema });
 export type CreateModuleRequest = z.infer<typeof createModuleRequestSchema>;
@@ -152,5 +174,17 @@ export const adminCourseSchema = z.object({
 });
 export type AdminCourse = z.infer<typeof adminCourseSchema>;
 
-export const adminContentSchema = z.object({ courses: z.array(adminCourseSchema) });
+export const adminTrackSchema = z.object({
+  id: z.uuid(),
+  slug: z.string(),
+  title: z.string(),
+  summary: z.string().nullable(),
+  ...publicationOut,
+});
+export type AdminTrack = z.infer<typeof adminTrackSchema>;
+
+export const adminContentSchema = z.object({
+  tracks: z.array(adminTrackSchema),
+  courses: z.array(adminCourseSchema),
+});
 export type AdminContent = z.infer<typeof adminContentSchema>;

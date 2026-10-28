@@ -7,6 +7,8 @@ import {
   createLessonRequestSchema,
   CreateModuleRequest,
   createModuleRequestSchema,
+  CreateTrackRequest,
+  createTrackRequestSchema,
   LessonContentRequest,
   lessonContentRequestSchema,
   UpdateCourseRequest,
@@ -15,6 +17,8 @@ import {
   updateLessonRequestSchema,
   UpdateModuleRequest,
   updateModuleRequestSchema,
+  UpdateTrackRequest,
+  updateTrackRequestSchema,
 } from '@caixa-forte/contracts';
 import {
   Body,
@@ -55,11 +59,11 @@ export class ContentAdminController {
     result: ContentWrite,
     principal: Principal,
     action: string,
-    targetType: 'course' | 'course_module' | 'lesson',
+    targetType: 'track' | 'course' | 'course_module' | 'lesson',
     after: Record<string, unknown>,
   ): Promise<{ id: string }> {
     if (result.status === 'not_found') throw new NotFoundException(`${targetType}_not_found`);
-    if (result.status === 'duplicate') throw new ConflictException('course_slug_taken');
+    if (result.status === 'duplicate') throw new ConflictException(`${targetType}_slug_taken`);
     await this.audit.record({
       actorId: principal.userId,
       actorRole: 'owner',
@@ -77,6 +81,35 @@ export class ContentAdminController {
   @ApiOkResponse({ schema: contractSchema(adminContentSchema) })
   tree(): Promise<AdminContent> {
     return this.store.tree();
+  }
+
+  @Post('trilhas')
+  @RequirePermission('content.manage')
+  @ApiOperation({ summary: 'Criar trilha (nasce em rascunho)' })
+  async createTrack(
+    @Body(new ZodPipe(createTrackRequestSchema)) body: CreateTrackRequest,
+    @CurrentPrincipal() principal: Principal,
+  ) {
+    return this.done(await this.store.createTrack(body), principal, 'track.created', 'track', {
+      slug: body.slug,
+      title: body.title,
+    });
+  }
+
+  @Patch('trilhas/:id')
+  @RequirePermission('content.manage')
+  @ApiOperation({ summary: 'Editar, ordenar e publicar/agendar trilha' })
+  async updateTrack(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body(new ZodPipe(updateTrackRequestSchema)) body: UpdateTrackRequest,
+    @CurrentPrincipal() principal: Principal,
+  ) {
+    return this.done(await this.store.updateTrack(id, body), principal, 'track.updated', 'track', {
+      title: body.title,
+      orderIndex: body.orderIndex,
+      status: body.status,
+      publishAt: body.publishAt,
+    });
   }
 
   @Post('cursos')
@@ -108,6 +141,7 @@ export class ContentAdminController {
       {
         title: body.title,
         orderIndex: body.orderIndex,
+        trackId: body.trackId,
         status: body.status,
         publishAt: body.publishAt,
       },

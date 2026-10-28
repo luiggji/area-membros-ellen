@@ -16,10 +16,12 @@ import {
   createCourseAction,
   createLessonAction,
   createModuleAction,
+  createTrackAction,
   saveLessonContentAction,
   updateCourseAction,
   updateLessonAction,
   updateModuleAction,
+  updateTrackAction,
 } from './content-actions';
 
 function Submit({ idle, pending }: { idle: string; pending: string }) {
@@ -136,15 +138,18 @@ export function CreateCourseForm() {
 
 export function EditCourseForm({
   course,
+  tracks,
 }: {
   course: {
     id: string;
     title: string;
     summary: string | null;
+    trackId: string | null;
     status: ContentStatus;
     publishAt: string | null;
     orderIndex: number;
   };
+  tracks: { id: string; title: string }[];
 }) {
   const form = useContentForm(updateCourseAction);
   return (
@@ -164,6 +169,17 @@ export function EditCourseForm({
         maxLength={600}
         defaultValue={form.value('summary') ?? course.summary ?? ''}
         error={form.error('summary')}
+      />
+      <SelectField
+        name="trackId"
+        label="Trilha"
+        helper="Trilha fora do ar esconde o curso no catálogo."
+        options={[
+          { value: '', label: 'Avulso (sem trilha)' },
+          ...tracks.map((t) => ({ value: t.id, label: t.title })),
+        ]}
+        defaultValue={form.value('trackId') ?? course.trackId ?? ''}
+        error={form.error('trackId')}
       />
       <PublicationFields form={form} current={course} />
       <div>
@@ -336,6 +352,82 @@ export function LessonContentForm({ lesson }: { lesson: AdminLesson }) {
       />
       <div>
         <Submit idle="Salvar conteúdo" pending="Salvando…" />
+      </div>
+    </form>
+  );
+}
+
+export function CreateTrackForm() {
+  const form = useContentForm(createTrackAction);
+  return (
+    <form action={form.formAction} className="flex flex-col gap-4" noValidate>
+      {form.notice}
+      <div className="grid gap-4 sm:grid-cols-2 [&>*]:min-w-0">
+        <TextField
+          name="title"
+          label="Título da trilha"
+          required
+          defaultValue={form.value('title')}
+          error={form.error('title')}
+        />
+        <TextField
+          name="slug"
+          label="Endereço"
+          helper="Identificador da trilha. Não muda depois."
+          autoComplete="off"
+          required
+          defaultValue={form.value('slug')}
+          error={form.error('slug')}
+        />
+      </div>
+      <TextAreaField
+        name="summary"
+        label="Resumo"
+        maxLength={600}
+        defaultValue={form.value('summary')}
+        error={form.error('summary')}
+      />
+      <div>
+        <Submit idle="Criar trilha" pending="Criando…" />
+      </div>
+    </form>
+  );
+}
+
+export function EditTrackForm({
+  track,
+}: {
+  track: {
+    id: string;
+    title: string;
+    summary: string | null;
+    status: ContentStatus;
+    publishAt: string | null;
+    orderIndex: number;
+  };
+}) {
+  const form = useContentForm(updateTrackAction);
+  return (
+    <form action={form.formAction} className="flex flex-col gap-4" noValidate>
+      {form.notice}
+      <input type="hidden" name="trackId" value={track.id} />
+      <TextField
+        name="title"
+        label="Título da trilha"
+        required
+        defaultValue={form.value('title') ?? track.title}
+        error={form.error('title')}
+      />
+      <TextAreaField
+        name="summary"
+        label="Resumo"
+        maxLength={600}
+        defaultValue={form.value('summary') ?? track.summary ?? ''}
+        error={form.error('summary')}
+      />
+      <PublicationFields form={form} current={track} />
+      <div>
+        <Submit idle="Salvar trilha" pending="Salvando…" />
       </div>
     </form>
   );

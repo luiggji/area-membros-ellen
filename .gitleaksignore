@@ -1,0 +1,8 @@
+# Falsos positivos revisados (um por linha: commit:arquivo:regra:linha). Só entra aqui o que foi
+# conferido como dado fictício de teste; segredo real nunca é "ignorado", é revogado e removido.
+#
+# PR #138 (CF-085): caminho fictício de objeto `<uuid>.pdf` em constantes chamadas KEY/key nos
+# testes. Corrigido no commit 1200b2b (constantes renomeadas); os commits abaixo continuam na
+# história da branch até o squash merge.
+f5d8d6c567006893b1bf6636379ab49e9f404e12:apps/web/src/modules/materials/application/upload-material.test.ts:generic-api-key:5
+5736f1763043758273b7df6dcda7f1f1ae0726d5:packages/contracts/test/materials.test.ts:generic-api-key:11

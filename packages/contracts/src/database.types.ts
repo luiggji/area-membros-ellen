@@ -159,6 +159,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"materials": {
+                  Row: {
+                    "course_id": string | null,"created_at": string,"deleted_at": string | null,"description": string | null,"file_name": string,"id": string,"license": string | null,"mime_type": string,"published_at": string | null,"revised_on": string | null,"size_bytes": number,"status": string,"storage_key": string,"subject": string,"title": string,"updated_at": string,"version": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "course_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"description"?: string | null,"file_name": string,"id"?: string,"license"?: string | null,"mime_type": string,"published_at"?: string | null,"revised_on"?: string | null,"size_bytes": number,"status"?: string,"storage_key": string,"subject": string,"title": string,"updated_at"?: string,"version"?: string
+                  }
+                  Update: {
+                    "course_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"description"?: string | null,"file_name"?: string,"id"?: string,"license"?: string | null,"mime_type"?: string,"published_at"?: string | null,"revised_on"?: string | null,"size_bytes"?: number,"status"?: string,"storage_key"?: string,"subject"?: string,"title"?: string,"updated_at"?: string,"version"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "materials_course_id_fkey"
+      columns: ["course_id"]
+isOneToOne: false
+      referencedRelation: "courses"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"payments": {
                   Row: {
                     "amount_cents": number,"confirmed_at": string | null,"created_at": string,"currency": string,"id": string,"kind": string,"provider": string,"provider_id": string,"status": string,"subscription_id": string | null,"user_id": string

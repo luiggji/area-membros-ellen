@@ -4,7 +4,7 @@ import { allMemberNav } from './member-nav';
 import { findMemberSection, memberSectionStates } from './member-sections';
 
 // Destinos com tela real ou página própria: não usam o estado vazio genérico.
-const BUILT = ['', 'jornada', 'cursos', 'cafe', 'assinatura'];
+const BUILT = ['', 'jornada', 'cursos', 'cafe', 'assinatura', 'cofre'];
 
 describe('seções do membro ainda sem tela (CF-171)', () => {
   it('todo destino do menu sem tela tem estado vazio, e só eles', () => {

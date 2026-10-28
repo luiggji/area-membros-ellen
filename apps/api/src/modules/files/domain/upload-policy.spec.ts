@@ -1,7 +1,7 @@
 import { MATERIALS_BUCKET } from '@caixa-forte/contracts';
 import { describe, expect, it } from '@jest/globals';
 
-import { checkUpload, downloadName, extensionOf, storageKey } from './upload-policy';
+import { checkDeclared, checkUpload, downloadName, extensionOf, storageKey } from './upload-policy';
 
 const PDF = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37]);
 const ZIP = new Uint8Array([0x50, 0x4b, 0x03, 0x04, 0x14, 0x00]);
@@ -10,7 +10,7 @@ const EXE = new Uint8Array([0x4d, 0x5a, 0x90, 0x00]);
 const DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 
 const check = (fileName: string, mimeType: string, bytes: Uint8Array) =>
-  checkUpload(MATERIALS_BUCKET, { fileName, mimeType, bytes });
+  checkUpload(MATERIALS_BUCKET, { fileName, mimeType, sizeBytes: bytes.length, head: bytes });
 
 describe('regra de upload de arquivos privados', () => {
   it('aceita PDF, Office moderno e imagem quando tipo, extensão e conteúdo batem', () => {
@@ -46,9 +46,28 @@ describe('regra de upload de arquivos privados', () => {
       ok: false,
       reason: 'empty',
     });
-    const big = new Uint8Array(MATERIALS_BUCKET.maxBytes + 1);
-    big.set(PDF);
-    expect(check('a.pdf', 'application/pdf', big)).toEqual({ ok: false, reason: 'too_large' });
+    expect(
+      checkUpload(MATERIALS_BUCKET, {
+        fileName: 'a.pdf',
+        mimeType: 'application/pdf',
+        sizeBytes: MATERIALS_BUCKET.maxBytes + 1,
+        head: PDF,
+      }),
+    ).toEqual({ ok: false, reason: 'too_large' });
+  });
+
+  it('antes do envio (sem bytes): tamanho, tipo e extensão já barram', () => {
+    const declared = (fileName: string, mimeType: string, sizeBytes: number) =>
+      checkDeclared(MATERIALS_BUCKET, { fileName, mimeType, sizeBytes });
+    expect(declared('a.pdf', 'application/pdf', 10)).toEqual({ ok: true, extension: 'pdf' });
+    expect(declared('a.exe', 'application/x-msdownload', 10)).toEqual({
+      ok: false,
+      reason: 'type_not_allowed',
+    });
+    expect(declared('a.pdf', 'application/pdf', MATERIALS_BUCKET.maxBytes + 1)).toEqual({
+      ok: false,
+      reason: 'too_large',
+    });
   });
 
   it('chave do objeto nunca usa o nome enviado; nome de download sem caracteres perigosos', () => {

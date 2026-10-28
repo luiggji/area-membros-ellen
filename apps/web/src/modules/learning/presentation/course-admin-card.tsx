@@ -82,7 +82,14 @@ function LessonList({ moduleId, lessons }: { moduleId: string; lessons: AdminLes
 }
 
 /** Um curso no editor da owner (CF-081): estado, edição e módulos na ordem. */
-export function CourseAdminCard({ course }: { course: AdminCourse }) {
+export function CourseAdminCard({
+  course,
+  tracks,
+}: {
+  course: AdminCourse;
+  tracks: { id: string; title: string }[];
+}) {
+  const track = tracks.find((t) => t.id === course.trackId);
   return (
     <article className="flex flex-col gap-6 rounded-(--radius-card) border border-cf-border bg-cf-surface p-6 sm:p-8">
       <header className="flex flex-col gap-1">
@@ -92,7 +99,9 @@ export function CourseAdminCard({ course }: { course: AdminCourse }) {
             {statusLabel(course.status, course.publishAt)}
           </span>
         </div>
-        <p className="break-all text-xs text-cf-text-secondary">/app/cursos/{course.slug}</p>
+        <p className="break-all text-xs text-cf-text-secondary">
+          /app/cursos/{course.slug} · {track ? `Trilha ${track.title}` : 'Avulso'}
+        </p>
       </header>
 
       <details>
@@ -100,7 +109,7 @@ export function CourseAdminCard({ course }: { course: AdminCourse }) {
           Editar curso, estado e ordem
         </summary>
         <div className="pt-4">
-          <EditCourseForm course={course} />
+          <EditCourseForm course={course} tracks={tracks} />
         </div>
       </details>
 

@@ -11,10 +11,6 @@ export interface MemberSectionState {
 }
 
 export const memberSectionStates: Readonly<Record<string, MemberSectionState>> = {
-  cursos: {
-    title: 'Ainda não há cursos publicados',
-    description: 'Quando a primeira trilha for publicada, ela aparece aqui com o seu progresso.',
-  },
   comunidade: {
     title: 'A comunidade ainda não abriu',
     description:

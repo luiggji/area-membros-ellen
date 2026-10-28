@@ -4,7 +4,7 @@ import { allMemberNav } from './member-nav';
 import { findMemberSection, memberSectionStates } from './member-sections';
 
 // Destinos com tela real ou página própria: não usam o estado vazio genérico.
-const BUILT = ['', 'jornada', 'cafe', 'assinatura'];
+const BUILT = ['', 'jornada', 'cursos', 'cafe', 'assinatura'];
 
 describe('seções do membro ainda sem tela (CF-171)', () => {
   it('todo destino do menu sem tela tem estado vazio, e só eles', () => {
@@ -19,7 +19,8 @@ describe('seções do membro ainda sem tela (CF-171)', () => {
   });
 
   it('acha a seção com rótulo e ícone do menu; slug desconhecido não existe', () => {
-    expect(findMemberSection('cursos')).toMatchObject({ label: 'Cursos', icon: 'courses' });
+    expect(findMemberSection('comunidade')).toMatchObject({ label: 'Comunidade' });
+    expect(findMemberSection('cursos')).toBeNull();
     expect(findMemberSection('jornada')).toBeNull();
     expect(findMemberSection('qualquer')).toBeNull();
   });

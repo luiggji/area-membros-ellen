@@ -38,8 +38,8 @@ const envSchema = z
     /** Segredo compartilhado com o web para pedir revalidação. Nunca em NEXT_PUBLIC_*. */
     REVALIDATE_SECRET: optionalText.pipe(z.string().min(32).optional()),
     /**
-     * Segredo dos links de vídeo do player (CF-083), 32+ caracteres. Sem ele, cada processo sorteia
-     * o seu (links valem só até reiniciar); com mais de uma instância, definir o mesmo em todas.
+     * Segredo dos links de vídeo do player (CF-083), 32+ caracteres; obrigatório fora de dev. Em
+     * dev, sem ele, cada processo sorteia o seu (links valem só até reiniciar).
      */
     MEDIA_SIGNING_SECRET: optionalText.pipe(z.string().min(32).optional()),
     // Supabase: opcionais em dev até a hospedagem ser escolhida (P-014); obrigatórios fora dele.
@@ -76,6 +76,15 @@ const envSchema = z
         code: 'custom',
         path: ['SUPABASE_SERVICE_ROLE_KEY'],
         message: `${env.APP_ENV} exige a chave de serviço do próprio projeto`,
+      });
+    }
+    // Fora de dev, o segredo dos links de vídeo é fixo: sorteado por processo, os links quebram a
+    // cada restart e entre instâncias (revisão de segurança da CF-083).
+    if (!env.MEDIA_SIGNING_SECRET && env.APP_ENV !== 'development') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['MEDIA_SIGNING_SECRET'],
+        message: `${env.APP_ENV} exige MEDIA_SIGNING_SECRET (32+ caracteres)`,
       });
     }
   })

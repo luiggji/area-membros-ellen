@@ -11,10 +11,12 @@ import {
   submitCreateCourse,
   submitCreateLesson,
   submitCreateModule,
+  submitCreateTrack,
   submitSaveLessonContent,
   submitUpdateCourse,
   submitUpdateLesson,
   submitUpdateModule,
+  submitUpdateTrack,
 } from '../application/content-use-cases';
 import { contentAdminApi } from '../infrastructure/content-admin-api';
 
@@ -59,4 +61,12 @@ export async function updateLessonAction(_state: ContentFormState, form: FormDat
 
 export async function saveLessonContentAction(_state: ContentFormState, form: FormData) {
   return run(submitSaveLessonContent, form);
+}
+
+export async function createTrackAction(_state: ContentFormState, form: FormData) {
+  return run(submitCreateTrack, form);
+}
+
+export async function updateTrackAction(_state: ContentFormState, form: FormData) {
+  return run(submitUpdateTrack, form);
 }

@@ -23,6 +23,8 @@ export const contentAdminApi: ContentAdminApi & { tree(): Promise<AdminContent |
     const parsed = adminContentSchema.safeParse(await response.json());
     return parsed.success ? parsed.data : null;
   },
+  createTrack: (body) => send('POST', '/trilhas', body),
+  updateTrack: (id, body) => send('PATCH', `/trilhas/${encodeURIComponent(id)}`, body),
   createCourse: (body) => send('POST', '/cursos', body),
   updateCourse: (id, body) => send('PATCH', `/cursos/${encodeURIComponent(id)}`, body),
   createModule: (courseId, body) =>

@@ -8,10 +8,12 @@ import {
   isoToBrasiliaLocal,
   submitCreateCourse,
   submitCreateLesson,
+  submitCreateTrack,
   submitSaveLessonContent,
   submitUpdateCourse,
   submitUpdateLesson,
   submitUpdateModule,
+  submitUpdateTrack,
 } from './content-use-cases';
 
 const COURSE = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
@@ -25,6 +27,8 @@ function fakeApi(result: ContentApiResult = { ok: true }) {
       return result;
     };
   const api: ContentAdminApi = {
+    createTrack: record('createTrack'),
+    updateTrack: record('updateTrack'),
     createCourse: record('createCourse'),
     updateCourse: record('updateCourse'),
     createModule: record('createModule'),
@@ -93,6 +97,7 @@ describe('editor de conteúdo (CF-081)', () => {
           title: 'Gestão',
           summary: '',
           orderIndex: 2,
+          trackId: null,
           status: 'scheduled',
           publishAt: '2026-11-03T12:00:00.000Z',
         },
@@ -202,5 +207,55 @@ describe('aulas e conteúdo da aula (CF-172)', () => {
       await submitSaveLessonContent({ lessonId: LESSON, bodyMd: '# Texto', mediaRef: 'abc' }, api),
     ).toEqual({ status: 'success', message: 'Conteúdo da aula salvo.' });
     expect(calls[0]).toEqual(['saveLessonContent', LESSON, { bodyMd: '# Texto', mediaRef: 'abc' }]);
+  });
+});
+
+describe('trilhas (CF-173)', () => {
+  const TRACK = '4d5e6f7a-8b9c-4d0e-8f1a-2b3c4d5e6f70';
+
+  it('curso vinculado a trilha ou avulso (campo vazio)', async () => {
+    const { api, calls } = fakeApi();
+    const course = {
+      courseId: COURSE,
+      title: 'Gestão',
+      summary: '',
+      orderIndex: '0',
+      status: 'draft',
+      publishAt: '',
+    };
+    await submitUpdateCourse({ ...course, trackId: TRACK }, api);
+    await submitUpdateCourse({ ...course, trackId: '' }, api);
+    expect(calls.map((c) => (c[2] as { trackId: string | null }).trackId)).toEqual([TRACK, null]);
+  });
+
+  it('cria trilha; endereço repetido avisa que é de trilha; agendada sem data não envia', async () => {
+    const ok = fakeApi();
+    expect(
+      await submitCreateTrack({ title: 'Comece aqui', slug: 'comece-aqui', summary: '' }, ok.api),
+    ).toEqual({
+      status: 'success',
+      message: 'Trilha “Comece aqui” criada em rascunho.',
+    });
+    const dup = fakeApi({ ok: false, status: 409 });
+    expect(
+      await submitCreateTrack({ title: 'Comece aqui', slug: 'comece-aqui', summary: '' }, dup.api),
+    ).toMatchObject({
+      message: CONTENT_MESSAGES.trackSlugTaken,
+    });
+    const noDate = fakeApi();
+    expect(
+      await submitUpdateTrack(
+        {
+          trackId: TRACK,
+          title: 'Comece aqui',
+          summary: '',
+          orderIndex: '0',
+          status: 'scheduled',
+          publishAt: '',
+        },
+        noDate.api,
+      ),
+    ).toMatchObject({ status: 'error', fieldErrors: { publishAt: 'Agendado precisa de data.' } });
+    expect(noDate.calls).toEqual([]);
   });
 });

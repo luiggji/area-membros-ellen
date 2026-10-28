@@ -2,10 +2,12 @@ import {
   createCourseRequestSchema,
   createLessonRequestSchema,
   createModuleRequestSchema,
+  createTrackRequestSchema,
   lessonContentRequestSchema,
   updateCourseRequestSchema,
   updateLessonRequestSchema,
   updateModuleRequestSchema,
+  updateTrackRequestSchema,
 } from '@caixa-forte/contracts';
 import type { z } from 'zod';
 
@@ -14,6 +16,11 @@ export type ContentApiResult =
   { ok: true } | { ok: false; status: number; fields?: Record<string, string> };
 
 export interface ContentAdminApi {
+  createTrack(body: z.infer<typeof createTrackRequestSchema>): Promise<ContentApiResult>;
+  updateTrack(
+    id: string,
+    body: z.infer<typeof updateTrackRequestSchema>,
+  ): Promise<ContentApiResult>;
   createCourse(body: z.infer<typeof createCourseRequestSchema>): Promise<ContentApiResult>;
   updateCourse(
     id: string,
@@ -53,6 +60,7 @@ export type ContentFormState =
 
 export const CONTENT_MESSAGES = {
   slugTaken: 'Já existe um curso com este endereço.',
+  trackSlugTaken: 'Já existe uma trilha com este endereço.',
   notFound: 'Este item não existe mais. Recarregue a página.',
   forbidden:
     'Sua sessão não tem permissão para editar conteúdo. Entre de novo com a verificação em duas etapas.',
@@ -88,12 +96,13 @@ function fromApi(
   result: ContentApiResult,
   success: string,
   values: Record<string, string>,
+  slugTaken: string = CONTENT_MESSAGES.slugTaken,
 ): ContentFormState {
   if (result.ok) return { status: 'success', message: success };
   if (result.fields) return { status: 'error', fieldErrors: result.fields, values };
   const message =
     result.status === 409
-      ? CONTENT_MESSAGES.slugTaken
+      ? slugTaken
       : result.status === 404
         ? CONTENT_MESSAGES.notFound
         : result.status === 401 || result.status === 403
@@ -150,17 +159,23 @@ export async function submitCreateCourse(input: Record<string, unknown>, api: Co
 export async function submitUpdateCourse(input: Record<string, unknown>, api: ContentAdminApi) {
   const { values, body, errors } = publication(input);
   const summary = text(input.summary);
-  const parsed = updateCourseRequestSchema.safeParse({ ...body, summary });
+  const trackId = text(input.trackId);
+  const parsed = updateCourseRequestSchema.safeParse({
+    ...body,
+    summary,
+    trackId: trackId || null,
+  });
   if (!parsed.success) {
     return {
       status: 'error',
       fieldErrors: errors(parsed.error.issues),
-      values: { ...values, summary },
+      values: { ...values, summary, trackId },
     } as ContentFormState;
   }
   return fromApi(await api.updateCourse(text(input.courseId), parsed.data), 'Curso salvo.', {
     ...values,
     summary,
+    trackId,
   });
 }
 
@@ -260,4 +275,39 @@ export async function submitSaveLessonContent(
     'Conteúdo da aula salvo.',
     values,
   );
+}
+
+export async function submitCreateTrack(input: Record<string, unknown>, api: ContentAdminApi) {
+  const values = { title: text(input.title), slug: text(input.slug), summary: text(input.summary) };
+  const parsed = createTrackRequestSchema.safeParse(values);
+  if (!parsed.success) {
+    return {
+      status: 'error',
+      fieldErrors: fieldErrors(parsed.error.issues),
+      values,
+    } as ContentFormState;
+  }
+  return fromApi(
+    await api.createTrack(parsed.data),
+    `Trilha “${parsed.data.title}” criada em rascunho.`,
+    values,
+    CONTENT_MESSAGES.trackSlugTaken,
+  );
+}
+
+export async function submitUpdateTrack(input: Record<string, unknown>, api: ContentAdminApi) {
+  const { values, body, errors } = publication(input);
+  const summary = text(input.summary);
+  const parsed = updateTrackRequestSchema.safeParse({ ...body, summary });
+  if (!parsed.success) {
+    return {
+      status: 'error',
+      fieldErrors: errors(parsed.error.issues),
+      values: { ...values, summary },
+    } as ContentFormState;
+  }
+  return fromApi(await api.updateTrack(text(input.trackId), parsed.data), 'Trilha salva.', {
+    ...values,
+    summary,
+  });
 }

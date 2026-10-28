@@ -79,7 +79,7 @@ export function MaterialUploadForm({ courses }: { courses: { id: string; title: 
           </p>
         )}
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 [&>*]:min-w-0">
         <TextField name="title" label="Título" required error={error('title')} />
         <TextField
           name="subject"
@@ -95,7 +95,7 @@ export function MaterialUploadForm({ courses }: { courses: { id: string; title: 
         maxLength={600}
         error={error('description')}
       />
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3 [&>*]:min-w-0">
         <TextField name="version" label="Versão" defaultValue="1" error={error('version')} />
         <TextField name="revisedOn" type="date" label="Revisado em" error={error('revisedOn')} />
         <SelectField

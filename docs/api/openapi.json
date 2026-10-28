@@ -458,10 +458,80 @@
                                 "title": {
                                   "type": "string"
                                 },
-                                "lessonCount": {
-                                  "type": "integer",
-                                  "minimum": -9007199254740991,
-                                  "maximum": 9007199254740991
+                                "lessons": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                      },
+                                      "title": {
+                                        "type": "string"
+                                      },
+                                      "summary": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "video",
+                                          "text"
+                                        ]
+                                      },
+                                      "durationMinutes": {
+                                        "nullable": true,
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "isFree": {
+                                        "type": "boolean"
+                                      },
+                                      "bodyMd": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "mediaRef": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "orderIndex": {
+                                        "type": "integer",
+                                        "minimum": -9007199254740991,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "enum": [
+                                          "draft",
+                                          "scheduled",
+                                          "published"
+                                        ]
+                                      },
+                                      "publishAt": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "title",
+                                      "summary",
+                                      "kind",
+                                      "durationMinutes",
+                                      "isFree",
+                                      "bodyMd",
+                                      "mediaRef",
+                                      "orderIndex",
+                                      "status",
+                                      "publishAt"
+                                    ],
+                                    "additionalProperties": false
+                                  }
                                 },
                                 "orderIndex": {
                                   "type": "integer",
@@ -484,7 +554,7 @@
                               "required": [
                                 "id",
                                 "title",
-                                "lessonCount",
+                                "lessons",
                                 "orderIndex",
                                 "status",
                                 "publishAt"
@@ -545,7 +615,7 @@
             "bearer": []
           }
         ],
-        "summary": "Cursos e módulos em qualquer estado, na ordem",
+        "summary": "Cursos, módulos e aulas em qualquer estado, na ordem",
         "tags": [
           "learning"
         ]
@@ -665,6 +735,102 @@
           }
         ],
         "summary": "Editar, ordenar e publicar/agendar módulo",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/admin/conteudo/modulos/{id}/aulas": {
+      "post": {
+        "operationId": "ContentAdminController_createLesson",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar aula no módulo (nasce em rascunho)",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/admin/conteudo/aulas/{id}": {
+      "patch": {
+        "operationId": "ContentAdminController_updateLesson",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar, ordenar e publicar/agendar aula",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/admin/conteudo/aulas/{id}/conteudo": {
+      "put": {
+        "operationId": "ContentAdminController_saveLessonContent",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gravar o conteúdo protegido da aula (texto e referência da mídia)",
         "tags": [
           "learning"
         ]

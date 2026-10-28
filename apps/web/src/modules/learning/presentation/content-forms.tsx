@@ -1,6 +1,12 @@
 'use client';
 
-import { CONTENT_STATUSES, type ContentStatus } from '@caixa-forte/contracts';
+import {
+  type AdminLesson,
+  CONTENT_STATUSES,
+  type ContentStatus,
+  LESSON_KINDS,
+  type LessonKind,
+} from '@caixa-forte/contracts';
 import { Button, Notice, SelectField, TextAreaField, TextField } from '@caixa-forte/ui';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -8,8 +14,11 @@ import { useFormStatus } from 'react-dom';
 import { type ContentFormState, isoToBrasiliaLocal } from '../application/content-use-cases';
 import {
   createCourseAction,
+  createLessonAction,
   createModuleAction,
+  saveLessonContentAction,
   updateCourseAction,
+  updateLessonAction,
   updateModuleAction,
 } from './content-actions';
 
@@ -44,6 +53,11 @@ function useContentForm(
 const statusOptions = (Object.keys(CONTENT_STATUSES) as ContentStatus[]).map((value) => ({
   value,
   label: CONTENT_STATUSES[value],
+}));
+
+const kindOptions = (Object.keys(LESSON_KINDS) as LessonKind[]).map((value) => ({
+  value,
+  label: LESSON_KINDS[value],
 }));
 
 /** Estado, data de agendamento (horário de Brasília) e ordem: comuns a curso e módulo. */
@@ -205,6 +219,123 @@ export function EditModuleForm({
       <PublicationFields form={form} current={module} />
       <div>
         <Submit idle="Salvar módulo" pending="Salvando…" />
+      </div>
+    </form>
+  );
+}
+
+export function CreateLessonForm({ moduleId }: { moduleId: string }) {
+  const form = useContentForm(createLessonAction);
+  return (
+    <form action={form.formAction} className="flex flex-col gap-3" noValidate>
+      {form.notice}
+      <input type="hidden" name="moduleId" value={moduleId} />
+      <div className="grid gap-4 sm:grid-cols-[1fr_10rem]">
+        <TextField
+          name="title"
+          label="Nova aula"
+          required
+          defaultValue={form.value('title')}
+          error={form.error('title')}
+        />
+        <SelectField
+          name="kind"
+          label="Tipo"
+          options={kindOptions}
+          defaultValue={form.value('kind') ?? 'video'}
+          error={form.error('kind')}
+        />
+      </div>
+      <div>
+        <Submit idle="Criar aula" pending="Criando…" />
+      </div>
+    </form>
+  );
+}
+
+export function EditLessonForm({ lesson }: { lesson: AdminLesson }) {
+  const form = useContentForm(updateLessonAction);
+  const isFree = form.value('isFree');
+  return (
+    <form action={form.formAction} className="flex flex-col gap-4" noValidate>
+      {form.notice}
+      <input type="hidden" name="lessonId" value={lesson.id} />
+      <TextField
+        name="title"
+        label="Título da aula"
+        required
+        defaultValue={form.value('title') ?? lesson.title}
+        error={form.error('title')}
+      />
+      <TextAreaField
+        name="summary"
+        label="Resumo"
+        maxLength={600}
+        defaultValue={form.value('summary') ?? lesson.summary ?? ''}
+        error={form.error('summary')}
+      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <SelectField
+          name="kind"
+          label="Tipo"
+          options={kindOptions}
+          defaultValue={form.value('kind') ?? lesson.kind}
+          error={form.error('kind')}
+        />
+        <TextField
+          name="durationMinutes"
+          type="number"
+          min={1}
+          max={600}
+          label="Duração (minutos)"
+          helper="Opcional."
+          defaultValue={form.value('durationMinutes') ?? String(lesson.durationMinutes ?? '')}
+          error={form.error('durationMinutes')}
+        />
+      </div>
+      <label className="flex min-h-11 items-center gap-3 text-sm text-cf-text">
+        <input
+          type="checkbox"
+          name="isFree"
+          defaultChecked={isFree === undefined ? lesson.isFree : isFree === 'on'}
+          className="size-5 accent-cf-primary"
+        />
+        Aula aberta (quem está logado assiste mesmo sem assinatura)
+      </label>
+      <PublicationFields form={form} current={lesson} />
+      <div>
+        <Submit idle="Salvar aula" pending="Salvando…" />
+      </div>
+    </form>
+  );
+}
+
+/** Conteúdo protegido: só quem tem acesso (ou aula aberta) recebe pela API. */
+export function LessonContentForm({ lesson }: { lesson: AdminLesson }) {
+  const form = useContentForm(saveLessonContentAction);
+  return (
+    <form action={form.formAction} className="flex flex-col gap-4" noValidate>
+      {form.notice}
+      <input type="hidden" name="lessonId" value={lesson.id} />
+      <TextAreaField
+        name="bodyMd"
+        label="Texto da aula"
+        helper="Em Markdown: # título, **negrito**, - lista."
+        rows={10}
+        maxLength={50_000}
+        defaultValue={form.value('bodyMd') ?? lesson.bodyMd ?? ''}
+        error={form.error('bodyMd')}
+      />
+      <TextField
+        name="mediaRef"
+        label="Identificador do vídeo"
+        helper="O código do vídeo no provedor, não o link."
+        autoComplete="off"
+        defaultValue={form.value('mediaRef') ?? lesson.mediaRef ?? ''}
+        error={form.error('mediaRef')}
+      />
+      <div>
+        <Submit idle="Salvar conteúdo" pending="Salvando…" />
       </div>
     </form>
   );

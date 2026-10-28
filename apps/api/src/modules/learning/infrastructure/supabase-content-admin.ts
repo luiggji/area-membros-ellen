@@ -2,8 +2,12 @@ import {
   AdminContent,
   ContentStatus,
   CreateCourseRequest,
+  CreateLessonRequest,
   CreateModuleRequest,
+  LessonContentRequest,
+  LessonKind,
   UpdateCourseRequest,
+  UpdateLessonRequest,
   UpdateModuleRequest,
 } from '@caixa-forte/contracts';
 
@@ -31,7 +35,7 @@ export class SupabaseContentAdminStore implements ContentAdminStore {
     const { data, error } = await this.client
       .from('courses')
       .select(
-        'id, slug, title, summary, track_id, order_index, status, publish_at, created_at, course_modules(id, title, order_index, status, publish_at, created_at, lessons(count))',
+        'id, slug, title, summary, track_id, order_index, status, publish_at, created_at, course_modules(id, title, order_index, status, publish_at, created_at, lessons(id, title, summary, kind, duration_minutes, is_free, order_index, status, publish_at, created_at, lesson_contents(body_md, media_ref)))',
       );
     if (error) throw new Error(`courses: falha ao listar (${error.code})`);
     return {
@@ -50,7 +54,19 @@ export class SupabaseContentAdminStore implements ContentAdminStore {
           orderIndex: module.order_index,
           status: module.status as ContentStatus,
           publishAt: module.publish_at,
-          lessonCount: (module.lessons as unknown as { count: number }[])[0]?.count ?? 0,
+          lessons: [...module.lessons].sort(byOrder).map((lesson) => ({
+            id: lesson.id,
+            title: lesson.title,
+            summary: lesson.summary,
+            kind: lesson.kind as LessonKind,
+            durationMinutes: lesson.duration_minutes,
+            isFree: lesson.is_free,
+            orderIndex: lesson.order_index,
+            status: lesson.status as ContentStatus,
+            publishAt: lesson.publish_at,
+            bodyMd: lesson.lesson_contents?.body_md ?? null,
+            mediaRef: lesson.lesson_contents?.media_ref ?? null,
+          })),
         })),
       })),
     };
@@ -100,6 +116,44 @@ export class SupabaseContentAdminStore implements ContentAdminStore {
       .select('id');
     return toWrite(data, error, 'course_modules.update');
   }
+
+  async createLesson(moduleId: string, input: CreateLessonRequest): Promise<ContentWrite> {
+    const { data, error } = await this.client
+      .from('lessons')
+      .insert({ module_id: moduleId, title: input.title, kind: input.kind })
+      .select('id');
+    return toWrite(data, error, 'lessons.insert');
+  }
+
+  async updateLesson(id: string, input: UpdateLessonRequest): Promise<ContentWrite> {
+    const { data, error } = await this.client
+      .from('lessons')
+      .update({
+        title: input.title,
+        summary: input.summary || null,
+        kind: input.kind,
+        duration_minutes: input.durationMinutes,
+        is_free: input.isFree,
+        order_index: input.orderIndex,
+        status: input.status,
+        publish_at: input.publishAt,
+      })
+      .eq('id', id)
+      .select('id');
+    return toWrite(data, error, 'lessons.update');
+  }
+
+  /** Uma linha por aula (a chave é a própria aula): grava ou substitui o conteúdo inteiro. */
+  async saveLessonContent(lessonId: string, input: LessonContentRequest): Promise<ContentWrite> {
+    const { data, error } = await this.client
+      .from('lesson_contents')
+      .upsert(
+        { lesson_id: lessonId, body_md: input.bodyMd || null, media_ref: input.mediaRef || null },
+        { onConflict: 'lesson_id' },
+      )
+      .select('id:lesson_id');
+    return toWrite(data, error, 'lesson_contents.upsert');
+  }
 }
 
 /** Dev sem Supabase: nada para listar; escrever falha alto em vez de fingir sucesso. */
@@ -125,6 +179,18 @@ export class UnconfiguredContentAdminStore implements ContentAdminStore {
   }
 
   async updateModule(): Promise<ContentWrite> {
+    this.fail();
+  }
+
+  async createLesson(): Promise<ContentWrite> {
+    this.fail();
+  }
+
+  async updateLesson(): Promise<ContentWrite> {
+    this.fail();
+  }
+
+  async saveLessonContent(): Promise<ContentWrite> {
     this.fail();
   }
 }

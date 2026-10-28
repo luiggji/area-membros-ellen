@@ -79,6 +79,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"directory_profiles": {
+                  Row: {
+                    "areas": string[],"bio": string | null,"city": string | null,"created_at": string,"display_name": string,"links": string[],"state": string | null,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "areas"?: string[],"bio"?: string | null,"city"?: string | null,"created_at"?: string,"display_name": string,"links"?: string[],"state"?: string | null,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "areas"?: string[],"bio"?: string | null,"city"?: string | null,"created_at"?: string,"display_name"?: string,"links"?: string[],"state"?: string | null,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"entitlements": {
                   Row: {
                     "created_at": string,"granted_by": string | null,"id": string,"reason": string | null,"resource_scope": string,"revoked_at": string | null,"revoked_by": string | null,"source": string,"source_subscription_id": string | null,"user_id": string,"valid_from": string,"valid_to": string | null

@@ -19,6 +19,29 @@ export const LESSON_ACCESS = {
 } as const;
 export type LessonAccess = keyof typeof LESSON_ACCESS;
 
+/** Progresso de quem está vendo (CF-084): última posição do vídeo e quando concluiu. */
+export const lessonProgressSchema = z.object({
+  positionSeconds: z.number().int(),
+  completedAt: z.string().nullable(),
+});
+export type LessonProgress = z.infer<typeof lessonProgressSchema>;
+
+/** Gravar progresso: posição do vídeo e/ou marcar (true) ou desmarcar (false) a conclusão. */
+export const saveProgressRequestSchema = z
+  .object({
+    positionSeconds: z
+      .number({ error: 'Posição em segundos.' })
+      .int('Posição em segundos.')
+      .min(0, 'Posição em segundos.')
+      .max(86_400, 'Posição em segundos.')
+      .optional(),
+    completed: z.boolean().optional(),
+  })
+  .refine((body) => body.positionSeconds !== undefined || body.completed !== undefined, {
+    message: 'Informe a posição ou a conclusão.',
+  });
+export type SaveProgressRequest = z.infer<typeof saveProgressRequestSchema>;
+
 /** Aula no player. Sem acesso, só os dados públicos da aula: nada de texto nem vídeo. */
 export const lessonViewSchema = z.object({
   id: z.uuid(),
@@ -32,5 +55,7 @@ export const lessonViewSchema = z.object({
   access: z.enum(['granted', 'subscription_required']),
   bodyMd: z.string().nullable(),
   video: lessonVideoSchema.nullable(),
+  /** Só quando liberada; `null` = ainda não começou. */
+  progress: lessonProgressSchema.nullable(),
 });
 export type LessonView = z.infer<typeof lessonViewSchema>;

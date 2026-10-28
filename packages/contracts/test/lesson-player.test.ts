@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { lessonViewSchema } from '../src/lesson-player.js';
+import { lessonViewSchema, saveProgressRequestSchema } from '../src/lesson-player.js';
 
 const lesson = {
   id: '3c4d5e6f-7a8b-4c9d-8e1f-2a3b4c5d6e7f',
@@ -14,6 +14,7 @@ const lesson = {
   access: 'subscription_required',
   bodyMd: null,
   video: null,
+  progress: null,
 };
 
 describe('aula no player', () => {
@@ -28,5 +29,13 @@ describe('aula no player', () => {
     expect(lessonViewSchema.safeParse({ ...lesson, video: { state: 'ready' } }).success).toBe(
       false,
     );
+  });
+
+  it('progresso: posição inteira de 0 a 24 h e/ou conclusão; corpo vazio é recusado', () => {
+    expect(saveProgressRequestSchema.safeParse({ positionSeconds: 95 }).success).toBe(true);
+    expect(saveProgressRequestSchema.safeParse({ completed: false }).success).toBe(true);
+    expect(saveProgressRequestSchema.safeParse({}).success).toBe(false);
+    expect(saveProgressRequestSchema.safeParse({ positionSeconds: -1 }).success).toBe(false);
+    expect(saveProgressRequestSchema.safeParse({ positionSeconds: 1.5 }).success).toBe(false);
   });
 });

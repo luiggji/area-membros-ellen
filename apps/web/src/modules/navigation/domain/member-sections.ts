@@ -25,10 +25,6 @@ export const memberSectionStates: Readonly<Record<string, MemberSectionState>> =
     title: 'Nenhum encontro ao vivo agendado',
     description: 'Os próximos encontros aparecem aqui com data, horário e como participar.',
   },
-  cofre: {
-    title: 'Ainda não há materiais publicados',
-    description: 'Modelos e materiais de apoio aparecem aqui assim que forem publicados.',
-  },
   planejamento: {
     title: 'Seu planejamento ainda não começou',
     description: 'O objetivo de 90 dias e as tarefas do mês ficam aqui, visíveis só para você.',

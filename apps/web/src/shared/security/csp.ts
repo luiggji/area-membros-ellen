@@ -34,6 +34,14 @@ function connectSources({ apiUrl, supabaseUrl }: CspOptions): string[] {
   return sources;
 }
 
+/**
+ * Vídeo do player (CF-083): o link assinado sai da API e redireciona ao provedor. A origem do
+ * provedor entra aqui junto com o adaptador dele (P-007).
+ */
+function mediaSources({ apiUrl }: CspOptions): string[] {
+  return apiUrl ? ["'self'", new URL(apiUrl).origin] : ["'self'"];
+}
+
 export function buildCsp(options: CspOptions): string {
   const { nonce, isDev } = options;
   const scriptSrc = nonce
@@ -49,6 +57,7 @@ export function buildCsp(options: CspOptions): string {
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
     `connect-src ${connectSources(options).join(' ')}`,
+    `media-src ${mediaSources(options).join(' ')}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

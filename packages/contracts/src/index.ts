@@ -5,6 +5,7 @@ export * from './profile.js';
 export * from './access-grants.js';
 export * from './plans.js';
 export * from './content-admin.js';
+export * from './catalog.js';
 export * from './environment.js';
 export * from './supabase-keys.js';
 export * from './feature-flags.js';

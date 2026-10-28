@@ -407,6 +407,269 @@
         ]
       }
     },
+    "/api/v1/admin/conteudo": {
+      "get": {
+        "operationId": "ContentAdminController_tree",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "courses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "trackId": {
+                            "nullable": true,
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "modules": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "title": {
+                                  "type": "string"
+                                },
+                                "lessonCount": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "orderIndex": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "draft",
+                                    "scheduled",
+                                    "published"
+                                  ]
+                                },
+                                "publishAt": {
+                                  "nullable": true,
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "title",
+                                "lessonCount",
+                                "orderIndex",
+                                "status",
+                                "publishAt"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "orderIndex": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "draft",
+                              "scheduled",
+                              "published"
+                            ]
+                          },
+                          "publishAt": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "title",
+                          "summary",
+                          "trackId",
+                          "modules",
+                          "orderIndex",
+                          "status",
+                          "publishAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "courses"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cursos e módulos em qualquer estado, na ordem",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/admin/conteudo/cursos": {
+      "post": {
+        "operationId": "ContentAdminController_createCourse",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar curso (nasce em rascunho)",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/admin/conteudo/cursos/{id}": {
+      "patch": {
+        "operationId": "ContentAdminController_updateCourse",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar, ordenar e publicar/agendar curso",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/admin/conteudo/cursos/{id}/modulos": {
+      "post": {
+        "operationId": "ContentAdminController_createModule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar módulo no curso (nasce em rascunho)",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
+    "/api/v1/admin/conteudo/modulos/{id}": {
+      "patch": {
+        "operationId": "ContentAdminController_updateModule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar, ordenar e publicar/agendar módulo",
+        "tags": [
+          "learning"
+        ]
+      }
+    },
     "/api/v1/health": {
       "get": {
         "operationId": "HealthController_handle",

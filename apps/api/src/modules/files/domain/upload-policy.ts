@@ -9,10 +9,16 @@ export interface BucketRules {
   types: Readonly<Record<string, readonly string[]>>;
 }
 
-export interface UploadCandidate {
+/** O que se sabe antes do envio: nome, tipo declarado e tamanho. */
+export interface DeclaredFile {
   fileName: string;
   mimeType: string;
-  bytes: Uint8Array;
+  sizeBytes: number;
+}
+
+/** Depois do envio: o tamanho real e os primeiros bytes (bastam 16 para a assinatura). */
+export interface UploadCandidate extends DeclaredFile {
+  head: Uint8Array;
 }
 
 export type UploadCheck =
@@ -49,18 +55,26 @@ export function extensionOf(fileName: string): string {
   return match?.[1]?.toLowerCase() ?? '';
 }
 
-export function checkUpload(rules: BucketRules, file: UploadCandidate): UploadCheck {
-  if (file.bytes.length === 0) return { ok: false, reason: 'empty' };
-  if (file.bytes.length > rules.maxBytes) return { ok: false, reason: 'too_large' };
+/** Antes do envio: tamanho, tipo da lista e extensão do mesmo tipo. */
+export function checkDeclared(rules: BucketRules, file: DeclaredFile): UploadCheck {
+  if (file.sizeBytes <= 0) return { ok: false, reason: 'empty' };
+  if (file.sizeBytes > rules.maxBytes) return { ok: false, reason: 'too_large' };
   const extensions = rules.types[file.mimeType];
   if (!extensions) return { ok: false, reason: 'type_not_allowed' };
   const extension = extensionOf(file.fileName);
   if (!extensions.includes(extension)) return { ok: false, reason: 'extension_mismatch' };
-  const format = FORMAT_OF_EXTENSION[extension];
-  if (!format || !startsWith(file.bytes, SIGNATURES[format]!)) {
+  return { ok: true, extension };
+}
+
+/** Depois do envio: tudo o que vale antes e, além disso, os primeiros bytes do formato. */
+export function checkUpload(rules: BucketRules, file: UploadCandidate): UploadCheck {
+  const declared = checkDeclared(rules, file);
+  if (!declared.ok) return declared;
+  const format = FORMAT_OF_EXTENSION[declared.extension];
+  if (!format || !startsWith(file.head, SIGNATURES[format]!)) {
     return { ok: false, reason: 'content_mismatch' };
   }
-  return { ok: true, extension };
+  return declared;
 }
 
 /**

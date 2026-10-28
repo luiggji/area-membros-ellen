@@ -30,6 +30,7 @@ const USERS: Record<string, { id: string; roles: Role[]; aal: 'aal1' | 'aal2' }>
 };
 const COURSE = '1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d';
 const MODULE = '2b3c4d5e-6f7a-4b8c-9d0e-1f2a3b4c5d6e';
+const LESSON = '3c4d5e6f-7a8b-4c9d-8e1f-2a3b4c5d6e7f';
 
 const state = { calls: [] as unknown[][] };
 const store: ContentAdminStore = {
@@ -50,9 +51,21 @@ const store: ContentAdminStore = {
     state.calls.push(['updateModule', id, input]);
     return id === MODULE ? { status: 'ok', id } : { status: 'not_found' };
   },
+  createLesson: async (moduleId, input) => {
+    state.calls.push(['createLesson', moduleId, input]);
+    return moduleId === MODULE ? { status: 'ok', id: LESSON } : { status: 'not_found' };
+  },
+  updateLesson: async (id, input) => {
+    state.calls.push(['updateLesson', id, input]);
+    return id === LESSON ? { status: 'ok', id } : { status: 'not_found' };
+  },
+  saveLessonContent: async (id, input) => {
+    state.calls.push(['saveLessonContent', id, input]);
+    return id === LESSON ? { status: 'ok', id } : { status: 'not_found' };
+  },
 };
 
-describe('Editor de conteúdo: cursos e módulos (CF-081, e2e)', () => {
+describe('Editor de conteúdo: cursos, módulos e aulas (CF-081/CF-172, e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -86,7 +99,7 @@ describe('Editor de conteúdo: cursos e módulos (CF-081, e2e)', () => {
     await app.close();
   });
 
-  const send = (method: 'post' | 'patch', path: string, token: string, body: object) =>
+  const send = (method: 'post' | 'patch' | 'put', path: string, token: string, body: object) =>
     request(app.getHttpServer())
       [method](`/api/v1/admin/conteudo${path}`)
       .set('Authorization', `Bearer ${token}`)
@@ -139,6 +152,80 @@ describe('Editor de conteúdo: cursos e módulos (CF-081, e2e)', () => {
       publishAt: null,
     }).expect(200);
     await send('post', `/cursos/${MODULE}/modulos`, 'token-owner', { title: 'X1' }).expect(404);
+  });
+
+  it('owner cria aula, agenda com data e grava o conteúdo; módulo/aula inexistente: 404', async () => {
+    await send('post', `/modulos/${MODULE}/aulas`, 'token-owner', {
+      title: 'Aula 1',
+      kind: 'video',
+    }).expect(201, { id: LESSON });
+    const lesson = {
+      title: 'Aula 1',
+      summary: '',
+      kind: 'text',
+      durationMinutes: 15,
+      isFree: true,
+      orderIndex: 2,
+      status: 'scheduled',
+      publishAt: '2026-11-03T12:00:00.000Z',
+    };
+    await send('patch', `/aulas/${LESSON}`, 'token-owner', lesson).expect(200, { id: LESSON });
+    await send('put', `/aulas/${LESSON}/conteudo`, 'token-owner', {
+      bodyMd: ' # Introdução ',
+      mediaRef: 'abc123',
+    }).expect(200, { id: LESSON });
+    expect(state.calls.at(-1)).toEqual([
+      'saveLessonContent',
+      LESSON,
+      { bodyMd: '# Introdução', mediaRef: 'abc123' },
+    ]);
+    await send('post', `/modulos/${COURSE}/aulas`, 'token-owner', {
+      title: 'Aula 2',
+      kind: 'video',
+    }).expect(404);
+    await send('patch', `/aulas/${MODULE}`, 'token-owner', lesson).expect(404);
+    await send('put', `/aulas/${MODULE}/conteudo`, 'token-owner', {
+      bodyMd: '',
+      mediaRef: '',
+    }).expect(404);
+  });
+
+  it('aula agendada sem data e mídia como link: 400, nada gravado', async () => {
+    const semData = await send('patch', `/aulas/${LESSON}`, 'token-owner', {
+      title: 'Aula 1',
+      summary: '',
+      kind: 'video',
+      durationMinutes: null,
+      isFree: false,
+      orderIndex: 0,
+      status: 'scheduled',
+      publishAt: null,
+    }).expect(400);
+    expect(semData.body.fields.publishAt).toBe('Agendado precisa de data.');
+    const link = await send('put', `/aulas/${LESSON}/conteudo`, 'token-owner', {
+      bodyMd: '',
+      mediaRef: 'https://video.exemplo/abc',
+    }).expect(400);
+    expect(link.body.fields.mediaRef).toBeDefined();
+    expect(state.calls).toEqual([]);
+  });
+
+  it('conteúdo da aula: comercial e membro 403; owner sem MFA 403 mfa_required; nada gravado', async () => {
+    const body = { bodyMd: 'Texto', mediaRef: '' };
+    await send('put', `/aulas/${LESSON}/conteudo`, 'token-comercial', body).expect(403);
+    await send('put', `/aulas/${LESSON}/conteudo`, 'token-membro', body).expect(403);
+    const semMfa = await send(
+      'put',
+      `/aulas/${LESSON}/conteudo`,
+      'token-owner-sem-mfa',
+      body,
+    ).expect(403);
+    expect(semMfa.body.message).toBe('mfa_required');
+    await send('post', `/modulos/${MODULE}/aulas`, 'token-membro', {
+      title: 'Aula',
+      kind: 'video',
+    }).expect(403);
+    expect(state.calls).toEqual([]);
   });
 
   it('comercial e membro: 403; owner sem MFA: 403 mfa_required; sem token: 401; nada gravado', async () => {

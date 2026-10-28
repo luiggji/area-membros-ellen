@@ -3,10 +3,16 @@ import {
   adminContentSchema,
   CreateCourseRequest,
   createCourseRequestSchema,
+  CreateLessonRequest,
+  createLessonRequestSchema,
   CreateModuleRequest,
   createModuleRequestSchema,
+  LessonContentRequest,
+  lessonContentRequestSchema,
   UpdateCourseRequest,
   updateCourseRequestSchema,
+  UpdateLessonRequest,
+  updateLessonRequestSchema,
   UpdateModuleRequest,
   updateModuleRequestSchema,
 } from '@caixa-forte/contracts';
@@ -21,6 +27,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -32,7 +39,8 @@ import { CurrentPrincipal, RequirePermission } from '../../identity/presentation
 import { CONTENT_ADMIN_STORE, ContentAdminStore, ContentWrite } from '../application/content-admin';
 
 /**
- * Editor de conteúdo da owner (CF-081): cursos e módulos sem deploy, com publicação agendada.
+ * Editor de conteúdo da owner (CF-081/CF-172): cursos, módulos e aulas sem deploy, com
+ * publicação agendada.
  * Só `content.manage` (owner, com MFA). Cada alteração vai para a trilha de auditoria.
  */
 @ApiTags('learning')
@@ -47,7 +55,7 @@ export class ContentAdminController {
     result: ContentWrite,
     principal: Principal,
     action: string,
-    targetType: 'course' | 'course_module',
+    targetType: 'course' | 'course_module' | 'lesson',
     after: Record<string, unknown>,
   ): Promise<{ id: string }> {
     if (result.status === 'not_found') throw new NotFoundException(`${targetType}_not_found`);
@@ -65,7 +73,7 @@ export class ContentAdminController {
 
   @Get()
   @RequirePermission('content.manage')
-  @ApiOperation({ summary: 'Cursos e módulos em qualquer estado, na ordem' })
+  @ApiOperation({ summary: 'Cursos, módulos e aulas em qualquer estado, na ordem' })
   @ApiOkResponse({ schema: contractSchema(adminContentSchema) })
   tree(): Promise<AdminContent> {
     return this.store.tree();
@@ -142,6 +150,65 @@ export class ContentAdminController {
         status: body.status,
         publishAt: body.publishAt,
       },
+    );
+  }
+
+  @Post('modulos/:id/aulas')
+  @RequirePermission('content.manage')
+  @ApiOperation({ summary: 'Criar aula no módulo (nasce em rascunho)' })
+  async createLesson(
+    @Param('id', new ParseUUIDPipe()) moduleId: string,
+    @Body(new ZodPipe(createLessonRequestSchema)) body: CreateLessonRequest,
+    @CurrentPrincipal() principal: Principal,
+  ) {
+    return this.done(
+      await this.store.createLesson(moduleId, body),
+      principal,
+      'lesson.created',
+      'lesson',
+      { moduleId, title: body.title, kind: body.kind },
+    );
+  }
+
+  @Patch('aulas/:id')
+  @RequirePermission('content.manage')
+  @ApiOperation({ summary: 'Editar, ordenar e publicar/agendar aula' })
+  async updateLesson(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body(new ZodPipe(updateLessonRequestSchema)) body: UpdateLessonRequest,
+    @CurrentPrincipal() principal: Principal,
+  ) {
+    return this.done(
+      await this.store.updateLesson(id, body),
+      principal,
+      'lesson.updated',
+      'lesson',
+      {
+        title: body.title,
+        kind: body.kind,
+        isFree: body.isFree,
+        orderIndex: body.orderIndex,
+        status: body.status,
+        publishAt: body.publishAt,
+      },
+    );
+  }
+
+  /** O texto não vai para a auditoria (pode ser longo): só o tamanho e se há mídia. */
+  @Put('aulas/:id/conteudo')
+  @RequirePermission('content.manage')
+  @ApiOperation({ summary: 'Gravar o conteúdo protegido da aula (texto e referência da mídia)' })
+  async saveLessonContent(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body(new ZodPipe(lessonContentRequestSchema)) body: LessonContentRequest,
+    @CurrentPrincipal() principal: Principal,
+  ) {
+    return this.done(
+      await this.store.saveLessonContent(id, body),
+      principal,
+      'lesson.content_updated',
+      'lesson',
+      { bodyLength: body.bodyMd.length, hasMedia: body.mediaRef !== '' },
     );
   }
 }

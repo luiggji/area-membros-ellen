@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import { type UploadDeps, uploadMaterial } from './upload-material';
 
-const KEY = '0b6f5c1e-3c1a-4c55-9d0e-1f2a3b4c5d6e.pdf';
+const MATERIAL_ID = '0b6f5c1e-3c1a-4c55-9d0e-1f2a3b4c5d6e';
+const OBJECT_PATH = `${MATERIAL_ID}.pdf`;
 const pdf = () =>
   new File([new Uint8Array([0x25, 0x50, 0x44, 0x46])], 'Modelo.pdf', { type: 'application/pdf' });
 const form = {
@@ -18,7 +19,7 @@ function deps(over: Partial<UploadDeps> = {}) {
   const value: UploadDeps = {
     prepare: async (file) => {
       calls.push(['prepare', file]);
-      return { ok: true, data: { key: KEY, uploadUrl: 'https://storage.test/envio' } };
+      return { ok: true, data: { key: OBJECT_PATH, uploadUrl: 'https://storage.test/envio' } };
     },
     put: async (url, _file, type) => {
       calls.push(['put', url, type]);
@@ -42,7 +43,7 @@ describe('envio de material pela owner', () => {
     });
     expect(calls.map((c) => c[0])).toEqual(['prepare', 'put', 'create']);
     expect(calls[2]![1]).toMatchObject({
-      key: KEY,
+      key: OBJECT_PATH,
       fileName: 'Modelo.pdf',
       revisedOn: null,
       courseId: null,

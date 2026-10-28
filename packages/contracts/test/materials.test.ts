@@ -7,8 +7,10 @@ import {
 } from '../src/materials.js';
 import { MATERIALS_BUCKET } from '../src/storage.js';
 
+const MATERIAL_ID = '0b6f5c1e-3c1a-4c55-9d0e-1f2a3b4c5d6e';
+
 const metadata = {
-  key: '0b6f5c1e-3c1a-4c55-9d0e-1f2a3b4c5d6e.pdf',
+  key: `${MATERIAL_ID}.pdf`,
   fileName: 'Modelo.pdf',
   title: 'Modelo de contrato',
   description: '',

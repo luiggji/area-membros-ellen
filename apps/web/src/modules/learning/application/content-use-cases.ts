@@ -1,12 +1,15 @@
 import {
   createCourseRequestSchema,
+  createLessonRequestSchema,
   createModuleRequestSchema,
+  lessonContentRequestSchema,
   updateCourseRequestSchema,
+  updateLessonRequestSchema,
   updateModuleRequestSchema,
 } from '@caixa-forte/contracts';
 import type { z } from 'zod';
 
-/** Resposta da API do editor de conteúdo (CF-081). */
+/** Resposta da API do editor de conteúdo (CF-081/CF-172). */
 export type ContentApiResult =
   { ok: true } | { ok: false; status: number; fields?: Record<string, string> };
 
@@ -23,6 +26,18 @@ export interface ContentAdminApi {
   updateModule(
     id: string,
     body: z.infer<typeof updateModuleRequestSchema>,
+  ): Promise<ContentApiResult>;
+  createLesson(
+    moduleId: string,
+    body: z.infer<typeof createLessonRequestSchema>,
+  ): Promise<ContentApiResult>;
+  updateLesson(
+    id: string,
+    body: z.infer<typeof updateLessonRequestSchema>,
+  ): Promise<ContentApiResult>;
+  saveLessonContent(
+    lessonId: string,
+    body: z.infer<typeof lessonContentRequestSchema>,
   ): Promise<ContentApiResult>;
 }
 
@@ -179,6 +194,70 @@ export async function submitUpdateModule(input: Record<string, unknown>, api: Co
   return fromApi(
     await api.updateModule(text(input.moduleId), parsed.data),
     'Módulo salvo.',
+    values,
+  );
+}
+
+export async function submitCreateLesson(input: Record<string, unknown>, api: ContentAdminApi) {
+  const values = { title: text(input.title), kind: text(input.kind) };
+  const parsed = createLessonRequestSchema.safeParse(values);
+  if (!parsed.success) {
+    return {
+      status: 'error',
+      fieldErrors: fieldErrors(parsed.error.issues),
+      values,
+    } as ContentFormState;
+  }
+  return fromApi(
+    await api.createLesson(text(input.moduleId), parsed.data),
+    `Aula “${parsed.data.title}” criada em rascunho.`,
+    values,
+  );
+}
+
+/** Duração vazia = sem duração; aula aberta vem do checkbox ('on' quando marcado). */
+export async function submitUpdateLesson(input: Record<string, unknown>, api: ContentAdminApi) {
+  const { values: publicationValues, body, errors } = publication(input);
+  const values = {
+    ...publicationValues,
+    summary: text(input.summary),
+    kind: text(input.kind),
+    durationMinutes: text(input.durationMinutes),
+    isFree: text(input.isFree) === 'on' ? 'on' : '',
+  };
+  const parsed = updateLessonRequestSchema.safeParse({
+    ...body,
+    summary: values.summary,
+    kind: values.kind,
+    durationMinutes: values.durationMinutes === '' ? null : Number(values.durationMinutes),
+    isFree: values.isFree === 'on',
+  });
+  if (!parsed.success) {
+    return {
+      status: 'error',
+      fieldErrors: errors(parsed.error.issues),
+      values,
+    } as ContentFormState;
+  }
+  return fromApi(await api.updateLesson(text(input.lessonId), parsed.data), 'Aula salva.', values);
+}
+
+export async function submitSaveLessonContent(
+  input: Record<string, unknown>,
+  api: ContentAdminApi,
+) {
+  const values = { bodyMd: text(input.bodyMd), mediaRef: text(input.mediaRef) };
+  const parsed = lessonContentRequestSchema.safeParse(values);
+  if (!parsed.success) {
+    return {
+      status: 'error',
+      fieldErrors: fieldErrors(parsed.error.issues),
+      values,
+    } as ContentFormState;
+  }
+  return fromApi(
+    await api.saveLessonContent(text(input.lessonId), parsed.data),
+    'Conteúdo da aula salvo.',
     values,
   );
 }

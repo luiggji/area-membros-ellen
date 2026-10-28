@@ -13,8 +13,9 @@ import { PublicFrame } from '@/shared/ui/public-frame';
 export const metadata: Metadata = { title: 'Conteúdo · Caixa Forte' };
 
 /**
- * Editor de conteúdo (CF-081): a owner cria cursos e módulos sem deploy e decide quando cada um
- * aparece (rascunho, agendado ou publicado). Aulas entram na próxima etapa (CF-172).
+ * Editor de conteúdo (CF-081/CF-172): a owner cria cursos, módulos e aulas sem deploy e decide quando cada um
+ * aparece (rascunho, agendado ou publicado). Aulas e o conteúdo de cada uma ficam dentro dos
+ * módulos (CF-172).
  */
 export default async function ContentAdminPage() {
   const { roles } = await requireAdminPanel();

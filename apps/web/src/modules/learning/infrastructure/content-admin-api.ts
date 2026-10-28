@@ -15,7 +15,7 @@ async function toResult(response: Response): Promise<ContentApiResult> {
 const send = async (method: string, path: string, body: unknown) =>
   toResult(await callApi(`/admin/conteudo${path}`, { method, body: JSON.stringify(body) }));
 
-/** Editor de conteúdo pela API (CF-081); a API exige owner com MFA (content.manage). */
+/** Editor de conteúdo pela API (CF-081/CF-172); a API exige owner com MFA (content.manage). */
 export const contentAdminApi: ContentAdminApi & { tree(): Promise<AdminContent | null> } = {
   async tree() {
     const response = await callApi('/admin/conteudo');
@@ -28,4 +28,9 @@ export const contentAdminApi: ContentAdminApi & { tree(): Promise<AdminContent |
   createModule: (courseId, body) =>
     send('POST', `/cursos/${encodeURIComponent(courseId)}/modulos`, body),
   updateModule: (id, body) => send('PATCH', `/modulos/${encodeURIComponent(id)}`, body),
+  createLesson: (moduleId, body) =>
+    send('POST', `/modulos/${encodeURIComponent(moduleId)}/aulas`, body),
+  updateLesson: (id, body) => send('PATCH', `/aulas/${encodeURIComponent(id)}`, body),
+  saveLessonContent: (lessonId, body) =>
+    send('PUT', `/aulas/${encodeURIComponent(lessonId)}/conteudo`, body),
 };

@@ -7,7 +7,10 @@ import {
   type ContentApiResult,
   isoToBrasiliaLocal,
   submitCreateCourse,
+  submitCreateLesson,
+  submitSaveLessonContent,
   submitUpdateCourse,
+  submitUpdateLesson,
   submitUpdateModule,
 } from './content-use-cases';
 
@@ -26,6 +29,9 @@ function fakeApi(result: ContentApiResult = { ok: true }) {
     updateCourse: record('updateCourse'),
     createModule: record('createModule'),
     updateModule: record('updateModule'),
+    createLesson: record('createLesson'),
+    updateLesson: record('updateLesson'),
+    saveLessonContent: record('saveLessonContent'),
   };
   return { api, calls };
 }
@@ -118,5 +124,83 @@ describe('editor de conteúdo (CF-081)', () => {
       'publishAt',
     ]);
     expect(calls).toEqual([]);
+  });
+});
+
+describe('aulas e conteúdo da aula (CF-172)', () => {
+  const LESSON = '3c4d5e6f-7a8b-4c9d-8e1f-2a3b4c5d6e7f';
+  const lesson = {
+    lessonId: LESSON,
+    title: 'Aula 1',
+    summary: '',
+    kind: 'video',
+    durationMinutes: '',
+    orderIndex: '0',
+    status: 'scheduled',
+    publishAt: '2026-11-03T09:00',
+  };
+
+  it('aula agendada vai em UTC; duração vazia vira null; checkbox marcado = aula aberta', async () => {
+    const { api, calls } = fakeApi();
+    expect(await submitUpdateLesson({ ...lesson, isFree: 'on' }, api)).toEqual({
+      status: 'success',
+      message: 'Aula salva.',
+    });
+    expect(calls[0]).toEqual([
+      'updateLesson',
+      LESSON,
+      {
+        title: 'Aula 1',
+        summary: '',
+        kind: 'video',
+        durationMinutes: null,
+        isFree: true,
+        orderIndex: 0,
+        status: 'scheduled',
+        publishAt: '2026-11-03T12:00:00.000Z',
+      },
+    ]);
+  });
+
+  it('agendada sem data e duração fora da faixa: erros juntos, nada enviado', async () => {
+    const { api, calls } = fakeApi();
+    const result = await submitUpdateLesson(
+      { ...lesson, publishAt: '', durationMinutes: '900' },
+      api,
+    );
+    expect(result).toMatchObject({
+      status: 'error',
+      fieldErrors: {
+        publishAt: 'Agendado precisa de data.',
+        durationMinutes: 'Duração de 1 a 600 minutos.',
+      },
+    });
+    expect(calls).toEqual([]);
+  });
+
+  it('cria aula no módulo; módulo apagado: aviso para recarregar', async () => {
+    const ok = fakeApi();
+    expect(
+      await submitCreateLesson({ moduleId: COURSE, title: 'Aula 1', kind: 'text' }, ok.api),
+    ).toEqual({ status: 'success', message: 'Aula “Aula 1” criada em rascunho.' });
+    expect(ok.calls[0]).toEqual(['createLesson', COURSE, { title: 'Aula 1', kind: 'text' }]);
+    const gone = fakeApi({ ok: false, status: 404 });
+    expect(
+      await submitCreateLesson({ moduleId: COURSE, title: 'Aula 1', kind: 'text' }, gone.api),
+    ).toMatchObject({ status: 'error', message: CONTENT_MESSAGES.notFound });
+  });
+
+  it('conteúdo: mídia como link é recusada antes da API; texto e referência válidos vão', async () => {
+    const { api, calls } = fakeApi();
+    const link = await submitSaveLessonContent(
+      { lessonId: LESSON, bodyMd: '', mediaRef: 'https://video.exemplo/abc' },
+      api,
+    );
+    expect(link).toMatchObject({ status: 'error', fieldErrors: { mediaRef: expect.any(String) } });
+    expect(calls).toEqual([]);
+    expect(
+      await submitSaveLessonContent({ lessonId: LESSON, bodyMd: '# Texto', mediaRef: 'abc' }, api),
+    ).toEqual({ status: 'success', message: 'Conteúdo da aula salvo.' });
+    expect(calls[0]).toEqual(['saveLessonContent', LESSON, { bodyMd: '# Texto', mediaRef: 'abc' }]);
   });
 });

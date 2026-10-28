@@ -75,10 +75,16 @@ export function storageKey(id: string, extension: string): string {
  * Nome sugerido no download: o nome original sem caracteres de controle, barras e aspas, com no
  * máximo 120 caracteres, preservando a extensão validada.
  */
+const UNSAFE_IN_NAME = new Set(['/', '\\', '"', '<', '>', ':', '|', '?', '*']);
+const isUnsafeChar = (char: string) => {
+  const code = char.charCodeAt(0);
+  return code < 0x20 || code === 0x7f || UNSAFE_IN_NAME.has(char);
+};
+
 export function downloadName(fileName: string, extension: string): string {
-  const base = fileName
-    .replace(/\.[a-z0-9]+$/i, '')
-    .replace(/[\u0000-\u001f\u007f/\\"<>:|?*]+/g, ' ')
+  const base = [...fileName.replace(/\.[a-z0-9]+$/i, '')]
+    .map((char) => (isUnsafeChar(char) ? ' ' : char))
+    .join('')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 120);

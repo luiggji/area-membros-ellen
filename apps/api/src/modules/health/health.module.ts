@@ -4,6 +4,7 @@ import { SUPABASE_ADMIN, SupabaseAdmin } from '../../shared/supabase/supabase.mo
 import { GetHealthUseCase } from './application/get-health.use-case';
 import { CLOCK, DEPENDENCY_CHECKERS, DependencyChecker } from './application/ports';
 import { AuditLogChecker } from './infrastructure/audit-log.checker';
+import { StorageChecker } from './infrastructure/storage.checker';
 import { SystemClock } from './infrastructure/system-clock';
 import { HealthController } from './presentation/health.controller';
 
@@ -17,7 +18,7 @@ import { HealthController } from './presentation/health.controller';
       provide: DEPENDENCY_CHECKERS,
       inject: [SUPABASE_ADMIN],
       useFactory: (client: SupabaseAdmin | null): DependencyChecker[] =>
-        client ? [new AuditLogChecker(client)] : [],
+        client ? [new AuditLogChecker(client), new StorageChecker(client)] : [],
     },
   ],
 })

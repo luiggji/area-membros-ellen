@@ -40,3 +40,6 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
     # sprintf-js ≤1.1.3 (moderada, DoS por precisão): só no Jest (istanbul/js-yaml); sem correção.
     - GHSA-hp3w-g68c-fv3c
+    # minimatch ≥7 <11.0.1 (moderada, DoS por amplificação de globparts): só no lint
+    # (typescript-eslint); a 8.72.1, última, ainda fixa minimatch ^10.2.2. Sem correção.
+    - GHSA-g3hv-75wg-m249

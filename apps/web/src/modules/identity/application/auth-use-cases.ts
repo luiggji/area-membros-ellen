@@ -30,6 +30,7 @@ export const AUTH_MESSAGES = {
   samePassword: 'Escolha uma senha diferente da atual.',
   rateLimited: 'Muitas tentativas seguidas. Aguarde alguns minutos e tente de novo.',
   sessionMissing: 'Este link expirou. Peça um novo para redefinir a senha.',
+  unavailable: 'O acesso está temporariamente indisponível. Tente novamente em alguns minutos.',
   unknown: 'Não foi possível concluir agora. Tente novamente.',
   resetSent:
     'Se houver uma conta com este e-mail, enviaremos um link para redefinir a senha. Confira também o spam.',
@@ -42,6 +43,7 @@ const failureMessage: Record<AuthFailure, string> = {
   same_password: AUTH_MESSAGES.samePassword,
   rate_limited: AUTH_MESSAGES.rateLimited,
   session_missing: AUTH_MESSAGES.sessionMissing,
+  unavailable: AUTH_MESSAGES.unavailable,
   unknown: AUTH_MESSAGES.unknown,
 };
 
@@ -62,7 +64,14 @@ export async function signUp(
     ...parsed.data,
     emailRedirectTo: `${appUrl}/auth/callback?next=/app`,
   });
-  if (failure === 'weak_password' || failure === 'rate_limited' || failure === 'unknown') {
+  // 'unavailable' precisa aparecer aqui: mandar para "verifique seu e-mail" sem ter enviado
+  // nada seria mentira (#148).
+  if (
+    failure === 'weak_password' ||
+    failure === 'rate_limited' ||
+    failure === 'unavailable' ||
+    failure === 'unknown'
+  ) {
     return { status: 'error', message: failureMessage[failure], values };
   }
   return { status: 'redirect', to: '/verifique-seu-email' };
@@ -99,7 +108,10 @@ export async function requestPasswordReset(
     parsed.data.email,
     `${appUrl}/auth/callback?next=/redefinir-senha`,
   );
-  if (failure === 'rate_limited') return { status: 'error', message: AUTH_MESSAGES.rateLimited };
+  // Indisponível não é "conta não existe": dizer que enviamos o link seria mentira (#148).
+  if (failure === 'rate_limited' || failure === 'unavailable') {
+    return { status: 'error', message: failureMessage[failure] };
+  }
   return { status: 'success', message: AUTH_MESSAGES.resetSent };
 }
 

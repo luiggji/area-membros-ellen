@@ -3,14 +3,29 @@
 import { redirect } from 'next/navigation';
 
 import { publicEnv } from '@/shared/config/env';
+import { supabasePublicConfig } from '@/shared/lib/supabase/config';
 import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 
 import * as auth from '../application/auth-use-cases';
 import type { AuthResult, FormState } from '../application/auth-use-cases';
+import type { AuthGateway } from '../application/ports';
 import { supabaseAuthGateway } from '../infrastructure/supabase-auth-gateway';
 
+/**
+ * Ambiente sem Supabase (CF-012): toda operação falha como indisponível. Assim o formulário
+ * continua validando os campos e devolve um erro honesto, em vez de a action estourar 500 (#148).
+ */
+const unavailableGateway: AuthGateway = {
+  signUp: async () => 'unavailable',
+  signIn: async () => 'unavailable',
+  requestPasswordReset: async () => 'unavailable',
+  updatePassword: async () => 'unavailable',
+  signOut: async () => {},
+};
+
 /** Server Actions finas (CF-030): ligam cliente Supabase + adapter + casos de uso. */
-async function gateway() {
+async function gateway(): Promise<AuthGateway> {
+  if (!supabasePublicConfig(publicEnv)) return unavailableGateway;
   return supabaseAuthGateway(await createSupabaseServerClient());
 }
 

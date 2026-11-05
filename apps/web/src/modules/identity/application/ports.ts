@@ -6,6 +6,8 @@ export type AuthFailure =
   | 'same_password'
   | 'rate_limited'
   | 'session_missing'
+  /** Ambiente sem provedor de identidade configurado (#148). */
+  | 'unavailable'
   | 'unknown';
 
 /** Porta do Auth (CF-030): a infraestrutura implementa com o Supabase. `null` = sucesso. */

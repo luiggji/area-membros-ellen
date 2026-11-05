@@ -2,6 +2,8 @@ import type { EmailOtpType } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 import { safeNext } from '@/modules/identity/domain/safe-redirect';
+import { publicEnv } from '@/shared/config/env';
+import { supabasePublicConfig } from '@/shared/lib/supabase/config';
 import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 
 /**
@@ -15,6 +17,12 @@ export async function GET(request: Request) {
   const code = url.searchParams.get('code');
   const tokenHash = url.searchParams.get('token_hash');
   const type = url.searchParams.get('type') as EmailOtpType | null;
+
+  // Sem Supabase no ambiente não há como trocar o código por sessão: volta ao login com
+  // aviso, em vez de 500 nesta rota pública e sem sessão (#148).
+  if (!supabasePublicConfig(publicEnv)) {
+    return NextResponse.redirect(new URL('/entrar?erro=indisponivel', url.origin));
+  }
 
   const supabase = await createSupabaseServerClient();
   const { error } = code

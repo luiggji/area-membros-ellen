@@ -39,10 +39,11 @@ PRs do Dependabot usam branches `dependabot/...`: o `branch-convention` só as a
 
 Só entra aqui achado **sem versão corrigida** e **fora do código de produção**. Fica em `auditConfig.ignoreGhsas` (`pnpm-workspace.yaml`) e é revisto a cada PR do Dependabot que toque o pacote; sai da lista assim que houver correção.
 
-| GHSA                  | Pacote / severidade            | Caminho                                    | Por que é aceitável                                                            | Aceito em  |
-| --------------------- | ------------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------ | ---------- |
-| `GHSA-vfj7-8cjw-p6xm` | `braces` ≤3.0.3 · alta         | `eslint-config-next` → `fast-glob`         | DoS com padrão de glob malicioso; só roda no lint, com padrões do próprio repo | 22/10/2026 |
-| `GHSA-hp3w-g68c-fv3c` | `sprintf-js` ≤1.1.3 · moderada | `jest` → istanbul → `js-yaml` → `argparse` | DoS com formato malicioso; só roda nos testes da API                           | 22/10/2026 |
+| GHSA                  | Pacote / severidade               | Caminho                                                       | Por que é aceitável                                                                                                                                     | Aceito em  |
+| --------------------- | --------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `GHSA-vfj7-8cjw-p6xm` | `braces` ≤3.0.3 · alta            | `eslint-config-next` → `fast-glob`                            | DoS com padrão de glob malicioso; só roda no lint, com padrões do próprio repo                                                                          | 22/10/2026 |
+| `GHSA-hp3w-g68c-fv3c` | `sprintf-js` ≤1.1.3 · moderada    | `jest` → istanbul → `js-yaml` → `argparse`                    | DoS com formato malicioso; só roda nos testes da API                                                                                                    | 22/10/2026 |
+| `GHSA-g3hv-75wg-m249` | `minimatch` ≥7 <11.0.1 · moderada | `packages/config` → `typescript-eslint` → `typescript-estree` | DoS com padrão de glob malicioso; só roda no lint, com padrões do próprio repo. A 8.72.1 do `typescript-eslint`, última, ainda fixa `minimatch ^10.2.2` | 05/11/2026 |
 
 `trustPolicyExclude` (`semver@6.3.1`, `eslint-import-resolver-typescript@3.10.1`): versões antigas legítimas, publicadas antes de o npm ter provenance. Conferido em 22/10/2026: sem a exceção o install falha (`ERR_PNPM_TRUST_DOWNGRADE`).
 

@@ -155,3 +155,38 @@ describe('sair', () => {
     expect(calls.signOut).toHaveLength(1);
   });
 });
+
+describe('ambiente sem provedor de identidade (#148)', () => {
+  const cadastro = { name: 'Ana', email: 'ana@teste.local', password: strong };
+
+  it('cadastro não manda para "verifique seu e-mail" sem ter enviado nada', async () => {
+    expect(await signUp(cadastro, fakeAuth('unavailable').auth, APP)).toEqual({
+      status: 'error',
+      message: AUTH_MESSAGES.unavailable,
+      values: { name: 'Ana', email: 'ana@teste.local' },
+    });
+  });
+
+  it('recuperação de senha não diz que enviou o link', async () => {
+    expect(
+      await requestPasswordReset({ email: 'ana@teste.local' }, fakeAuth('unavailable').auth, APP),
+    ).toEqual({ status: 'error', message: AUTH_MESSAGES.unavailable });
+  });
+
+  it('login e nova senha mostram o mesmo aviso', async () => {
+    expect(
+      await signIn({ email: 'ana@teste.local', password: strong }, fakeAuth('unavailable').auth),
+    ).toMatchObject({ status: 'error', message: AUTH_MESSAGES.unavailable });
+    expect(
+      await updatePassword({ password: strong, confirm: strong }, fakeAuth('unavailable').auth),
+    ).toMatchObject({ status: 'error', message: AUTH_MESSAGES.unavailable });
+  });
+
+  it('o aviso não vaza detalhe técnico nem nome de variável', async () => {
+    const result = await signIn(
+      { email: 'ana@teste.local', password: strong },
+      fakeAuth('unavailable').auth,
+    );
+    expect(JSON.stringify(result)).not.toMatch(/supabase|NEXT_PUBLIC/i);
+  });
+});

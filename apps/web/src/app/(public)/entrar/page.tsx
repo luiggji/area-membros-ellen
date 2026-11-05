@@ -36,6 +36,11 @@ export default async function SignInPage({ searchParams }: { searchParams: Searc
             Este link expirou ou já foi usado. Entre com sua senha ou peça um novo link.
           </Notice>
         ) : null}
+        {erro === 'indisponivel' ? (
+          <Notice tone="danger">
+            Não foi possível confirmar seu acesso agora. Tente novamente em alguns minutos.
+          </Notice>
+        ) : null}
         <SignInForm next={next} />
       </div>
     </AuthCard>

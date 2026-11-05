@@ -1,27 +1,30 @@
 # Supabase — banco, Auth e Storage
 
-**Estado atual:** somente estrutura versionada. Nenhum banco foi provisionado ainda.
-Decisão de ambiente (Supabase Cloud por ambiente **ou** local via Docker) fica para a Issue de ambientes (CF-012) — ver `docs/D_DECISION_LOG.md` P-014.
+**Estado atual:** um projeto cloud atende dev+staging (D-015); produção terá projeto próprio. O schema já é versionado e **testado do zero no CI** (job `database`: Postgres local do Supabase no runner, sem chaves). Ambientes: `docs/runbooks/ambientes.md`. Migrations e rollback: `docs/runbooks/migrations.md`.
 
 ```
 supabase/
   config.toml      config do CLI (Auth endurecido: senha ≥ 10 com maiúscula/minúscula/dígito,
                    confirmação de e-mail obrigatória, MFA TOTP habilitado para admins — CF-034)
   migrations/      SQL versionado: <timestamp>_<descricao>.sql (gerado com `supabase migration new`)
-  seeds/           dados FICTÍCIOS para dev/staging (CF-154). Nunca dados reais.
-  tests/rls/       testes pgTAP de RLS/IDOR (CF-033, CF-155) — rodados com `supabase test db`
+  seeds/           dados FICTÍCIOS para dev/staging (CF-154). Nunca dados reais; o CI barra e-mail
+                   fora de @teste.local e CPF. Nunca vão ao cloud (`db push` sem --include-seed).
+  scripts/         seed-dev.mjs: pessoas de teste por papel via API de Admin do Auth (local ou cloud)
+  tests/database/  testes pgTAP do schema (fundação, helpers)
+  tests/rls/       testes pgTAP de RLS/IDOR (CF-033, CF-155) — todos rodados com `supabase test db`
 ```
 
 ## Comandos (via `pnpm dlx supabase@<versão>` ou `npx supabase`)
 
-| Ação                        | Comando                                                                                |
-| --------------------------- | -------------------------------------------------------------------------------------- |
-| Nova migration              | `npx supabase migration new <descricao>`                                               |
-| Subir local (exige Docker)  | `npx supabase start`                                                                   |
-| Recriar banco local + seeds | `npx supabase db reset` (**somente local**)                                            |
-| Testes de RLS               | `npx supabase test db`                                                                 |
-| Gerar tipos TS              | `npx supabase gen types typescript --local > packages/contracts/src/database.types.ts` |
-| Vincular projeto cloud      | `npx supabase link --project-ref <ref>` (cada ambiente com seu projeto)                |
+| Ação                           | Comando                                                                            |
+| ------------------------------ | ---------------------------------------------------------------------------------- |
+| Nova migration                 | `npx supabase migration new <descricao>`                                           |
+| Subir local (exige Docker)     | `npx supabase start`                                                               |
+| Recriar banco local + seeds    | `npx supabase db reset` (**somente local**)                                        |
+| Testes de RLS                  | `npx supabase test db`                                                             |
+| Gerar tipos TS                 | `pnpm db:types` (exige Docker; o CI compara e mostra o arquivo gerado se divergir) |
+| Pessoas de teste (dev/staging) | `pnpm seed:dev` (lê `apps/api/.env`, exige `SEED_USER_PASSWORD`; recusa produção)  |
+| Vincular projeto cloud         | `npx supabase link --project-ref <ref>` (cada ambiente com seu projeto)            |
 
 ## Regras inegociáveis
 

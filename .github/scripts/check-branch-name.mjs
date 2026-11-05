@@ -18,14 +18,24 @@ function currentBranch() {
 const head = process.argv[2] ?? process.env.HEAD_REF ?? currentBranch();
 const base = process.argv[3] ?? process.env.BASE_REF ?? '';
 const body = process.argv[4] ?? process.env.PR_BODY ?? '';
+const author = process.env.PR_AUTHOR ?? '';
 
 const errors = [];
 
 // PRs de promoção (develop → main) e de sincronização pós-hotfix (main → develop).
 const isPromotion = base === 'main' && head === 'develop';
 const isHotfixSync = base === 'develop' && head === 'main';
+// Atualizações do Dependabot (CF-019): o bot não cria Issue antes. Só valem se o autor for o bot,
+// para ninguém usar o prefixo para fugir da regra; seguem com review e CI completos.
+const isDependabot = head.startsWith('dependabot/');
 
-if (!isPromotion && !isHotfixSync) {
+if (isDependabot) {
+  if (author !== 'dependabot[bot]') {
+    errors.push(`Branch "${head}" é reservada ao Dependabot (autor recebido: "${author}").`);
+  } else if (base !== 'develop') {
+    errors.push(`PRs do Dependabot vão para develop. Recebido: ${base}.`);
+  }
+} else if (!isPromotion && !isHotfixSync) {
   const match = BRANCH_PATTERN.exec(head);
   if (!match) {
     errors.push(

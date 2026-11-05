@@ -26,8 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
       - name: Valida tipo/<ISSUE>-slug, base correta e Issue referenciada
@@ -36,15 +36,16 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
           BASE_REF: ${{ github.base_ref }}
           PR_BODY: ${{ github.event.pull_request.body }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
 
   lint-and-typecheck:
     name: lint-and-typecheck
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -58,9 +59,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -72,35 +73,55 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - name: OpenAPI versionado em dia com o código (CF-151)
+        run: |
+          pnpm openapi:export
+          if ! git diff --exit-code docs/api/openapi.json; then
+            echo "::error file=docs/api/openapi.json::OpenAPI desatualizado. Rode 'pnpm openapi:export' e commite o arquivo."
+            exit 1
+          fi
 
   dependency-security:
     name: dependency-security
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - name: Vulnerabilidades altas/críticas em dependências de produção
-        run: pnpm audit --prod --audit-level high
+      # Riscos aceitos ficam em pnpm-workspace.yaml (auditConfig.ignoreGhsas), com justificativa (CF-019).
+      - name: Produção sem vulnerabilidade moderada ou acima
+        run: pnpm audit --prod --audit-level moderate
+      - name: Todas as dependências (inclui dev/CI) sem vulnerabilidade alta ou crítica
+        run: pnpm audit --audit-level high
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "### Dependências (CF-019)"
+            echo '```'
+            pnpm audit 2>&1 | tail -n 3 || true
+            echo '```'
+            echo "Riscos aceitos: \`auditConfig.ignoreGhsas\` em pnpm-workspace.yaml · runbook: docs/runbooks/segredos.md"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   secret-scan:
     name: secret-scan
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Gitleaks (histórico da PR / push)
@@ -115,10 +136,67 @@ jobs:
     container:
       image: semgrep/semgrep:1.181.0
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Semgrep (TypeScript, Node, Next, segredos, OWASP)
         run: |
           semgrep scan --error --metrics=off \
             --config p/typescript --config p/nodejs --config p/nextjs \
             --config p/secrets --config p/owasp-top-ten \
             --exclude docs --exclude supabase/config.toml
+
+  # CF-016: o banco sobe do zero só com as migrations versionadas, em Postgres local do
+  # Supabase dentro do runner. Sem projeto cloud e sem nenhuma chave (P-014 em aberto).
+  database:
+    name: database
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Regras das migrations (nome, destrutivas, RLS) e seeds fictícios
+        run: |
+          node --test .github/scripts/check-migrations.test.mjs .github/scripts/check-seeds.test.mjs supabase/scripts/seed-dev.test.mjs supabase/scripts/storage-setup.test.mjs
+          node .github/scripts/check-migrations.mjs
+          node .github/scripts/check-seeds.mjs
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.120.0
+      - name: Sobe o Postgres local e aplica as migrations do zero
+        run: supabase db start
+      - name: Reaplica tudo do zero com seeds (prova de repetibilidade)
+        run: supabase db reset --local
+      - name: Lint do schema (funções e SQL)
+        run: supabase db lint --local --level error --fail-on error
+      - name: Testes pgTAP (supabase/tests)
+        run: |
+          set -o pipefail
+          supabase test db 2>&1 | tee "$RUNNER_TEMP/pgtap.txt"
+      - name: Types do schema em dia (CF-156)
+        run: |
+          supabase gen types typescript --local --schema public > "$RUNNER_TEMP/database.types.ts"
+          if ! diff -u packages/contracts/src/database.types.ts "$RUNNER_TEMP/database.types.ts"; then
+            echo "::error file=packages/contracts/src/database.types.ts::Types desatualizados. Rode 'pnpm db:types' (exige Docker) ou copie o arquivo gerado abaixo."
+            echo "----- gerado pelo CLI -----"
+            cat "$RUNNER_TEMP/database.types.ts"
+            exit 1
+          fi
+      - name: Resumo
+        if: always()
+        run: |
+          {
+            echo "### Banco (CF-016)"
+            echo "Migrations aplicadas do zero em Postgres local:"
+            for file in supabase/migrations/*.sql; do echo "- \`$(basename "$file")\`"; done
+            echo ""
+            echo "### Isolamento e RLS (CF-033)"
+            echo "Inventário de PII e matriz: \`supabase/tests/rls/README.md\`."
+            echo '```'
+            if [ -f "$RUNNER_TEMP/pgtap.txt" ]; then
+              grep -E '\.test\.sql|^Files=|^Result:' "$RUNNER_TEMP/pgtap.txt" | sed -E 's#.*/supabase/tests/##'
+            else
+              echo "pgTAP não chegou a rodar"
+            fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

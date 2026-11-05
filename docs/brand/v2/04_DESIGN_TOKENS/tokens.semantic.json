@@ -1,0 +1,65 @@
+{
+  "color": {
+    "background": "#FAF7F3",
+    "surface": "#FFFFFF",
+    "surfaceSubtle": "#F3EAE4",
+    "sidebar": "#321927",
+    "primary": "#693548",
+    "primaryHover": "#4B1E2E",
+    "text": "#30232B",
+    "textMuted": "#655B60",
+    "border": "#E5D9D2",
+    "focus": "#693548",
+    "accent": "#C39B83",
+    "success": "#27654A",
+    "danger": "#A32D44",
+    "info": "#235C7A"
+  },
+  "space": {
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "20px",
+    "6": "24px",
+    "8": "32px",
+    "10": "40px",
+    "12": "48px",
+    "16": "64px"
+  },
+  "radius": {
+    "sm": "8px",
+    "md": "12px",
+    "card": "16px",
+    "lg": "20px",
+    "pill": "999px"
+  },
+  "shadow": {
+    "card": "0 4px 16px rgba(47,27,32,.08)",
+    "hover": "0 10px 30px rgba(47,27,32,.11)"
+  },
+  "typography": {
+    "display": "Playfair Display, Georgia, serif",
+    "body": "Inter, system-ui, sans-serif",
+    "size": {
+      "xs": "12px",
+      "sm": "14px",
+      "base": "16px",
+      "lg": "18px",
+      "xl": "24px",
+      "h2": "32px",
+      "h1": "44px"
+    }
+  },
+  "layout": {
+    "sidebar": "232px",
+    "contentMax": "1180px",
+    "header": "72px",
+    "touchTarget": "44px"
+  },
+  "motion": {
+    "fast": "150ms",
+    "normal": "220ms",
+    "reducedMotion": "respect"
+  }
+}

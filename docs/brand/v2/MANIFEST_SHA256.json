@@ -1,0 +1,433 @@
+{
+  "package": "CAIXA FORTE — Brand & UI Design System Agency Handoff V2",
+  "version": "2.0",
+  "date": "2026-10-20",
+  "file_count": 85,
+  "files": [
+    {
+      "path": "00_START_HERE/INTEGRACAO_PRD.md",
+      "bytes": 590,
+      "sha256": "659dfcb80e897d37e37e9d7a3b569fafcf3e0b7fb3f7aac9d427f7f788351c6c"
+    },
+    {
+      "path": "00_START_HERE/QUICK_PREVIEW.jpg",
+      "bytes": 139258,
+      "sha256": "c43e8373146dc1c4ea21efdce5bf55031d8faebdc2dc6707f92c73a7b63757eb"
+    },
+    {
+      "path": "00_START_HERE/README_START_HERE.md",
+      "bytes": 2241,
+      "sha256": "4c87fc1bc0b75609ee80d23822fa36b7a515b5c886bbc1b5e2fb1d39c4f1a2af"
+    },
+    {
+      "path": "00_START_HERE/STRUCTURE.md",
+      "bytes": 919,
+      "sha256": "9018997c0f18625aab4c00b596357e611e22ac75a58465a0a207c0b5745c7c4d"
+    },
+    {
+      "path": "01_BRAND_MASTERS/logo-horizontal.png",
+      "bytes": 326293,
+      "sha256": "fdf6035cbcdd1a2a5142291b5c7e0b0105549b9a7169c2ed40d601eaf1f43ab5"
+    },
+    {
+      "path": "01_BRAND_MASTERS/logo-stacked.png",
+      "bytes": 417812,
+      "sha256": "a2808dbf4f0e463401405a20e57efd6603b299ace11d7dd4b0936655fa5607c0"
+    },
+    {
+      "path": "01_BRAND_MASTERS/symbol-3d.png",
+      "bytes": 892458,
+      "sha256": "4d023106e9a5ee78282dd2fce8589f9c4fbfba853c33f488e4c479ed6bc1fbff"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/IMPORTANT_VECTOR_NOTE.md",
+      "bytes": 637,
+      "sha256": "539e3611092a1bd9114fb2d9fd64c62c86a280276dba7fae2cd65c76eb856a50"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/editorial-background-pattern.svg",
+      "bytes": 482,
+      "sha256": "3ad32b635a2dc63bc15a8ba6260de0ec8d7ae612c4d802613649cb0d84c203cc"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/horizontal-1200.png",
+      "bytes": 115831,
+      "sha256": "eb8b56bd1262ad8413fc9f5769e709eee6ad8ce9fb7a9d2869f3b89b3ecec935"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/horizontal-on-cream.png",
+      "bytes": 141455,
+      "sha256": "87f2d29dabf8f7407b64e7dbf21a674a1cfa53c358f97b2e914318ed57c57856"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/horizontal-on-white.png",
+      "bytes": 142039,
+      "sha256": "3dc9ad1aa9abefefbbe47e137b9acc05670e5c67da1aa77e46c282668b496baa"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/stacked-1024.png",
+      "bytes": 219295,
+      "sha256": "944e703e76d23e26a97bb26e84f1788068f545030dd1a6338dea9bfb2aae1792"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/symbol-512.png",
+      "bytes": 120488,
+      "sha256": "5e1fb637b889063911b281b18dc298d1195da1d6cdb3b7e150c7c84e94070b13"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/symbol-flat-adaptation-preview.svg",
+      "bytes": 728,
+      "sha256": "2d13a3164b24a8f1dbb933498c95e4c17b6c70570d3f1d5a9fd31aca286624dc"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/symbol-on-cream.png",
+      "bytes": 163086,
+      "sha256": "e111ca242464f94e551197d8b07f75707cae32ea9dd98c01a0febad21de34265"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/symbol-on-plum.png",
+      "bytes": 156616,
+      "sha256": "3bcbaa508cdf355a1cc477136ffda61d0609ec273dfacfc502de2d0ad5ae732f"
+    },
+    {
+      "path": "02_LOGO_VARIANTS/symbol-on-white.png",
+      "bytes": 163439,
+      "sha256": "fdb9de3354dfcf2246328f7a820ffae4efa2ba25e2a5919bff5ad32759f81ae1"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-1024.png",
+      "bytes": 461614,
+      "sha256": "3d87df7b55f00ebc002a6d40ab284102ea3af2fead249359db9144bd7f3faf86"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-16.png",
+      "bytes": 640,
+      "sha256": "23788cc0237fcb94f02e59c25def00f5b7857580977960018d498fad916851db"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-180.png",
+      "bytes": 19948,
+      "sha256": "b892c7570a7ca930c133f90fce6addf7c3296dce5c6cb5f5f208afd9788dc572"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-192.png",
+      "bytes": 22262,
+      "sha256": "c208d4900ce9b6f852589ddfa25ef17a0962e41b1d8a6617c32eb913c4383a60"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-256.png",
+      "bytes": 35722,
+      "sha256": "b6267647330d5c8216e1032b6ca8e99826e4324829d335c923406475a200760b"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-32.png",
+      "bytes": 1737,
+      "sha256": "2c543373d3c581813119a31679f6a9697792f5eafb70e3256b376d5d0e474f8f"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-48.png",
+      "bytes": 3144,
+      "sha256": "dea2f481bccf9ba30b48a82f4a2e780df601ddaf46ff27b3362dd6af225347a2"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-512.png",
+      "bytes": 121564,
+      "sha256": "ce85cb2684d9e8a31b25b8ddfdf82d9e4acf3b2b0858c34b9f012a1578c9abad"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/app-icon-64.png",
+      "bytes": 4299,
+      "sha256": "7c7cf13fadda132d8ab55f858158f98583b858e6bd600ac96e82e1a5a6d1e940"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/apple-touch-icon.png",
+      "bytes": 19948,
+      "sha256": "b892c7570a7ca930c133f90fce6addf7c3296dce5c6cb5f5f208afd9788dc572"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/favicon.ico",
+      "bytes": 11595,
+      "sha256": "67248e7f7fdfdc0c9b8353c04f57e6fa92f58ee97ec5fbe39f0abf76826d3b31"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/maskable-192.png",
+      "bytes": 12060,
+      "sha256": "ab9e41d082c1c3f6771506f64f05d632f880ec46120ec28321f733bc7208800a"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/maskable-512.png",
+      "bytes": 60991,
+      "sha256": "63b606b4680e2ed3d97aebab8175440d7f69844f15c8722b547e251392ad887c"
+    },
+    {
+      "path": "03_FAVICONS_APP_ICONS/social-og-1200x630.png",
+      "bytes": 93524,
+      "sha256": "75b10d3d6ef4fd6ead089521d650e6ba2f3565262ff1d305fd6d7d7d6c501390"
+    },
+    {
+      "path": "04_DESIGN_TOKENS/README_TOKENS.md",
+      "bytes": 1220,
+      "sha256": "536de386284666695a5b3e0383352c56bd44a73ee5f00f0678abe76dbca8b547"
+    },
+    {
+      "path": "04_DESIGN_TOKENS/caixa-forte-tokens.css",
+      "bytes": 2398,
+      "sha256": "9a004a9474e6edad02f97922e5d15588a3bacca7cca389ede50e438e0d70e530"
+    },
+    {
+      "path": "04_DESIGN_TOKENS/palette-reference.png",
+      "bytes": 41178,
+      "sha256": "b1aa3fb335eded581dac54c9b03fbb8e22e1c38c5dea5bfddaf7c7734f4edab9"
+    },
+    {
+      "path": "04_DESIGN_TOKENS/palette.raw.json",
+      "bytes": 368,
+      "sha256": "0d9f66110367086e12756ab25ea2cedd7b7be1113305aad482d9559881b064c5"
+    },
+    {
+      "path": "04_DESIGN_TOKENS/tailwind-v4-theme.css",
+      "bytes": 443,
+      "sha256": "21694c8e0af184443faf6a10c831b90d72c22ede6fbce8d4ee2622ec4e25138d"
+    },
+    {
+      "path": "04_DESIGN_TOKENS/tokens.semantic.json",
+      "bytes": 1291,
+      "sha256": "7233b707dbf1f4b01ccf543f5b0d7913203224fcbbbead7c418fd4fa21050fd0"
+    },
+    {
+      "path": "05_UI_DESIGN_SYSTEM/BRAND_USAGE_RULES.md",
+      "bytes": 1324,
+      "sha256": "eaf76b68c8373067883f2719f7d28e5add5b65d4020fd89c1856c3a7d0288a1b"
+    },
+    {
+      "path": "05_UI_DESIGN_SYSTEM/COPY_TONE.md",
+      "bytes": 828,
+      "sha256": "11c44c332d776c15b591fae91e2b0c3eaa63bd5ed033285133624d2cbd2b17f7"
+    },
+    {
+      "path": "05_UI_DESIGN_SYSTEM/STYLE_GUIDE.md",
+      "bytes": 4545,
+      "sha256": "f6c7ce81d9de029a3d12e0315cce5d086ee6f0180204318ecf3c4ca1deaf851f"
+    },
+    {
+      "path": "06_SCREEN_BLUEPRINTS/NAVIGATION_MAP.md",
+      "bytes": 1074,
+      "sha256": "c2fe19521a38d34b86521b8bf9a19c8ff527ec3e665c4f8e66be7eb6e6ac24a3"
+    },
+    {
+      "path": "06_SCREEN_BLUEPRINTS/RESPONSIVE_SPECS.md",
+      "bytes": 697,
+      "sha256": "939bb89b54625729745e48620bb5dbf845dab6ec49d6730a8be95e61f976fb91"
+    },
+    {
+      "path": "06_SCREEN_BLUEPRINTS/SCREEN_INVENTORY.md",
+      "bytes": 4403,
+      "sha256": "2ef4d4c901c06c959ce33a28be146d910d0b006435fd5b9a52de1629f8d5d5d4"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/README_DEMO.md",
+      "bytes": 803,
+      "sha256": "234387295286bb68637b1a35fe4993d9b1d093e5caa69731b20990ee198d1477"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/community.html",
+      "bytes": 3098,
+      "sha256": "5dfbd7ec755c5abd99d2a79b58a016bbcbf7f97a6be44fd48d2841b145810a40"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/connections.html",
+      "bytes": 2767,
+      "sha256": "640127e082c0bd3e2526e54ac599463ddd24c29f9062733d76a680ad50c8e86a"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/courses.html",
+      "bytes": 3941,
+      "sha256": "6b4e2168e995bd0373065aec7db1353f76b710291619bb56800de9ad1b65e468"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/events.html",
+      "bytes": 3059,
+      "sha256": "8ced1528bc3d3529dc961989d22cf4e580f1e31fcaef081ad7edd9ab8bbebfa3"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/favicon.ico",
+      "bytes": 11595,
+      "sha256": "67248e7f7fdfdc0c9b8353c04f57e6fa92f58ee97ec5fbe39f0abf76826d3b31"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/index.html",
+      "bytes": 4607,
+      "sha256": "9e8cc9477b2c1fb4b91f41e788bbfa0ea360b363b4345d46426c10d080fb94f7"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/journey.html",
+      "bytes": 2805,
+      "sha256": "d7f7ab313008032a0a625bb569baf2cdc9a476c8d8839f679429c6e1b4457566"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/logo.png",
+      "bytes": 326293,
+      "sha256": "fdf6035cbcdd1a2a5142291b5c7e0b0105549b9a7169c2ed40d601eaf1f43ab5"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/styles.css",
+      "bytes": 8535,
+      "sha256": "0f513e07339d71faf88f9ce4843a25bf30ca440c7a800d0a2832b9d3f3f7bf7b"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/subscription.html",
+      "bytes": 2637,
+      "sha256": "a27718f957f5c70f5a7ca4a80ec25358b81924b05ca8f844a0f7ade705dc8e1c"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/demo/symbol.png",
+      "bytes": 892458,
+      "sha256": "4d023106e9a5ee78282dd2fce8589f9c4fbfba853c33f488e4c479ed6bc1fbff"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/nextjs-snippets/BrandMark.tsx",
+      "bytes": 633,
+      "sha256": "02fa35d9082685fcbca71f4b9022d7ad4ac7299c6a6e488ac661da41c7ad25dc"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/nextjs-snippets/MinimalHome.tsx",
+      "bytes": 3113,
+      "sha256": "0ad80d2ad04177e32dcdfcaaf9facddd0ff8e0b440c65a53459746d47a57ee02"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/nextjs-snippets/README.md",
+      "bytes": 719,
+      "sha256": "db8c06a122c8b3a772a8e8988b67d3f05d835d0845e5e2ace92626219daec350"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/screenshots/community-desktop-1366.png",
+      "bytes": 86513,
+      "sha256": "233e6e507f6089f7fcd2b9c449022ce2c0460e8666e27179cb5695d59887d281"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/screenshots/courses-desktop-1440.png",
+      "bytes": 259087,
+      "sha256": "ffc5c106f2f54644e5c320e10d6b2638b00c7b3a84102e78c4c5e2cb5c1060f5"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/screenshots/events-desktop-1366.png",
+      "bytes": 113168,
+      "sha256": "911867d6c37434feccfcfe85a03e2c86744e830b4a66657e9e67af26ed26d04a"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/screenshots/home-desktop-1440.png",
+      "bytes": 352103,
+      "sha256": "439b18366fee11e082e0a5a33c093a451e7b9a5507a3e814b9124e47a62a58ed"
+    },
+    {
+      "path": "07_IMPLEMENTATION_NEXTJS/screenshots/home-mobile-390.png",
+      "bytes": 214095,
+      "sha256": "a5035322644a74847ce1a4de47d25504f299b1e773c7051b66cb5d99fd282073"
+    },
+    {
+      "path": "08_CLAUDE_CODE_HANDOFF/CLAUDE_HANDOFF.md",
+      "bytes": 3141,
+      "sha256": "ee3366ed37b04ee1229a17c6951dc06ed1440a52c16e50cd4c139e14d0fadaf2"
+    },
+    {
+      "path": "08_CLAUDE_CODE_HANDOFF/CLAUDE_MD_SNIPPET.md",
+      "bytes": 556,
+      "sha256": "31589cb3c27201c344e9f5f8c0e3b65782a77767982684fa9ba427d9201485a7"
+    },
+    {
+      "path": "08_CLAUDE_CODE_HANDOFF/GITFLOW_BRANCHES.md",
+      "bytes": 1179,
+      "sha256": "42ce43ea69217d9215af6a83f7a505e9ced4d679a6d9e00b23cba50038258c05"
+    },
+    {
+      "path": "09_QA_ACCESSIBILITY/CONTRAST_AUDIT.md",
+      "bytes": 580,
+      "sha256": "d306620a4be04231d563f7c6ebbb3ade0ce92cfbabb673a8c849757eba3eb319"
+    },
+    {
+      "path": "09_QA_ACCESSIBILITY/QA_ACCEPTANCE.md",
+      "bytes": 1673,
+      "sha256": "498fb5317f4da1d6d1c754e739f7c93764a03aca836392347046f2ab185f4476"
+    },
+    {
+      "path": "09_QA_ACCESSIBILITY/contrast-report.json",
+      "bytes": 1207,
+      "sha256": "65c132676b1f910476a8bdc063c7ddcf92850fdda09e0a195577a44a9a1606d2"
+    },
+    {
+      "path": "10_REFERENCES/AI_brandboard_reference_not_tokens.png",
+      "bytes": 1619861,
+      "sha256": "6870152df34414928f6a78938627d1c26845e1a69f6f1c5ddef9ffab653fb940"
+    },
+    {
+      "path": "10_REFERENCES/approved_minimalist_dashboard.png",
+      "bytes": 1909651,
+      "sha256": "7a34ad0c45f139564b76186688dcb06cb1f38bf04b5a2025f85dc99d8e636f8d"
+    },
+    {
+      "path": "11_BRAND_BOOK/CAIXA_FORTE_BRAND_BOOK_V2.pdf",
+      "bytes": 5386117,
+      "sha256": "5833cd296670813474f2733a176bf25ba6d0060e520e41fa3210c20de9dc4b2e"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/00_LEIA_PRIMEIRO.md",
+      "bytes": 3777,
+      "sha256": "9997428edd5958cf59298f5bdd29d5dcf2de65d01eb238225ef08a45c18ea363"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/A_PRD_MASTER_CAIXA_FORTE.md",
+      "bytes": 58530,
+      "sha256": "1540540f3a2579b636e55b210e041eb98877a5fd7f58a0c987b51683da063fb9"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/B_MVP_BLUEPRINT.md",
+      "bytes": 10853,
+      "sha256": "4861720263e59138c6f37c46ee21de75bf19688146cf2802fa070d56c0e779aa"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/CLAUDE.md",
+      "bytes": 3237,
+      "sha256": "62099b2aa0bd67917273c14f10fb790b67b33220973bb765293448b4956a4af7"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/C_DEVELOPMENT_BACKLOG.md",
+      "bytes": 19252,
+      "sha256": "c13c860423cde01bc6bf2c947cbdbea1415fd77fe3013b8a1f1f494cfbb09e93"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/D_DECISION_LOG.md",
+      "bytes": 8588,
+      "sha256": "38b2d4c5a0881d929fc90927ad60106a5d9ae1ca032360d483775d395c22931e"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/E_ENGINEERING_DELIVERY_PLAN.md",
+      "bytes": 17526,
+      "sha256": "947f2e1e99c3f37e57faa0e5386190693c5597d0472815f26c9a69a5d87626cb"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/F_QA_TEST_STRATEGY.md",
+      "bytes": 25343,
+      "sha256": "f85692ea524e864781a9ced97821c6dfdcc34dd1fe13e29a81db2bf66a38280d"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/G_DESIGN_SYSTEM_MINIMALISTA.md",
+      "bytes": 14650,
+      "sha256": "d6248df0fa864559efd478461f80ccaea11ea03f1fd5f85de6e430d5de28ab67"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/H_GUIA_CLAUDE_CODE_GITFLOW.md",
+      "bytes": 11049,
+      "sha256": "65652ee59c0322b69c476da91146b2aa77b0ca309a90eb49fc11ba0e55aebbe8"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/I_PROMPT_INICIAL_CLAUDE_CODE.md",
+      "bytes": 2342,
+      "sha256": "4699d1580a0da88f362da6390ed79ddb530cf8d19b5c249a9166899d9be707f8"
+    },
+    {
+      "path": "12_PRD_PROJECT_CONTEXT/J_CHANGELOG_V1_1.md",
+      "bytes": 2655,
+      "sha256": "a08f0d85b5810acde4c2b1bce32b750863df6c41677cee970b4ecf8bf5e19a84"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+import { describe, expect, it } from '@jest/globals';
+
+import { validateEnv } from './env';
+
+const MEDIA_SECRET = 'm'.repeat(32);
+
+describe('validateEnv (CF-012)', () => {
+  it('sobe em dev sem Supabase enquanto a hospedagem não é escolhida', () => {
+    const env = validateEnv({});
+    expect(env.APP_ENV).toBe('development');
+    expect(env.SUPABASE_URL).toBeUndefined();
+  });
+
+  it('aplica limites seguros de rate limit e trust proxy por padrão (CF-152)', () => {
+    const env = validateEnv({});
+    expect(env.API_RATE_LIMIT_PER_MINUTE).toBe(120);
+    expect(env.API_TRUST_PROXY).toBe(0);
+    expect(() => validateEnv({ API_RATE_LIMIT_PER_MINUTE: '0' })).toThrow();
+    expect(() => validateEnv({ API_TRUST_PROXY: '-1' })).toThrow();
+  });
+
+  it('documentação da API ligada fora de produção e desligada nela, salvo override (CF-151)', () => {
+    expect(validateEnv({}).API_DOCS_ENABLED).toBe(true);
+    const prod = {
+      APP_ENV: 'production',
+      SUPABASE_URL: 'https://prodref.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+      MEDIA_SIGNING_SECRET: MEDIA_SECRET,
+      SUPABASE_PRODUCTION_REF: 'prodref',
+    };
+    expect(validateEnv(prod).API_DOCS_ENABLED).toBe(false);
+    expect(validateEnv({ ...prod, API_DOCS_ENABLED: 'true' }).API_DOCS_ENABLED).toBe(true);
+    expect(validateEnv({ API_DOCS_ENABLED: 'false' }).API_DOCS_ENABLED).toBe(false);
+  });
+
+  it('resolve as feature flags do ambiente e recusa flag desconhecida (CF-158)', () => {
+    expect(validateEnv({}).features.community).toBe(true);
+    expect(validateEnv({ FEATURE_FLAGS: '-community' }).features.community).toBe(false);
+    expect(() => validateEnv({ FEATURE_FLAGS: 'comunity' })).toThrow(/flag desconhecida/);
+  });
+
+  it('revalidação do web: URL e segredo forte vão juntos (CF-163)', () => {
+    const secret = 's'.repeat(32);
+    expect(() => validateEnv({ WEB_REVALIDATE_URL: 'https://web.test/api/revalidate' })).toThrow(
+      /vão juntos/,
+    );
+    expect(() => validateEnv({ REVALIDATE_SECRET: secret })).toThrow(/vão juntos/);
+    expect(() =>
+      validateEnv({
+        WEB_REVALIDATE_URL: 'https://web.test/api/revalidate',
+        REVALIDATE_SECRET: 'curto',
+      }),
+    ).toThrow();
+    expect(
+      validateEnv({
+        WEB_REVALIDATE_URL: 'https://web.test/api/revalidate',
+        REVALIDATE_SECRET: secret,
+      }).REVALIDATE_SECRET,
+    ).toBe(secret);
+  });
+
+  it('trata variável vazia do .env como ausente', () => {
+    expect(validateEnv({ SUPABASE_URL: '', SUPABASE_SERVICE_ROLE_KEY: '' }).SUPABASE_URL).toBe(
+      undefined,
+    );
+  });
+
+  it('recusa staging sem banco próprio', () => {
+    expect(() => validateEnv({ APP_ENV: 'staging' })).toThrow(/staging exige SUPABASE_URL/);
+  });
+
+  it('recusa staging apontando para o banco de produção', () => {
+    expect(() =>
+      validateEnv({
+        APP_ENV: 'staging',
+        SUPABASE_URL: 'https://prodref.supabase.co',
+        SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+        MEDIA_SIGNING_SECRET: MEDIA_SECRET,
+        SUPABASE_PRODUCTION_REF: 'prodref',
+      }),
+    ).toThrow(/apontando para o banco de produção/);
+  });
+
+  it('exige a chave de serviço fora de dev', () => {
+    expect(() =>
+      validateEnv({ APP_ENV: 'staging', SUPABASE_URL: 'https://stagingref.supabase.co' }),
+    ).toThrow(/SUPABASE_SERVICE_ROLE_KEY/);
+  });
+
+  it('exige o segredo dos links de vídeo fora de dev (CF-083)', () => {
+    expect(() =>
+      validateEnv({
+        APP_ENV: 'staging',
+        SUPABASE_URL: 'https://stagingref.supabase.co',
+        SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+      }),
+    ).toThrow(/MEDIA_SIGNING_SECRET/);
+    expect(validateEnv({}).MEDIA_SIGNING_SECRET).toBeUndefined();
+  });
+
+  it('aceita staging no próprio projeto', () => {
+    const env = validateEnv({
+      APP_ENV: 'staging',
+      SUPABASE_URL: 'https://stagingref.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'chave-de-teste',
+      MEDIA_SIGNING_SECRET: MEDIA_SECRET,
+      SUPABASE_PRODUCTION_REF: 'prodref',
+    });
+    expect(env.APP_ENV).toBe('staging');
+  });
+});

@@ -11,7 +11,11 @@ import { API_PREFIX, configureApp } from './shared/http/configure-app';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const config = app.get<ConfigService<Env, true>>(ConfigService);
-  configureApp(app, config.get('API_CORS_ORIGINS', { infer: true }));
+  configureApp(app, {
+    corsOrigins: config.get('API_CORS_ORIGINS', { infer: true }),
+    trustProxy: config.get('API_TRUST_PROXY', { infer: true }),
+    docsEnabled: config.get('API_DOCS_ENABLED', { infer: true }),
+  });
 
   const port = config.get('API_PORT', { infer: true });
   await app.listen(port);

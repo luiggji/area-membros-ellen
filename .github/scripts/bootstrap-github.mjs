@@ -115,9 +115,15 @@ function acceptanceFromDocC() {
 /** Linhas das tabelas por onda do BACKLOG.md. */
 function backlogRows() {
   const rows = [];
+  const visuals = new Map(); // onda → linha "🎨 Entrega visual da onda"
   let wave = null;
   let milestone = null;
   for (const [index, line] of readFileSync(BACKLOG, 'utf8').split('\n').entries()) {
+    const visual = /^> 🎨 \*\*Entrega visual da onda:\*\* (.*)$/.exec(line);
+    if (visual && wave !== null) {
+      visuals.set(wave, visual[1]);
+      continue;
+    }
     const header = /^### Onda (\d+) — .*?(\((M\d)\)|Evolução)/.exec(line);
     if (header) {
       wave = Number(header[1]);
@@ -148,7 +154,7 @@ function backlogRows() {
       issue: cells[9],
     });
   }
-  return rows;
+  return rows.map((row) => ({ ...row, waveVisual: visuals.get(row.wave) }));
 }
 
 function typeLabel(branch) {
@@ -186,6 +192,9 @@ function createIssues(waves) {
         `**Objetivo:** ${row.title}`,
         '',
         `**Critério de aceite (doc C):** ${acceptance.get(row.id) || 'definir no refinamento (item novo do BACKLOG.md)'}`,
+        '',
+        '**Entrega visual (regra do projeto):** descrever no refinamento o que passa a ser visto (tela/estado/rota) ou onde o resultado aparece (`/design`, `/status`, admin). PR com UI anexa screenshots 1440px e 390px.',
+        `> 🎨 Entrega visual da onda ${row.wave}: ${row.waveVisual ?? '—'}`,
         '',
         `**Dependências:** ${row.deps}`,
         `**Decisão pendente:** ${row.decision}`,

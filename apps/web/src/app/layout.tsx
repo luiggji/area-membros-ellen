@@ -1,20 +1,30 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import './globals.css';
 
-// Fontes PROPOSTAS (R-004, pendente de homologação): serifada só em títulos editoriais.
-const editorial = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['500', '600'],
-  variable: '--font-cormorant',
+// Fontes do Brand System V2 (D-014): Playfair Display nos títulos editoriais, Inter na UI.
+// Hospedadas no repo (SIL OFL 1.1, licenças em src/shared/fonts) para o build não depender de rede.
+const editorial = localFont({
+  src: [
+    { path: '../shared/fonts/playfair-display-latin-wght.woff2', style: 'normal' },
+    { path: '../shared/fonts/playfair-display-latin-wght-italic.woff2', style: 'italic' },
+  ],
+  weight: '400 900',
+  variable: '--font-playfair',
   display: 'swap',
 });
 
-const sans = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const sans = localFont({
+  src: '../shared/fonts/inter-latin-wght.woff2',
+  weight: '100 900',
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Caixa Forte',
+  applicationName: 'Caixa Forte',
   description: 'Comunidade de educação e networking para advogados.',
   robots: { index: false, follow: false },
 };

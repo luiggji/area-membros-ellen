@@ -1,0 +1,65 @@
+[
+  {
+    "foreground": "ink",
+    "background": "cream",
+    "ratio": 14.04,
+    "normalTextAA": true,
+    "largeTextAA": true
+  },
+  {
+    "foreground": "plum950",
+    "background": "white",
+    "ratio": 16.1,
+    "normalTextAA": true,
+    "largeTextAA": true
+  },
+  {
+    "foreground": "white",
+    "background": "wine700",
+    "ratio": 9.53,
+    "normalTextAA": true,
+    "largeTextAA": true
+  },
+  {
+    "foreground": "white",
+    "background": "plum950",
+    "ratio": 16.1,
+    "normalTextAA": true,
+    "largeTextAA": true
+  },
+  {
+    "foreground": "wine700",
+    "background": "cream",
+    "ratio": 8.92,
+    "normalTextAA": true,
+    "largeTextAA": true
+  },
+  {
+    "foreground": "muted",
+    "background": "cream",
+    "ratio": 6.11,
+    "normalTextAA": true,
+    "largeTextAA": true
+  },
+  {
+    "foreground": "champagne",
+    "background": "cream",
+    "ratio": 2.36,
+    "normalTextAA": false,
+    "largeTextAA": false
+  },
+  {
+    "foreground": "rose",
+    "background": "white",
+    "ratio": 3.67,
+    "normalTextAA": false,
+    "largeTextAA": true
+  },
+  {
+    "foreground": "burgundy",
+    "background": "cream",
+    "ratio": 12.9,
+    "normalTextAA": true,
+    "largeTextAA": true
+  }
+]

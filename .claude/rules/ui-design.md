@@ -8,12 +8,16 @@ paths:
 # Design v1.1 minimalista — checklist obrigatório (doc G + UI-001…UI-010)
 
 Referência: `docs/references/REFERENCIA_APROVADA_DASHBOARD_MINIMALISTA.png` = **composição e sensação**, não pixel-perfect nem fonte de conteúdo.
+Identidade (D-014): `docs/brand/v2/` — style guide, regras de uso da marca, tom de voz, mapa de navegação e specs responsivas.
+
+- Marca: sempre `BrandMark` (`lockup` sobre claro ≥ 180px; `sidebar` sobre ameixa; `compact` em espaço estreito). Nunca recolorir, distorcer ou usar o SVG simplificado como logo.
+- Tipografia: Playfair Display (peso 400) só em títulos editoriais; Inter em ações, tabelas, formulários e números.
 
 - Sidebar vinho (`cf-sidebar`), canvas creme (`cf-bg`), muito respiro, uma cor de acento por tela.
 - Navegação: até 6 itens (Início, Minha Jornada, Cursos, Comunidade, Café Estratégico, Assinatura) + **Mais** (Conexões, Ao Vivo, Cofre de Materiais, Meu Planejamento, Ajuda). Mobile: drawer ou barra inferior ≤ 4 + Mais.
 - Home do membro: **1 hero + 1 card de jornada (um único CTA) + até 3 cursos + até 2 auxiliares**. Sem gráficos, rankings, contadores, feed completo, carrossel automático.
 - Estados honestos: primeiro acesso → "Começar diagnóstico"; sem curso/evento/post → mensagem verdadeira ou ocultar; nunca "62%" sem cálculo real.
-- Proibido: dark mode integral, 3D/metálico, glassmorphism, sombras pesadas, excesso de badges, botões sem ação.
+- Proibido: dark mode integral, 3D/metálico na UI (o símbolo oficial é a única peça 3D), glassmorphism, sombras pesadas, excesso de badges, botões sem ação.
 - Rosto da referência é **sintético** — nunca usar como Ellen. Sem textos "para advogadas" (público inclusivo).
 - Minimalismo nunca esconde erro, cobrança, aviso de privacidade ou elemento obrigatório de checkout.
 - Admin (`/admin`) pode ser mais denso (tabelas/filtros), mesmos tokens.

@@ -13,6 +13,18 @@ modules/<contexto>/
 
 Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (unit) e `test/*.e2e-spec.ts` (HTTP).
 
+**OpenAPI (CF-151):** toda rota anota a resposta com o schema zod do contrato, ex. `@ApiOkResponse({ schema: contractSchema(healthResponseSchema) })`, e o PR inclui o `docs/api/openapi.json` regenerado (`pnpm openapi:export`). O CI falha se o arquivo divergir do código. Swagger UI em `/api/v1/docs` fora de produção.
+
+**Autorização (CF-032):** rota protegida usa `@Authenticated()` (só login) ou `@RequirePermission('prices.manage')` (`modules/identity/presentation/authorization`). O guard valida o access token do Supabase no Auth e lê os papéis em `user_roles` a cada requisição: 401 sem sessão, 403 sem a permissão. Toda permissão exige sessão `aal2` (MFA, CF-034): token só com senha recebe 403 `mfa_required`; `@Authenticated()` não exige. Matriz papel → permissão em `@caixa-forte/contracts` (`permissions.ts`). Quem chama: `@CurrentPrincipal()`.
+
+**Paywall (CF-046):** rota de conteúdo pago usa `@RequireAccess()` (`modules/membership/presentation/access`): login + acesso vigente consultado no banco a cada requisição (`access_of_user` → `private.access_of`, a mesma regra da RLS e do web). Sem acesso: 403 `subscription_required`. Papel de equipe não abre paywall. Regra: assinatura `active`; `past_due`/`cancel_at_period_end` só até o fim do período pago; concessão manual até `valid_to`.
+
+**Entrada validada (CF-048):** corpo com `@Body(new ZodPipe(schema))` (`shared/http/zod-pipe`), usando o schema de `@caixa-forte/contracts` que o web também usa. Erro: 400 `invalid_body` com `fields` (uma mensagem por campo, sem ecoar valor). Concessão manual: `/admin/acessos` (owner, `access.grant`); a trilha é trigger no banco, na mesma transação. Catálogo (CF-041): `/admin/planos` (`prices.manage`) grava por `save_plan`/`publish_price_version`, que escrevem e auditam na mesma transação; preço novo tira o anterior de venda sem tocar contratos vigentes.
+
+**Módulo não lançado (CF-158):** controller com `@RequireFeature('<flag>')` (`shared/http/feature-flag.guard`) responde 404 enquanto a flag estiver desligada no ambiente. Catálogo em `@caixa-forte/contracts` (`FEATURE_FLAGS`).
+
+**Dado público mudou (CF-163):** depois de persistir preço, evento/lote ou catálogo, injete `WEB_CACHE` (`shared/cache/web-cache.module`) e chame `revalidate(['prices'])`: o web renova as páginas públicas daquela tag.
+
 | Módulo        | Escopo (PRD)                                  | CF principais      |
 | ------------- | --------------------------------------------- | ------------------ |
 | identity      | Auth, perfis, consentimentos, RBAC            | CF-030…035         |

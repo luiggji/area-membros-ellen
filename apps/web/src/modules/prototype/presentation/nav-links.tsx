@@ -4,6 +4,7 @@ import { adminNav } from '../domain/fixtures';
 
 export const PROTOTYPE_BASE = '/prototipo';
 export const TEAM_PROTOTYPE_HREF = `${PROTOTYPE_BASE}/equipe`;
+export const PROTOTYPE_MAP_HREF = `${PROTOTYPE_BASE}/mapa`;
 
 export function hrefFor(slug: string): string {
   return slug ? `${PROTOTYPE_BASE}/${slug}` : PROTOTYPE_BASE;

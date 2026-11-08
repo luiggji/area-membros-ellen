@@ -7,7 +7,7 @@ import { MemberShell } from '@/modules/navigation/presentation/member-shell';
 import { NavDrawer } from '@/modules/navigation/presentation/nav-drawer';
 import { BrandMark } from '@/shared/ui/brand-mark';
 
-import { PROTOTYPE_BASE, TEAM_PROTOTYPE_HREF, TeamNavLinks } from './nav-links';
+import { PROTOTYPE_BASE, PROTOTYPE_MAP_HREF, TEAM_PROTOTYPE_HREF, TeamNavLinks } from './nav-links';
 
 /** Faixa fixa que impede o protótipo de ser confundido com a plataforma real. */
 function PrototypeNotice() {
@@ -28,6 +28,10 @@ function PrototypeNotice() {
         |{' '}
         <Link className="underline underline-offset-2" href={TEAM_PROTOTYPE_HREF}>
           equipe
+        </Link>{' '}
+        ·{' '}
+        <Link className="font-semibold underline underline-offset-2" href={PROTOTYPE_MAP_HREF}>
+          mapa das telas
         </Link>
       </span>
     </div>

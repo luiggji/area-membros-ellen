@@ -52,7 +52,7 @@ export function HomeJourney({ variant }: { variant: HomeVariant }) {
           ? 'Responda algumas perguntas para receber o caminho recomendado para o seu momento.'
           : exampleJourney.summary
       }
-      note="Nesta prévia, não exibimos progresso fictício."
+      note="Na demonstração, não exibimos progresso fictício."
       icon={<Flag className="size-6 sm:size-7" strokeWidth={1.4} />}
       action={
         <Link href={hrefFor('jornada')} className={buttonClasses()}>

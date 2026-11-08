@@ -8,7 +8,7 @@ import {
   parseJourneyStep,
 } from './learning-fixtures';
 
-describe('protótipo — aprendizado', () => {
+describe('demonstração — aprendizado', () => {
   it('curso programado não tem aulas (sem capa chamando aula inexistente)', () => {
     for (const course of catalogCourses.filter((item) => item.status === 'programado')) {
       expect(course.modules).toHaveLength(0);

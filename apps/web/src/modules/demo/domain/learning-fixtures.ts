@@ -1,7 +1,7 @@
 /**
- * Conteúdo FICTÍCIO das telas de aprendizado do protótipo (CF-174): catálogo, curso, aula, Cofre,
+ * Conteúdo FICTÍCIO das telas de aprendizado da demonstração (CF-174/CF-177): catálogo, curso, aula, Cofre,
  * jornada e planejamento. Títulos, aulas, materiais e progresso são exemplos para Ellen avaliar
- * composição e hierarquia; toda tela exibe a faixa do protótipo e o selo "Exemplo".
+ * composição e hierarquia; o app exibe a faixa de demonstração e o selo "Exemplo".
  */
 
 import { exampleCourses, type ExampleCourse } from './fixtures';

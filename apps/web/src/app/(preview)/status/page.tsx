@@ -241,7 +241,7 @@ export default async function StatusPage() {
             details={[
               ['Build (NODE_ENV)', process.env.NODE_ENV ?? '—'],
               ['Renderizada em', dateTime.format(new Date())],
-              ['Rotas internas', '/prototipo, /design, /status'],
+              ['Rotas internas', '/design, /status'],
               ['URL pública', publicEnv.NEXT_PUBLIC_APP_URL],
               ['CSP (CF-152)', 'estática aqui; nonce em /app e /admin'],
             ]}

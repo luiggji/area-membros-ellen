@@ -1,10 +1,10 @@
 /**
- * Dados FICTÍCIOS do protótipo de homologação (CF-169). Servem só para Ellen visualizar a
+ * Dados FICTÍCIOS do modo demonstração (CF-169/CF-177). Servem só para Ellen visualizar a
  * composição v1.1 (doc G §4.1); toda tela marca esses dados como exemplo. Nada daqui pode ser
- * importado fora de `modules/prototype` nem chegar a produção.
+ * importado fora de `modules/demo`; o modo demonstração nunca liga em produção.
  */
 
-import { allMemberNav, type NavItem } from '@/modules/navigation/domain/member-nav';
+import type { NavItem } from '@/modules/navigation/domain/member-nav';
 
 /**
  * Painel da equipe (doc G §4.9): navegação própria, sem o limite de densidade da home.
@@ -18,11 +18,6 @@ export const adminNav: readonly NavItem[] = [
   { slug: 'moderacao', label: 'Moderação', icon: 'moderation', deliveredBy: 'CF-095' },
   { slug: 'relatorios', label: 'Relatórios', icon: 'reports', deliveredBy: 'CF-106' },
 ];
-
-/** Destino da navegação do membro (a home tem rota própria). */
-export function findSection(slug: string): NavItem | undefined {
-  return allMemberNav.find((item) => item.slug === slug && slug !== '');
-}
 
 /** Variações da home que Ellen precisa homologar (doc G §4.1 "Variações"). */
 export type HomeVariant = 'jornada' | 'novo';

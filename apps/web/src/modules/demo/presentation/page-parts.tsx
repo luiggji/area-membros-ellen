@@ -2,7 +2,7 @@ import { cn } from '@caixa-forte/ui';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-/** Selo ao lado de todo dado fictício do protótipo: nada se passa por real (doc G §7). */
+/** Selo ao lado de todo dado fictício da demonstração: nada se passa por real (doc G §7). */
 export function ExampleTag({ className }: { className?: string }) {
   return (
     <span
@@ -16,8 +16,8 @@ export function ExampleTag({ className }: { className?: string }) {
   );
 }
 
-/** Coluna de conteúdo das telas internas do protótipo, na mesma largura da área real. */
-export function PrototypePage({
+/** Coluna de conteúdo das telas de demonstração, na mesma largura das páginas reais. */
+export function ScreenPage({
   width = 'wide',
   children,
 }: {

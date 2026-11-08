@@ -26,7 +26,7 @@ import {
   exampleMaterials,
 } from '../domain/learning-fixtures';
 import { hrefFor } from './nav-links';
-import { ExampleTag, LinkTabs, PageHeader, PrototypePage } from './page-parts';
+import { ExampleTag, LinkTabs, PageHeader, ScreenPage } from './page-parts';
 
 const courseIcons = { diamond: Diamond, spark: Sparkle, pen: PenLine };
 const courseHref = (slug: string) => hrefFor(`cursos/${slug}`);
@@ -42,7 +42,7 @@ const filters = [
 export function CatalogScreen({ filter }: { filter: CatalogFilter }) {
   const courses = filterCourses(filter);
   return (
-    <PrototypePage>
+    <ScreenPage>
       <PageHeader
         title="Cursos"
         summary="O que já está disponível e o que tem data marcada para entrar."
@@ -72,7 +72,7 @@ export function CatalogScreen({ filter }: { filter: CatalogFilter }) {
           );
         })}
       </CourseGrid>
-    </PrototypePage>
+    </ScreenPage>
   );
 }
 
@@ -140,7 +140,7 @@ export function CourseScreen({ course }: { course: ExampleCatalogCourse }) {
   const done = lessons.filter((lesson) => lesson.completed).length;
   const resume = lessons.find((lesson) => !lesson.completed);
   return (
-    <PrototypePage width="reading">
+    <ScreenPage width="reading">
       <PageHeader
         title={course.title}
         summary={course.summary}
@@ -162,7 +162,7 @@ export function CourseScreen({ course }: { course: ExampleCatalogCourse }) {
       ) : (
         <CourseOutline course={course} />
       )}
-    </PrototypePage>
+    </ScreenPage>
   );
 }
 
@@ -234,7 +234,7 @@ export function LessonScreen({ lessonId }: { lessonId: string }) {
           </section>
         )}
         <div className="flex flex-col gap-3 border-t border-cf-border pt-6 sm:flex-row sm:items-center">
-          <Button variant="secondary" disabled title="No protótipo, a conclusão não é gravada">
+          <Button variant="secondary" disabled title="Na demonstração, a conclusão não é gravada">
             {lesson.completed ? 'Aula concluída' : 'Marcar como concluída'}
           </Button>
           {next && (

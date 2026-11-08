@@ -3,7 +3,7 @@ import { FileText } from 'lucide-react';
 
 import { exampleMaterials, MATERIAL_CATEGORIES } from '../domain/learning-fixtures';
 import { hrefFor } from './nav-links';
-import { ExampleTag, LinkTabs, PageHeader, PrototypePage } from './page-parts';
+import { ExampleTag, LinkTabs, PageHeader, ScreenPage } from './page-parts';
 
 export function parseVaultCategory(value: unknown): string {
   return MATERIAL_CATEGORIES.find((category) => category.toLowerCase() === value) ?? 'todos';
@@ -25,7 +25,7 @@ export function VaultScreen({ category }: { category: string }) {
   ];
 
   return (
-    <PrototypePage>
+    <ScreenPage>
       <PageHeader
         title="Cofre de Materiais"
         summary="Modelos, checklists e guias para usar no dia a dia do escritório."
@@ -53,7 +53,7 @@ export function VaultScreen({ category }: { category: string }) {
                 <Button
                   variant="secondary"
                   disabled
-                  title="No protótipo não há arquivo; no produto o download é autorizado no servidor"
+                  title="Na demonstração não há arquivo; no produto o download é autorizado no servidor"
                 >
                   Baixar
                 </Button>
@@ -62,6 +62,6 @@ export function VaultScreen({ category }: { category: string }) {
           </Card>
         ))}
       </ul>
-    </PrototypePage>
+    </ScreenPage>
   );
 }

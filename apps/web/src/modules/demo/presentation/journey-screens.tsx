@@ -9,9 +9,9 @@ import {
   journeySteps,
 } from '../domain/learning-fixtures';
 import { hrefFor } from './nav-links';
-import { ExampleTag, PageHeader, PrototypePage } from './page-parts';
+import { ExampleTag, PageHeader, ScreenPage } from './page-parts';
 
-const stepHref = (slug: JourneyStep) => `${hrefFor('jornada')}?etapa=${slug}`;
+const stepHref = (slug: JourneyStep) => `${hrefFor('jornada')}?passo=${slug}`;
 
 /** Stepper curto (doc G §4.6): a etapa atual em destaque, as outras como caminho. */
 function Stepper({ current }: { current: JourneyStep }) {
@@ -118,7 +118,7 @@ function StepBody({ step }: { step: JourneyStep }) {
 export function JourneyScreen({ step }: { step: JourneyStep }) {
   const current = journeySteps.find((item) => item.slug === step)!;
   return (
-    <PrototypePage width="reading">
+    <ScreenPage width="reading">
       <PageHeader
         title="Minha Jornada"
         summary="Um caminho curto: entender onde você está, escolher aonde ir e começar."
@@ -128,7 +128,7 @@ export function JourneyScreen({ step }: { step: JourneyStep }) {
         <h2 className="font-editorial text-2xl text-cf-text">{current.label}</h2>
         <StepBody step={step} />
       </Card>
-    </PrototypePage>
+    </ScreenPage>
   );
 }
 
@@ -136,7 +136,7 @@ export function JourneyScreen({ step }: { step: JourneyStep }) {
 export function PlanningScreen() {
   const done = examplePlan.actions.filter((action) => action.done).length;
   return (
-    <PrototypePage width="reading">
+    <ScreenPage width="reading">
       <PageHeader
         title="Meu Planejamento"
         summary="Seu objetivo e as próximas ações. Só você vê este planejamento."
@@ -187,6 +187,6 @@ export function PlanningScreen() {
           Editar ações
         </Link>
       </section>
-    </PrototypePage>
+    </ScreenPage>
   );
 }

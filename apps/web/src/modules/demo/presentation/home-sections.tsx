@@ -16,7 +16,7 @@ import { exampleCourses, exampleJourney, type HomeVariant } from '../domain/fixt
 import { hrefFor } from './nav-links';
 
 /**
- * Home do protótipo montada só com os componentes editoriais de `@caixa-forte/ui` (CF-022) e os
+ * Home de demonstração montada só com os componentes editoriais de `@caixa-forte/ui` (CF-022) e os
  * textos de exemplo da prévia do Brand System V2. Progresso não aparece: não há dado real.
  */
 

@@ -128,8 +128,8 @@ export function StatesSample() {
           title="Você ainda não começou uma trilha."
           description="Escolha por onde começar."
           action={
-            <Link href="/prototipo" className={buttonClasses({ variant: 'secondary' })}>
-              Ver o protótipo
+            <Link href="/app" className={buttonClasses({ variant: 'secondary' })}>
+              Ir para a área do membro
             </Link>
           }
         />
@@ -163,13 +163,13 @@ const layouts = [
   {
     name: 'AppShell · membro',
     text: 'Sidebar vinho com até 6 destinos + Mais, topbar discreta, conteúdo até 1180px.',
-    href: '/prototipo',
+    href: '/app',
     icon: PanelLeft,
   },
   {
     name: 'AppShell width="wide" · equipe',
     text: 'Mesmo esqueleto com navegação do painel e até 1440px para tabelas e filtros.',
-    href: '/prototipo/equipe',
+    href: '/admin',
     icon: PanelLeft,
   },
   {

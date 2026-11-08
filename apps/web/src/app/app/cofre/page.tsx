@@ -3,8 +3,10 @@ import { Download } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { DemoVault } from '@/modules/demo/presentation/demo-routes';
 import { groupBySubject, materialFacts } from '@/modules/materials/domain/material-view';
 import { loadMaterials } from '@/modules/materials/infrastructure/materials-api';
+import { demoMode } from '@/shared/config/demo';
 
 export const metadata: Metadata = { title: 'Cofre de Materiais · Caixa Forte' };
 
@@ -21,6 +23,7 @@ const NOTICES: Record<string, { tone: 'danger' | 'info'; text: string }> = {
  * botão leva a uma rota que pede à API um link de 60 s e redireciona na hora.
  */
 export default async function VaultPage({ searchParams }: Props) {
+  if (demoMode()) return <DemoVault search={await searchParams} />;
   const notice = NOTICES[(await searchParams).aviso ?? ''];
   const vault = await loadMaterials();
 

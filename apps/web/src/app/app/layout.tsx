@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation';
 
+import { DemoBanner } from '@/modules/demo/presentation/demo-banner';
 import { loadDisplayName } from '@/modules/identity/infrastructure/supabase-profile';
 import { SignOutButton } from '@/modules/identity/presentation/auth-forms';
 import { MemberAccount } from '@/modules/navigation/presentation/member-account';
 import { MemberShell } from '@/modules/navigation/presentation/member-shell';
+import { demoMode } from '@/shared/config/demo';
 import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 import { getSessionUser } from '@/shared/lib/supabase/session';
 
@@ -22,6 +24,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <MemberShell
+      banner={demoMode() ? <DemoBanner /> : undefined}
       topbarEnd={
         <>
           <MemberAccount name={name} email={user.email ?? ''} />

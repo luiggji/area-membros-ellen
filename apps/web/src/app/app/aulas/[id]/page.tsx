@@ -5,16 +5,19 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { DemoLesson } from '@/modules/demo/presentation/demo-routes';
 import { nextLesson } from '@/modules/learning/domain/course-progress';
 import { loadCourse } from '@/modules/learning/infrastructure/catalog-api';
 import { loadLesson } from '@/modules/learning/infrastructure/lesson-api';
 import { CompleteButton } from '@/modules/learning/presentation/complete-button';
 import { LessonBody } from '@/modules/learning/presentation/lesson-body';
 import { LessonVideo } from '@/modules/learning/presentation/lesson-video';
+import { demoMode } from '@/shared/config/demo';
 
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  if (demoMode()) return { title: 'Aula · Caixa Forte' };
   const lesson = await loadLesson((await params).id);
   return {
     title:
@@ -28,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * acesso: conclusão, retomada do vídeo e próxima aula (CF-084).
  */
 export default async function LessonPage({ params }: Props) {
+  if (demoMode()) return <DemoLesson id={(await params).id} />;
   const lesson = await loadLesson((await params).id);
   if (lesson === 'not_found') notFound();
   if (lesson === null) {

@@ -3,6 +3,7 @@ import { BookOpen } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { DemoCatalog } from '@/modules/demo/presentation/demo-routes';
 import {
   availabilityText,
   emptyCatalogText,
@@ -11,6 +12,7 @@ import {
 } from '@/modules/learning/domain/catalog-view';
 import { loadCatalog } from '@/modules/learning/infrastructure/catalog-api';
 import { CatalogFilters } from '@/modules/learning/presentation/catalog-filters';
+import { demoMode } from '@/shared/config/demo';
 
 export const metadata: Metadata = { title: 'Cursos · Caixa Forte' };
 
@@ -21,6 +23,7 @@ type Props = { searchParams: Promise<{ estado?: string | string[] }> };
  * owner. Rascunho nunca aparece; o conteúdo das aulas fica atrás do paywall no player.
  */
 export default async function CatalogPage({ searchParams }: Props) {
+  if (demoMode()) return <DemoCatalog search={await searchParams} />;
   const filter = parseCatalogFilter((await searchParams).estado);
   const catalog = await loadCatalog();
   const courses = catalog ? filterCatalog(catalog.courses, filter) : [];

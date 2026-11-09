@@ -16,6 +16,21 @@ export function ExampleTag({ className }: { className?: string }) {
   );
 }
 
+/** Avatar sem foto: inicial num círculo rosé, nunca rosto inventado (doc G §4.5). */
+export function Initials({ name, size = 'md' }: { name: string; size?: 'md' | 'lg' }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        'grid shrink-0 place-items-center rounded-full bg-blush-200 font-medium text-cf-primary',
+        size === 'lg' ? 'size-16 text-xl' : 'size-10',
+      )}
+    >
+      {name.charAt(0)}
+    </span>
+  );
+}
+
 /** Coluna de conteúdo das telas de demonstração, na mesma largura das páginas reais. */
 export function ScreenPage({
   width = 'wide',

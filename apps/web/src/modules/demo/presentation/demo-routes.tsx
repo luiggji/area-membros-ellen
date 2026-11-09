@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
+import { findMember } from '../domain/community-fixtures';
 import { parseHomeVariant } from '../domain/fixtures';
 import {
   findCourse,
@@ -8,6 +9,14 @@ import {
   parseCatalogFilter,
   parseJourneyStep,
 } from '../domain/learning-fixtures';
+import { HelpScreen, SubscriptionScreen } from './account-screens';
+import {
+  CommunityScreen,
+  ConnectionsScreen,
+  MemberProfileScreen,
+  parseCommunityTab,
+} from './community-screens';
+import { CafeScreen, LiveScreen, TicketScreen } from './events-screens';
 import { HomeAuxiliary, HomeCourses, HomeHero, HomeJourney } from './home-sections';
 import { JourneyScreen, PlanningScreen } from './journey-screens';
 import { CatalogScreen, CourseScreen, LessonScreen } from './learning-screens';
@@ -54,12 +63,46 @@ export function DemoJourney({ search }: { search: Search }) {
   return <JourneyScreen step={parseJourneyStep(search.passo)} />;
 }
 
+const text = (value: Search[string]) =>
+  typeof value === 'string' && value.trim() ? value.slice(0, 60) : undefined;
+
+type Section = (rest: string[], search: Search) => ReactNode | null;
+const only =
+  (screen: () => ReactNode): Section =>
+  (rest) =>
+    rest.length === 0 ? screen() : null;
+
 /** Destinos do menu que ainda não têm página real (`/app/[...secao]`). */
-const sections: Record<string, (rest: string[]) => ReactNode | null> = {
-  planejamento: (rest) => (rest.length === 0 ? <PlanningScreen /> : null),
+const sections: Record<string, Section> = {
+  planejamento: only(() => <PlanningScreen />),
+  comunidade: (rest, search) =>
+    rest.length === 0 ? <CommunityScreen tab={parseCommunityTab(search.aba)} /> : null,
+  conexoes: (rest, search) => {
+    if (rest.length === 0) {
+      return (
+        <ConnectionsScreen
+          query={{ cidade: text(search.cidade), uf: text(search.uf), area: text(search.area) }}
+        />
+      );
+    }
+    const member = rest.length === 1 ? findMember(rest[0]!) : undefined;
+    return member ? <MemberProfileScreen member={member} /> : null;
+  },
+  'ao-vivo': only(() => <LiveScreen />),
+  cafe: (rest) =>
+    rest.length === 0 ? <CafeScreen /> : rest.join('/') === 'ingresso' ? <TicketScreen /> : null,
+  ajuda: only(() => <HelpScreen />),
 };
 
-export function demoSection(segments: string[]): ReactNode | null {
+export function demoSection(segments: string[], search: Search): ReactNode | null {
   const [slug, ...rest] = segments;
-  return (slug && sections[slug]?.(rest)) ?? null;
+  return (slug && sections[slug]?.(rest, search)) ?? null;
+}
+
+export function DemoSubscription() {
+  return <SubscriptionScreen />;
+}
+
+export function DemoCafe() {
+  return <CafeScreen />;
 }

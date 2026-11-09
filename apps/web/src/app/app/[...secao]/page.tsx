@@ -7,7 +7,10 @@ import { findMemberSection } from '@/modules/navigation/domain/member-sections';
 import { NavIcon } from '@/modules/navigation/presentation/nav-icon';
 import { demoMode } from '@/shared/config/demo';
 
-type Props = { params: Promise<{ secao: string[] }> };
+type Props = {
+  params: Promise<{ secao: string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const [slug, ...rest] = (await params).secao;
@@ -20,9 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * seção, dentro do shell. Qualquer outra rota responde 404 aqui, no layout dinâmico (com nonce),
  * e não pela 404 estática da raiz.
  */
-export default async function MemberSectionPage({ params }: Props) {
+export default async function MemberSectionPage({ params, searchParams }: Props) {
   const segments = (await params).secao;
-  const demo = demoMode() ? demoSection(segments) : null;
+  const demo = demoMode() ? demoSection(segments, await searchParams) : null;
   if (demo) return demo;
   const [slug, ...rest] = segments;
   const section = rest.length === 0 && slug ? findMemberSection(slug) : null;

@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 import { describeRoles } from '@/modules/identity/domain/role-labels';
 import { requireAdminPanel } from '@/modules/identity/presentation/admin-guards';
-import { PublicFrame } from '@/shared/ui/public-frame';
 
 export const metadata: Metadata = { title: 'Painel da equipe · Caixa Forte' };
 
@@ -26,7 +25,7 @@ export default async function AdminHomePage() {
   const { roles } = await requireAdminPanel();
   const tools = TOOLS.filter((tool) => can(roles, tool.permission));
   return (
-    <PublicFrame>
+    <>
       <EmptyState
         size="page"
         icon={<ShieldCheck className="size-5" />}
@@ -62,6 +61,6 @@ export default async function AdminHomePage() {
           )
         }
       />
-    </PublicFrame>
+    </>
   );
 }

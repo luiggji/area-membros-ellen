@@ -16,8 +16,8 @@ const itemClasses =
   'flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[0.7rem] text-cf-text-secondary hover:text-cf-primary';
 
 /** Barra inferior mobile (kit V2): 4 destinos com rótulo + "Mais", que abre o menu completo. */
-export function MobileBar({ base }: { base: NavBase }) {
-  const current = activeSlug(usePathname(), base);
+export function MobileBar({ base, inApp = false }: { base: NavBase; inApp?: boolean }) {
+  const current = activeSlug(usePathname(), base, inApp);
   const inBar = mobileBarNav();
   const moreActive = current !== undefined && !inBar.some((item) => item.slug === current);
 
@@ -32,7 +32,7 @@ export function MobileBar({ base }: { base: NavBase }) {
           return (
             <li key={item.slug} className="flex flex-1">
               <Link
-                href={navHref(item, base)}
+                href={navHref(item, base, inApp)}
                 aria-current={active ? 'page' : undefined}
                 className={cn(itemClasses, active && 'font-semibold text-cf-primary')}
               >
@@ -53,7 +53,7 @@ export function MobileBar({ base }: { base: NavBase }) {
             }
           >
             <BrandMark variant="sidebar" className="px-2" />
-            <MemberNavList base={base} variant="drawer" />
+            <MemberNavList base={base} inApp={inApp} variant="drawer" />
           </NavDrawer>
         </li>
       </ul>

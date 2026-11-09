@@ -2,8 +2,10 @@ import { Card } from '@caixa-forte/ui';
 import { BadgeCheck, Crown } from 'lucide-react';
 import type { Metadata } from 'next';
 
+import { DemoSubscription } from '@/modules/demo/presentation/demo-routes';
 import { describeAccess } from '@/modules/billing/domain/member-access';
 import { loadMyAccess } from '@/modules/billing/infrastructure/supabase-access';
+import { demoMode } from '@/shared/config/demo';
 import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 
 export const metadata: Metadata = { title: 'Assinatura · Caixa Forte' };
@@ -13,6 +15,7 @@ export const metadata: Metadata = { title: 'Assinatura · Caixa Forte' };
  * cobranças e como alterar entram na Minha Assinatura completa (CF-047).
  */
 export default async function SubscriptionPage() {
+  if (demoMode()) return <DemoSubscription />;
   const summary = describeAccess(await loadMyAccess(await createSupabaseServerClient()));
   const Icon = summary.active ? BadgeCheck : Crown;
 

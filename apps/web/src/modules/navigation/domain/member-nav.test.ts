@@ -39,6 +39,7 @@ describe('navegação do membro — regras do doc G e do kit V2', () => {
     expect(navHref(primaryNav[0]!, '/app')).toBe('/app');
     expect(navHref(cafe, '/app')).toBe('/eventos');
     expect(navHref(cafe, '/prototipo')).toBe('/prototipo/cafe');
+    expect(navHref(cafe, '/app', true)).toBe('/app/cafe');
   });
 
   it('marca o item ativo pela URL, inclusive em subpáginas', () => {
@@ -47,6 +48,7 @@ describe('navegação do membro — regras do doc G e do kit V2', () => {
     expect(activeSlug('/eventos/cafe-ourinhos', '/app')).toBe('cafe');
     expect(activeSlug('/prototipo/cofre/', '/prototipo')).toBe('cofre');
     expect(activeSlug('/app/desconhecida', '/app')).toBeUndefined();
+    expect(activeSlug('/app/cafe/ingresso', '/app', true)).toBe('cafe');
     expect(activeSlug('/prototipo/equipe', '/prototipo')).toBeUndefined();
   });
 });

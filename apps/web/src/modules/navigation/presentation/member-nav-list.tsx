@@ -20,16 +20,18 @@ import { SidebarLink } from './sidebar-link';
  */
 export function MemberNavList({
   base,
+  inApp = false,
   variant = 'sidebar',
 }: {
   base: NavBase;
+  inApp?: boolean;
   variant?: 'sidebar' | 'drawer';
 }) {
-  const current = activeSlug(usePathname(), base);
+  const current = activeSlug(usePathname(), base, inApp);
   const link = (item: NavItem, nested = false) => (
     <SidebarLink
       key={item.slug}
-      href={navHref(item, base)}
+      href={navHref(item, base, inApp)}
       icon={item.icon}
       label={item.label}
       active={item.slug === current}

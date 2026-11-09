@@ -25,6 +25,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <MemberShell
       banner={demoMode() ? <DemoBanner /> : undefined}
+      inAppLinks={demoMode()}
       topbarEnd={
         <>
           <MemberAccount name={name} email={user.email ?? ''} />

@@ -86,16 +86,17 @@ export function drawerNav(): NavItem[] {
   return allMemberNav.filter((item) => !inBar.has(item.slug));
 }
 
-export function navHref(item: NavItem, base: NavBase): string {
-  if (base === '/app' && item.publicHref) return item.publicHref;
+/** `inApp`: destinos com página pública (o Café) abrem dentro do app — usado no modo demonstração. */
+export function navHref(item: NavItem, base: NavBase, inApp = false): string {
+  if (base === '/app' && !inApp && item.publicHref) return item.publicHref;
   return item.slug ? `${base}/${item.slug}` : base;
 }
 
 /** Slug do item ativo para a URL atual; a home só é ativa na raiz exata. */
-export function activeSlug(pathname: string, base: NavBase): string | undefined {
+export function activeSlug(pathname: string, base: NavBase, inApp = false): string | undefined {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
   return allMemberNav.find((item) => {
-    const href = navHref(item, base);
+    const href = navHref(item, base, inApp);
     return item.slug === '' ? path === href : path === href || path.startsWith(`${href}/`);
   })?.slug;
 }

@@ -8,10 +8,12 @@ import {
   Crown,
   FilePen,
   House,
+  KeyRound,
   LayoutDashboard,
   LifeBuoy,
   type LucideIcon,
   Radio,
+  ReceiptText,
   ScanLine,
   ShieldCheck,
   UserRoundSearch,
@@ -39,6 +41,8 @@ const icons: Record<NavIconName, LucideIcon> = {
   content: FilePen,
   moderation: ShieldCheck,
   reports: ChartPie,
+  access: KeyRound,
+  prices: ReceiptText,
 };
 
 export function NavIcon({ name, className }: { name: NavIconName; className?: string }) {

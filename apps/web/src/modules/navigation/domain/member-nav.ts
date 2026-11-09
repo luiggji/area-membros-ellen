@@ -20,7 +20,9 @@ export type NavIconName =
   | 'checkin'
   | 'content'
   | 'moderation'
-  | 'reports';
+  | 'reports'
+  | 'access'
+  | 'prices';
 
 export interface NavItem {
   slug: string;

@@ -6,16 +6,12 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import { Env } from './shared/config/env';
-import { API_PREFIX, configureApp } from './shared/http/configure-app';
+import { API_PREFIX, configureApp, httpOptionsFrom } from './shared/http/configure-app';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const config = app.get<ConfigService<Env, true>>(ConfigService);
-  configureApp(app, {
-    corsOrigins: config.get('API_CORS_ORIGINS', { infer: true }),
-    trustProxy: config.get('API_TRUST_PROXY', { infer: true }),
-    docsEnabled: config.get('API_DOCS_ENABLED', { infer: true }),
-  });
+  configureApp(app, httpOptionsFrom(config));
 
   const port = config.get('API_PORT', { infer: true });
   await app.listen(port);

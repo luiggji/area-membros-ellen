@@ -1,7 +1,9 @@
 import { INestApplication } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
 
+import { Env } from '../config/env';
 import { setupOpenApi } from './openapi';
 
 export const API_PREFIX = 'api/v1';
@@ -12,6 +14,15 @@ export interface HttpOptions {
   trustProxy: number;
   /** Swagger UI em /api/v1/docs e JSON em /api/v1/openapi.json (CF-151). */
   docsEnabled: boolean;
+}
+
+/** Opções HTTP lidas do ambiente validado: as mesmas no servidor local e na função da Vercel. */
+export function httpOptionsFrom(config: ConfigService<Env, true>): HttpOptions {
+  return {
+    corsOrigins: config.get('API_CORS_ORIGINS', { infer: true }),
+    trustProxy: config.get('API_TRUST_PROXY', { infer: true }),
+    docsEnabled: config.get('API_DOCS_ENABLED', { infer: true }),
+  };
 }
 
 /** Configuração HTTP comum ao boot real e aos testes e2e. */

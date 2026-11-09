@@ -25,6 +25,8 @@ Referência implementada: `health/`. Testes: `*.spec.ts` ao lado do código (uni
 
 **Dado público mudou (CF-163):** depois de persistir preço, evento/lote ou catálogo, injete `WEB_CACHE` (`shared/cache/web-cache.module`) e chame `revalidate(['prices'])`: o web renova as páginas públicas daquela tag.
 
+**Rota sensível a raspagem (CF-091):** além do limite global por IP (CF-152), use `@Throttle({ default: { limit, ttl: RATE_LIMIT_WINDOW_MS } })` na rota, pagine sem expor total e ponha o teto da página também no banco. Referência: `community/presentation/directory.controller.ts`.
+
 | Módulo        | Escopo (PRD)                                  | CF principais      |
 | ------------- | --------------------------------------------- | ------------------ |
 | identity      | Auth, perfis, consentimentos, RBAC            | CF-030…035         |

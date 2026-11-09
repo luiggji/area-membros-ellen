@@ -366,7 +366,7 @@ isOneToOne: false
                            },
 "search_directory":
 { Args: { "p_area"?: string,"p_city"?: string,"p_limit"?: number,"p_name"?: string,"p_offset"?: number,"p_state"?: string }; Returns: {
-              "areas": string[],"bio": string,"city": string,"display_name": string,"links": string[],"state": string,"user_id": string
+              "areas": (string)[],"bio": string,"city": string,"display_name": string,"links": (string)[],"state": string,"user_id": string
             }[]
                            },
 "user_id_by_email":

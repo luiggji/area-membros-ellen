@@ -15,11 +15,14 @@ import { MobileBar } from './mobile-bar';
  */
 export function MemberShell({
   base = '/app',
+  inAppLinks = false,
   banner,
   topbarEnd,
   children,
 }: {
   base?: NavBase;
+  /** Café e outros destinos públicos abrem dentro do app (modo demonstração). */
+  inAppLinks?: boolean;
   banner?: ReactNode;
   topbarEnd: ReactNode;
   children: ReactNode;
@@ -33,7 +36,7 @@ export function MemberShell({
             <BrandMark variant="sidebar" priority />
             <span className="sr-only">Início</span>
           </Link>
-          <MemberNavList base={base} />
+          <MemberNavList base={base} inApp={inAppLinks} />
         </>
       }
       topbar={
@@ -45,7 +48,7 @@ export function MemberShell({
           <div className="ms-auto flex items-center gap-1 sm:gap-3">{topbarEnd}</div>
         </>
       }
-      bottomBar={<MobileBar base={base} />}
+      bottomBar={<MobileBar base={base} inApp={inAppLinks} />}
     >
       {children}
     </AppShell>

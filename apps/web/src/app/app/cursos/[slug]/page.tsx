@@ -4,10 +4,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { DemoCourse } from '@/modules/demo/presentation/demo-routes';
 import { availabilityText } from '@/modules/learning/domain/catalog-view';
 import { courseProgressText } from '@/modules/learning/domain/course-progress';
 import { loadCourse } from '@/modules/learning/infrastructure/catalog-api';
 import { CourseOutline } from '@/modules/learning/presentation/course-outline';
+import { demoMode } from '@/shared/config/demo';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -30,6 +32,7 @@ function CourseProgress({ course }: { course: CourseDetail }) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  if (demoMode()) return { title: 'Cursos · Caixa Forte' };
   const course = await loadCourse((await params).slug);
   return {
     title:
@@ -42,6 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * mostra só a data verdadeira; rascunho ou inexistente responde 404. O player entra no CF-083.
  */
 export default async function CoursePage({ params }: Props) {
+  if (demoMode()) return <DemoCourse slug={(await params).slug} />;
   const course = await loadCourse((await params).slug);
   if (course === 'not_found') notFound();
 

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 // Lido a cada requisição: o mesmo build serve staging (com preview) e produção (sem).
 export const dynamic = 'force-dynamic';
 
-/** Grupo das rotas internas (/prototipo, /design, /status): bloqueado em produção. */
+/** Grupo das rotas internas (/design, /status): bloqueado em produção. */
 export default function PreviewLayout({ children }: { children: ReactNode }) {
   if (!isPreviewEnabled(process.env)) notFound();
   return children;

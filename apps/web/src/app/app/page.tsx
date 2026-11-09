@@ -4,10 +4,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import { DemoHome } from '@/modules/demo/presentation/demo-routes';
 import { nextOnboardingStep } from '@/modules/identity/domain/onboarding';
 import { describeRoles } from '@/modules/identity/domain/role-labels';
 import { getSessionRoles } from '@/modules/identity/infrastructure/session-roles';
 import { loadProfilePage } from '@/modules/identity/infrastructure/supabase-profile';
+import { demoMode } from '@/shared/config/demo';
 import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 import { getSessionUser } from '@/shared/lib/supabase/session';
 
@@ -17,12 +19,17 @@ export const metadata: Metadata = { title: 'Início · Caixa Forte' };
  * Primeira página do membro logado (CF-030/CF-032): só dados reais da sessão e dos papéis. A home editorial com
  * jornada e cursos é o CF-101; o shell do membro já envolve a página (CF-171). Nada de conteúdo inventado.
  */
-export default async function MemberHomePage() {
+export default async function MemberHomePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const [user, roles] = await Promise.all([getSessionUser(), getSessionRoles()]);
   if (!user) return null; // o layout de /app já redireciona; isto só satisfaz o tipo
   // Primeiro acesso: o onboarding vem antes do início e retoma onde parou (CF-035).
   const { profile } = await loadProfilePage(await createSupabaseServerClient(), user.id);
   if (nextOnboardingStep(profile)) redirect('/app/jornada');
+  if (demoMode()) return <DemoHome search={await searchParams} />;
   const access = describeRoles(roles);
   const name = typeof user?.user_metadata.name === 'string' ? user.user_metadata.name : null;
 

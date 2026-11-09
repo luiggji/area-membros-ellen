@@ -8,9 +8,11 @@ import { buttonClasses } from '@caixa-forte/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { DemoJourney } from '@/modules/demo/presentation/demo-routes';
 import { ONBOARDING_STEPS, resolveOnboardingStep } from '@/modules/identity/domain/onboarding';
 import { loadProfilePage } from '@/modules/identity/infrastructure/supabase-profile';
 import { OnboardingStepForm } from '@/modules/identity/presentation/onboarding-step';
+import { demoMode } from '@/shared/config/demo';
 import { createSupabaseServerClient } from '@/shared/lib/supabase/server';
 import { getSessionUser } from '@/shared/lib/supabase/session';
 
@@ -28,7 +30,7 @@ const STEP_COPY = {
   objetivo: { title: 'Seu objetivo', text: 'Você pode mudar quando quiser.' },
 } as const;
 
-type Search = Promise<{ etapa?: string }>;
+type Search = Promise<{ etapa?: string; passo?: string }>;
 
 /**
  * Onboarding (CF-035) em `/app/jornada` (PRD §4.2). Retoma na primeira etapa pendente; nada aqui
@@ -38,7 +40,10 @@ export default async function JourneyPage({ searchParams }: { searchParams: Sear
   const user = await getSessionUser();
   if (!user) return null; // o layout de /app já redireciona; isto só satisfaz o tipo
   const { profile } = await loadProfilePage(await createSupabaseServerClient(), user.id);
-  const step = resolveOnboardingStep((await searchParams).etapa, profile);
+  const search = await searchParams;
+  const step = resolveOnboardingStep(search.etapa, profile);
+  // Onboarding concluído: na demonstração, a jornada mostra o diagnóstico e o plano (CF-102/103).
+  if (!step && !search.etapa && demoMode()) return <DemoJourney search={search} />;
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-8 py-12">

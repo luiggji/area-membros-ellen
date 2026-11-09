@@ -32,7 +32,7 @@ export const adminNav: readonly AdminNavItem[] = [
     demo: true,
   },
   { slug: 'conteudo', label: 'Conteúdo', icon: 'content', permission: 'content.manage' },
-  { slug: 'materiais', label: 'Cofre de materiais', icon: 'vault', permission: 'content.manage' },
+  { slug: 'materiais', label: 'Materiais', icon: 'vault', permission: 'content.manage' },
   {
     slug: 'moderacao',
     label: 'Moderação',
@@ -41,7 +41,7 @@ export const adminNav: readonly AdminNavItem[] = [
     demo: true,
   },
   { slug: 'planos', label: 'Planos e preços', icon: 'prices', permission: 'prices.manage' },
-  { slug: 'acessos', label: 'Acessos concedidos', icon: 'access', permission: 'access.grant' },
+  { slug: 'acessos', label: 'Acessos', icon: 'access', permission: 'access.grant' },
   {
     slug: 'relatorios',
     label: 'Relatórios',

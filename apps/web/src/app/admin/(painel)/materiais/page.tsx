@@ -13,7 +13,6 @@ import {
   setMaterialStatusAction,
 } from '@/modules/materials/presentation/material-actions';
 import { MaterialUploadForm } from '@/modules/materials/presentation/material-upload-form';
-import { PublicFrame } from '@/shared/ui/public-frame';
 
 export const metadata: Metadata = { title: 'Cofre de materiais · Caixa Forte' };
 
@@ -31,7 +30,7 @@ export default async function MaterialsAdminPage() {
   const courses = (content?.courses ?? []).map(({ id, title }) => ({ id, title }));
 
   return (
-    <PublicFrame>
+    <>
       <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-col gap-10 py-12">
         <div className="flex flex-col gap-2">
           <Link href="/admin" className="text-sm text-cf-primary underline underline-offset-4">
@@ -102,6 +101,6 @@ export default async function MaterialsAdminPage() {
           </div>
         </section>
       </div>
-    </PublicFrame>
+    </>
   );
 }

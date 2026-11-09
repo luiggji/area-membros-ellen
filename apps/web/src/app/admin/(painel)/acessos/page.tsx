@@ -9,7 +9,6 @@ import { grantsApi } from '@/modules/billing/infrastructure/grants-api';
 import { GrantForm } from '@/modules/billing/presentation/grant-form';
 import { GrantList } from '@/modules/billing/presentation/grant-list';
 import { requireAdminPanel } from '@/modules/identity/presentation/admin-guards';
-import { PublicFrame } from '@/shared/ui/public-frame';
 
 export const metadata: Metadata = { title: 'Acessos concedidos · Caixa Forte' };
 
@@ -23,7 +22,7 @@ export default async function AccessGrantsPage() {
   const grants = await grantsApi.list();
 
   return (
-    <PublicFrame>
+    <>
       <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-col gap-10 py-12">
         <div className="flex flex-col gap-2">
           <Link href="/admin" className="text-sm text-cf-primary underline underline-offset-4">
@@ -62,6 +61,6 @@ export default async function AccessGrantsPage() {
           </div>
         </section>
       </div>
-    </PublicFrame>
+    </>
   );
 }

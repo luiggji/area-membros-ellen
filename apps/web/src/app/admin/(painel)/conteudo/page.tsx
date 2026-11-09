@@ -12,7 +12,6 @@ import {
   CreateTrackForm,
   EditTrackForm,
 } from '@/modules/learning/presentation/content-forms';
-import { PublicFrame } from '@/shared/ui/public-frame';
 
 export const metadata: Metadata = { title: 'Conteúdo · Caixa Forte' };
 
@@ -27,7 +26,7 @@ export default async function ContentAdminPage() {
   const content = await contentAdminApi.tree();
 
   return (
-    <PublicFrame>
+    <>
       <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-col gap-10 py-12">
         <div className="flex flex-col gap-2">
           <Link href="/admin" className="text-sm text-cf-primary underline underline-offset-4">
@@ -107,6 +106,6 @@ export default async function ContentAdminPage() {
           </div>
         </section>
       </div>
-    </PublicFrame>
+    </>
   );
 }

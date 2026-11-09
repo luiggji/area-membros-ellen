@@ -4,9 +4,10 @@ import { ShieldCheck } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { TeamOverviewScreen } from '@/modules/demo/presentation/team-screens';
 import { describeRoles } from '@/modules/identity/domain/role-labels';
 import { requireAdminPanel } from '@/modules/identity/presentation/admin-guards';
-import { PublicFrame } from '@/shared/ui/public-frame';
+import { demoMode } from '@/shared/config/demo';
 
 export const metadata: Metadata = { title: 'Painel da equipe · Caixa Forte' };
 
@@ -24,9 +25,10 @@ const TOOLS: { href: string; label: string; permission: Permission }[] = [
  */
 export default async function AdminHomePage() {
   const { roles } = await requireAdminPanel();
+  if (demoMode()) return <TeamOverviewScreen finance={can(roles, 'finance.read')} />;
   const tools = TOOLS.filter((tool) => can(roles, tool.permission));
   return (
-    <PublicFrame>
+    <>
       <EmptyState
         size="page"
         icon={<ShieldCheck className="size-5" />}
@@ -62,6 +64,6 @@ export default async function AdminHomePage() {
           )
         }
       />
-    </PublicFrame>
+    </>
   );
 }

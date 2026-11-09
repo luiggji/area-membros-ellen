@@ -4,21 +4,6 @@
  * importado fora de `modules/demo`; o modo demonstração nunca liga em produção.
  */
 
-import type { NavItem } from '@/modules/navigation/domain/member-nav';
-
-/**
- * Painel da equipe (doc G §4.9): navegação própria, sem o limite de densidade da home.
- * Os papéis (owner/comercial) e o bloqueio das rotas chegam com CF-032 e CF-034.
- */
-export const adminNav: readonly NavItem[] = [
-  { slug: '', label: 'Visão geral', icon: 'overview', deliveredBy: 'CF-105' },
-  { slug: 'eventos', label: 'Eventos e lotes', icon: 'events', deliveredBy: 'CF-061' },
-  { slug: 'checkin', label: 'Check-in', icon: 'checkin', deliveredBy: 'CF-068' },
-  { slug: 'conteudo', label: 'Conteúdo', icon: 'content', deliveredBy: 'CF-081' },
-  { slug: 'moderacao', label: 'Moderação', icon: 'moderation', deliveredBy: 'CF-095' },
-  { slug: 'relatorios', label: 'Relatórios', icon: 'reports', deliveredBy: 'CF-106' },
-];
-
 /** Variações da home que Ellen precisa homologar (doc G §4.1 "Variações"). */
 export type HomeVariant = 'jornada' | 'novo';
 

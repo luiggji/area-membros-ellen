@@ -364,6 +364,11 @@ isOneToOne: false
 "save_plan":
 { Args: { "p_active": boolean,"p_actor": string,"p_code": string,"p_description": string,"p_id"?: string,"p_name": string }; Returns: string
                            },
+"search_directory":
+{ Args: { "p_area"?: string,"p_city"?: string,"p_limit"?: number,"p_name"?: string,"p_offset"?: number,"p_state"?: string }; Returns: {
+              "areas": string[],"bio": string,"city": string,"display_name": string,"links": string[],"state": string,"user_id": string
+            }[]
+                           },
 "user_id_by_email":
 { Args: { "p_email": string }; Returns: string
                            }

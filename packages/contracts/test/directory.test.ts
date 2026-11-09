@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { directoryProfileInputSchema } from '../src/directory.js';
+import { directoryProfileInputSchema, directorySearchQuerySchema } from '../src/directory.js';
 
 const input = {
   displayName: 'Ana Fictícia',
@@ -42,5 +42,21 @@ describe('perfil público do diretório', () => {
         links: 'https://a.test/1, https://a.test/2, https://a.test/3, https://a.test/4',
       }).success,
     ).toBe(false);
+  });
+});
+
+describe('busca no diretório', () => {
+  it('filtros vazios somem; página padrão 1 e vinda da URL como texto', () => {
+    expect(
+      directorySearchQuerySchema.parse({ uf: '', cidade: '  Curitiba ', area: '', pagina: '2' }),
+    ).toEqual({ cidade: 'Curitiba', pagina: 2 });
+    expect(directorySearchQuerySchema.parse({})).toEqual({ pagina: 1 });
+  });
+
+  it('recusa UF fora da lista, filtro de 1 letra e página além do limite', () => {
+    expect(directorySearchQuerySchema.safeParse({ uf: 'XX' }).success).toBe(false);
+    expect(directorySearchQuerySchema.safeParse({ cidade: 'C' }).success).toBe(false);
+    expect(directorySearchQuerySchema.safeParse({ pagina: '51' }).success).toBe(false);
+    expect(directorySearchQuerySchema.safeParse({ pagina: 'abc' }).success).toBe(false);
   });
 });

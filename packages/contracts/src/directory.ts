@@ -63,3 +63,58 @@ export const directoryProfileInputSchema = z.object({
   ),
 });
 export type DirectoryProfileInput = z.infer<typeof directoryProfileInputSchema>;
+
+/** Membros por página na busca (CF-091); a página máxima limita a raspagem do diretório. */
+export const DIRECTORY_PAGE_SIZE = 12;
+export const DIRECTORY_MAX_PAGE = 50;
+
+const emptyToUndefined = (value: unknown) =>
+  typeof value === 'string' && value.trim() === '' ? undefined : value;
+const filterText = (max: number) =>
+  z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .trim()
+      .min(2, 'Digite pelo menos 2 caracteres.')
+      .max(max, 'Busca muito longa.')
+      .optional(),
+  );
+
+/** Filtros da busca no diretório, como chegam na URL (`?uf=PR&cidade=curitiba&pagina=2`). */
+export const directorySearchQuerySchema = z.object({
+  uf: z.preprocess(emptyToUndefined, z.enum(BRAZIL_STATES, 'Escolha uma UF da lista.').optional()),
+  cidade: filterText(80),
+  area: filterText(40),
+  nome: filterText(80),
+  pagina: z.preprocess(
+    emptyToUndefined,
+    z.coerce
+      .number('Página inválida.')
+      .int('Página inválida.')
+      .min(1, 'Página inválida.')
+      .max(DIRECTORY_MAX_PAGE, 'Refine a busca com cidade, UF ou área.')
+      .default(1),
+  ),
+});
+export type DirectorySearchQuery = z.infer<typeof directorySearchQuerySchema>;
+
+/** Card do diretório: só o que a pessoa escolheu mostrar no perfil público. */
+export const directoryMemberSchema = z.object({
+  id: z.uuid(),
+  displayName: z.string(),
+  city: z.string().nullable(),
+  state: z.string().nullable(),
+  areas: z.array(z.string()),
+  bio: z.string().nullable(),
+  links: z.array(z.string()),
+});
+export type DirectoryMember = z.infer<typeof directoryMemberSchema>;
+
+/** Página da busca. Sem total: o tamanho do diretório não fica exposto. */
+export const directoryPageSchema = z.object({
+  members: z.array(directoryMemberSchema),
+  page: z.number().int().min(1),
+  hasMore: z.boolean(),
+});
+export type DirectoryPage = z.infer<typeof directoryPageSchema>;

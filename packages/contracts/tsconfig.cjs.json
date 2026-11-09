@@ -1,0 +1,21 @@
+// Segunda emissão, em CommonJS (#165): a API é CJS e, sem isto, só conseguia consumir este
+// pacote pelo `require()` de ESM nativo do Node. Em runtimes que empacotam a função — a Vercel —
+// esse caminho não existe e o boot quebra com ERR_REQUIRE_ESM.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    // Resolução clássica: a de NodeNext exige emissão ESM, que é justamente o que não serve aqui.
+    // O TS 6 marca como depreciada e pede o reconhecimento explícito; some no TS 7.
+    "moduleResolution": "Node10",
+    "ignoreDeprecations": "6.0",
+    // Obrigatório desligar aqui: com emissão CJS, o verbatim proíbe a sintaxe ESM do fonte.
+    "verbatimModuleSyntax": false,
+    "rootDir": "src",
+    "outDir": "dist/cjs",
+    // Os tipos saem uma vez só, na emissão ESM; aqui interessa apenas o JavaScript.
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src"]
+}

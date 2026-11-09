@@ -4,6 +4,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
 
 import { AppModule } from './app.module';
 import { Env } from './shared/config/env';
@@ -15,7 +16,11 @@ let listener: Promise<RequestListener> | undefined;
 
 /** Sobe o Nest uma vez por instância da função e reaproveita nas próximas requisições. */
 async function createListener(): Promise<RequestListener> {
-  const app = await NestFactory.create(AppModule, { logger: ['error', 'warn', 'log'] });
+  // Adaptador importado de forma estática: o Nest o carregaria com require dinâmico, que o
+  // empacotamento da função na Vercel não rastreia.
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(), {
+    logger: ['error', 'warn', 'log'],
+  });
   configureApp(app, httpOptionsFrom(app.get<ConfigService<Env, true>>(ConfigService)));
   await app.init();
   return app.getHttpAdapter().getInstance() as RequestListener;

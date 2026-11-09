@@ -10,6 +10,7 @@ const fakeApp = {
 const create = jest.fn<() => Promise<typeof fakeApp>>();
 
 jest.mock('@nestjs/core', () => ({ NestFactory: { create } }));
+jest.mock('@nestjs/platform-express', () => ({ ExpressAdapter: class {} }));
 jest.mock('./app.module', () => ({ AppModule: class {} }));
 jest.mock('./shared/http/configure-app', () => ({
   configureApp: jest.fn(),

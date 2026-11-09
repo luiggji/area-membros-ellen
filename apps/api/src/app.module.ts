@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AuditModule } from './modules/audit/audit.module';
 import { BillingModule } from './modules/billing/billing.module';
+import { CommunityModule } from './modules/community/community.module';
 import { FilesModule } from './modules/files/files.module';
 import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
@@ -29,6 +30,7 @@ import { SupabaseModule } from './shared/supabase/supabase.module';
     FilesModule,
     LearningModule,
     MaterialsModule,
+    CommunityModule,
     HealthModule,
   ],
 })

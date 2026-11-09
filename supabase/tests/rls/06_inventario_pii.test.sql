@@ -5,6 +5,7 @@
 -- | audit_logs       | sim (ator)         | database/audit_logs, rls/05                  |
 -- | consents         | sim                | rls/03, rls/05                               |
 -- | course_modules   | não (catálogo)     | rls/08                                       |
+-- | directory_profiles | sim (opt-in)     | rls/11                                       |
 -- | courses          | não (catálogo)     | rls/08                                       |
 -- | entitlements     | sim                | database/billing, rls/07                     |
 -- | lesson_contents  | não (conteúdo pago)| rls/08 (paywall)                             |
@@ -26,7 +27,7 @@ select plan(1);
 select set_eq(
   $$ select tablename::text from pg_tables where schemaname = 'public' $$,
   array[
-    'audit_logs', 'consents', 'course_modules', 'courses', 'entitlements',
+    'audit_logs', 'consents', 'course_modules', 'courses', 'directory_profiles', 'entitlements',
     'lesson_contents', 'lesson_progress', 'lessons', 'materials', 'payments', 'plans', 'policy_versions',
     'price_versions', 'subscriptions', 'tracks', 'user_profiles', 'user_roles', 'webhook_receipts'
   ],

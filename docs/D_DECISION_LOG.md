@@ -25,6 +25,7 @@
 | **D-017** | **21/10/2026 (Luiggi): Stripe é o gateway** de assinatura (mensal e anual) e de ingresso | Resolve parte da P-001. A validação em sandbox fica no CF-002 (#3): Pix na assinatura recorrente, taxas Pix/cartão, webhooks e chargeback. Taxas e contrato a confirmar com a Ellen. P-002, P-003 e P-004 seguem abertas |
 | **D-018** | **26/10/2026 (Luiggi): Resend é o provedor de e-mail transacional** (cadastro, compra, ingresso) | Resolve parte da P-008. Remetente e domínio autenticado esperam o domínio (P-005). A integração (CF-100, #82) fica para depois do produto (D-019) |
 | **D-019** | **26/10/2026 (Luiggi): produto antes das integrações.** O app interno (menus, conteúdo, comunidade, jornada, ao vivo, admin, planos e Minha Assinatura sem checkout) é construído antes de Stripe, Resend e outbox | Ordem em `BACKLOG.md` §2.1. Enquanto não houver webhook, o acesso pago nasce **só** de concessão manual do owner, auditada (CF-048); pagamento continua ativando acesso apenas por webhook assinado e idempotente quando o gateway entrar (mandamento 3). Nenhuma tela mostra botão de pagar sem ação |
+| **D-020** | **28/10/2026 (Luiggi): a API NestJS também roda na Vercel**, como segundo projeto do mesmo repositório (`apps/api`), numa função única que carrega o `dist/` compilado | Resolve o host da API da P-014 para dev/staging. Descartado por ora: processo contínuo (Render/Fly), que volta à mesa se a função não atender (tempo de resposta, conexões). Ver `docs/runbooks/deploy.md` · Issue #144 |
 
 ## B. Diretrizes e referências em avaliação
 | ID | Posição atual | Observação |
@@ -73,7 +74,7 @@
 | P-011 | Quem poderá validar check-in presencial: comercial e owner confirmados; eventuais temporários? | Ellen | Antes do evento |
 | P-012 | Retenção/exclusão, termos, moderação e responsabilidade por dados | Ellen + jurídico | Antes da operação real |
 | P-013 | Estado real do repositório e integrações já desenvolvidas por Luiggi | Luiggi | Antes de iniciar implementação |
-| P-014 | Plataforma final de hosting, backups, observabilidade e custos. *21/10/2026: Supabase cloud (D-015) e Vercel para o web (D-016); faltam o host da API, backups, observabilidade e custos* | Luiggi | Fundação técnica |
+| P-014 | Plataforma final de hosting, backups, observabilidade e custos. *21/10/2026: Supabase cloud (D-015) e Vercel para o web (D-016). 28/10/2026: API também na Vercel (D-020). Faltam backups, observabilidade e custos* | Luiggi | Fundação técnica |
 | P-015 | Se a regra exige literal **número da PR** na branch, definir mecanismo viável; padrão aprovado para execução é número prévio da Issue | Ellen + Luiggi | Antes do primeiro fluxo Git |
 | P-016 | Prioridade de certificado ou mentorias e encontros especiais para membros | Ellen | Refinamento P1 |
 | P-017 | Migração futura de recorrências, SSO e contas para Ellen Conrado | Ellen + Luiggi | Antes da integração P1 |

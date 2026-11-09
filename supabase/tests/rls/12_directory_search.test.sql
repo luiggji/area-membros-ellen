@@ -2,7 +2,7 @@
 -- e acesso vigente; filtros sem diferenciar maiúsculas e acentos; `%` digitado é texto; paginação
 -- estável; membro e visitante não executam a busca direto (só a API, com a chave de serviço).
 begin;
-select plan(12);
+select plan(13);
 
 select ok(tests.create_user('ana') is not null, 'cria Ana: perfil, aceite e acesso (fictícia)');
 select ok(tests.create_user('bruno') is not null, 'cria Bruno: perfil e aceite, sem acesso');

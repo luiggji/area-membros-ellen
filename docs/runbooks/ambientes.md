@@ -10,16 +10,16 @@
 
 ## Matriz
 
-| Recurso                                           | development                                                                | staging                                        | production                                       |
-| ------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
-| `APP_ENV`                                         | `development`                                                              | `staging`                                      | `production`                                     |
-| Supabase (banco + Auth + Storage)                 | projeto cloud compartilhado dev+staging (D-015); local via Docker opcional | o mesmo projeto cloud de dev (D-015)           | projeto próprio `caixa-forte-prod`               |
-| Dados                                             | seeds fictícios (CF-154)                                                   | seeds fictícios; nunca cópia de produção       | reais                                            |
-| Gateway de pagamento                              | sandbox                                                                    | sandbox (conta separada se o gateway permitir) | produção                                         |
-| E-mail transacional                               | captura local (Inbucket do Supabase)                                       | domínio de teste, envio só para a equipe       | domínio autenticado                              |
-| Web / API                                         | `localhost:3000` / `localhost:4000`                                        | host de preview/staging (P-014)                | domínio final (P-005)                            |
-| Rotas internas `/prototipo`, `/design`, `/status` | ligadas                                                                    | ligadas com `ENABLE_PREVIEW_ROUTES=true`       | desligadas                                       |
-| Onde ficam os segredos                            | `.env` local (fora do git)                                                 | GitHub Environment `staging` + painel do host  | GitHub Environment `production` + painel do host |
+| Recurso                             | development                                                                | staging                                        | production                                       |
+| ----------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
+| `APP_ENV`                           | `development`                                                              | `staging`                                      | `production`                                     |
+| Supabase (banco + Auth + Storage)   | projeto cloud compartilhado dev+staging (D-015); local via Docker opcional | o mesmo projeto cloud de dev (D-015)           | projeto próprio `caixa-forte-prod`               |
+| Dados                               | seeds fictícios (CF-154)                                                   | seeds fictícios; nunca cópia de produção       | reais                                            |
+| Gateway de pagamento                | sandbox                                                                    | sandbox (conta separada se o gateway permitir) | produção                                         |
+| E-mail transacional                 | captura local (Inbucket do Supabase)                                       | domínio de teste, envio só para a equipe       | domínio autenticado                              |
+| Web / API                           | `localhost:3000` / `localhost:4000`                                        | host de preview/staging (P-014)                | domínio final (P-005)                            |
+| Rotas internas `/design`, `/status` | ligadas                                                                    | ligadas com `ENABLE_PREVIEW_ROUTES=true`       | desligadas                                       |
+| Onde ficam os segredos              | `.env` local (fora do git)                                                 | GitHub Environment `staging` + painel do host  | GitHub Environment `production` + painel do host |
 
 ## Variáveis
 

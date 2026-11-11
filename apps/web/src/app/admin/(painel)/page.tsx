@@ -15,6 +15,7 @@ export const metadata: Metadata = { title: 'Painel da equipe · Caixa Forte' };
 const TOOLS: { href: string; label: string; permission: Permission }[] = [
   { href: '/admin/conteudo', label: 'Conteúdo', permission: 'content.manage' },
   { href: '/admin/materiais', label: 'Cofre de materiais', permission: 'content.manage' },
+  { href: '/admin/grupos', label: 'Grupos', permission: 'content.manage' },
   { href: '/admin/planos', label: 'Planos e preços', permission: 'prices.manage' },
   { href: '/admin/acessos', label: 'Acessos concedidos', permission: 'access.grant' },
 ];

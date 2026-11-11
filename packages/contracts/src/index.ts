@@ -10,6 +10,7 @@ export * from './lesson-player.js';
 export * from './storage.js';
 export * from './materials.js';
 export * from './directory.js';
+export * from './groups.js';
 export * from './environment.js';
 export * from './supabase-keys.js';
 export * from './feature-flags.js';

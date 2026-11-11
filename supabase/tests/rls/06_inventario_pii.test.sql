@@ -8,6 +8,7 @@
 -- | directory_profiles | sim (opt-in)     | rls/11                                       |
 -- | courses          | não (catálogo)     | rls/08                                       |
 -- | entitlements     | sim                | database/billing, rls/07                     |
+-- | groups           | não (catálogo)     | rls/13 (só publicados), database/groups_admin |
 -- | lesson_contents  | não (conteúdo pago)| rls/08 (paywall)                             |
 -- | lesson_progress  | sim (uso por pessoa)| rls/09                                      |
 -- | lessons          | não (catálogo)     | rls/08                                       |
@@ -28,8 +29,9 @@ select set_eq(
   $$ select tablename::text from pg_tables where schemaname = 'public' $$,
   array[
     'audit_logs', 'consents', 'course_modules', 'courses', 'directory_profiles', 'entitlements',
-    'lesson_contents', 'lesson_progress', 'lessons', 'materials', 'payments', 'plans', 'policy_versions',
-    'price_versions', 'subscriptions', 'tracks', 'user_profiles', 'user_roles', 'webhook_receipts'
+    'groups', 'lesson_contents', 'lesson_progress', 'lessons', 'materials', 'payments', 'plans',
+    'policy_versions', 'price_versions', 'subscriptions', 'tracks', 'user_profiles', 'user_roles',
+    'webhook_receipts'
   ],
   'toda tabela em public está classificada no inventário de PII (CF-033)'
 );

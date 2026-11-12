@@ -1973,6 +1973,141 @@
         ]
       }
     },
+    "/api/v1/admin/grupos": {
+      "get": {
+        "operationId": "GroupsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "groups": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "draft",
+                              "published",
+                              "hidden"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "slug",
+                          "name",
+                          "description",
+                          "status",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "groups"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Grupos, inclusive rascunhos e ocultos",
+        "tags": [
+          "community"
+        ]
+      },
+      "post": {
+        "operationId": "GroupsController_create",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar grupo em rascunho (auditado)",
+        "tags": [
+          "community"
+        ]
+      }
+    },
+    "/api/v1/admin/grupos/{id}": {
+      "patch": {
+        "operationId": "GroupsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Sem sessão válida"
+          },
+          "403": {
+            "description": "Sem a permissão content.manage, ou sem MFA (mfa_required)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Editar nome, descrição ou publicar/ocultar grupo (auditado)",
+        "tags": [
+          "community"
+        ]
+      }
+    },
     "/api/v1/health": {
       "get": {
         "operationId": "HealthController_handle",

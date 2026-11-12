@@ -15,10 +15,11 @@ describe('navegação do painel da equipe', () => {
       '',
       'conteudo',
       'materiais',
+      'grupos',
       'planos',
       'acessos',
     ]);
-    expect(visibleAdminNav(['owner'], true)).toHaveLength(9);
+    expect(visibleAdminNav(['owner'], true)).toHaveLength(10);
   });
 
   it('tela de demonstração respeita a permissão do papel', () => {

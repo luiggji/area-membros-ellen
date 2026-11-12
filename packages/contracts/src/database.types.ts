@@ -113,6 +113,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"groups": {
+                  Row: {
+                    "created_at": string,"description": string | null,"id": string,"name": string,"slug": string,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"description"?: string | null,"id"?: string,"name": string,"slug": string,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"description"?: string | null,"id"?: string,"name"?: string,"slug"?: string,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"lesson_contents": {
                   Row: {
                     "body_md": string | null,"lesson_id": string,"media_ref": string | null,"updated_at": string
@@ -360,6 +374,9 @@ isOneToOne: false
                            },
 "publish_price_version":
 { Args: { "p_actor": string,"p_amount_cents": number,"p_interval": string,"p_plan_id": string }; Returns: string
+                           },
+"save_group":
+{ Args: { "p_actor": string,"p_description": string,"p_id"?: string,"p_name": string,"p_slug": string,"p_status": string }; Returns: string
                            },
 "save_plan":
 { Args: { "p_active": boolean,"p_actor": string,"p_code": string,"p_description": string,"p_id"?: string,"p_name": string }; Returns: string

@@ -33,6 +33,7 @@ export const adminNav: readonly AdminNavItem[] = [
   },
   { slug: 'conteudo', label: 'Conteúdo', icon: 'content', permission: 'content.manage' },
   { slug: 'materiais', label: 'Materiais', icon: 'vault', permission: 'content.manage' },
+  { slug: 'grupos', label: 'Grupos', icon: 'community', permission: 'content.manage' },
   {
     slug: 'moderacao',
     label: 'Moderação',

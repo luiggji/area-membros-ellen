@@ -14,7 +14,7 @@ select ok(
 select set_eq(
   $$ select p.proname::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'private' and has_function_privilege('authenticated', p.oid, 'execute') $$,
-  array['content_visible', 'course_visible', 'i_have_access', 'lesson_visible'],
+  array['content_visible', 'course_visible', 'i_am_in_group', 'i_have_access', 'lesson_visible'],
   'authenticated só executa as funções de private liberadas para as policies'
 );
 

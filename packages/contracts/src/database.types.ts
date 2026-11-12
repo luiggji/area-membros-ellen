@@ -113,6 +113,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"group_members": {
+                  Row: {
+                    "group_id": string,"joined_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "group_id": string,"joined_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "group_id"?: string,"joined_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "group_members_group_id_fkey"
+      columns: ["group_id"]
+isOneToOne: false
+      referencedRelation: "groups"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"groups": {
                   Row: {
                     "created_at": string,"description": string | null,"id": string,"name": string,"slug": string,"status": string,"updated_at": string
@@ -255,6 +275,26 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"posts": {
+                  Row: {
+                    "author_id": string,"body": string,"created_at": string,"group_id": string,"id": string,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "author_id": string,"body": string,"created_at"?: string,"group_id": string,"id"?: string,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "author_id"?: string,"body"?: string,"created_at"?: string,"group_id"?: string,"id"?: string,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "posts_group_id_fkey"
+      columns: ["group_id"]
+isOneToOne: false
+      referencedRelation: "groups"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"price_versions": {
                   Row: {
                     "amount_cents": number,"created_at": string,"currency": string,"effective_at": string,"gateway_price_id": string | null,"id": string,"interval": string,"is_sellable": boolean,"plan_id": string
@@ -365,6 +405,16 @@ isOneToOne: false
 "manual_access_grants":
 { Args: Record<PropertyKey, never>; Returns: {
               "id": string,"member_email": string,"reason": string,"revoked_at": string,"valid_from": string,"valid_to": string
+            }[]
+                           },
+"member_feed":
+{ Args: { "p_limit"?: number,"p_user": string }; Returns: {
+              "author_name": string,"body": string,"created_at": string,"group_name": string,"group_slug": string,"id": string
+            }[]
+                           },
+"member_groups":
+{ Args: { "p_user": string }; Returns: {
+              "description": string,"id": string,"joined": boolean,"member_count": number,"name": string,"slug": string
             }[]
                            },
 "my_access":

@@ -44,6 +44,11 @@ export function DemoCatalog({ search }: { search: Search }) {
   return <CatalogScreen filter={parseCatalogFilter(search.estado)} />;
 }
 
+/** `/app/comunidade` virou rota real no CF-093; a demonstração passa a ser chamada por ela. */
+export function DemoCommunity({ search }: { search: Search }) {
+  return <CommunityScreen tab={parseCommunityTab(search.aba)} />;
+}
+
 export function DemoCourse({ slug }: { slug: string }) {
   const course = findCourse(slug);
   if (!course) notFound();
